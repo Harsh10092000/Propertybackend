@@ -16,16 +16,7 @@ app.use(
 app.use(express.json());
 app.use("/api/auth", authLogin);
 app.use("/api/pro", authProperty);
-
 app.use(express.static("./public"));
 app.listen(8000, () => {
   console.log("App is running ");
 });
-
-
-
-
-
-
-
-

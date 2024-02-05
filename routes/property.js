@@ -15,7 +15,6 @@ import {
   fetchShortListProperty,
   deleteShortlist,
   deleteProperty,
-  
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -34,14 +33,15 @@ const upload = multer({
   storage,
 });
 
-router.post("/addPropertyimages", upload.array("image"), (req, res) => {
+router.post("/addPropertyimages", upload.any("files"), (req, res) => {
+  console.log(req.files, req.body);
   const q =
-    "INSERT INTO property_module_images (`img_link`,`img_cnct_id`, `img_user_id`) VALUES (?)";
-    const values = req.files.map((item) => [
-        req.files.filename,
-        req.body.proId,
-        req.body.userId,
-    ]);
+    "INSERT INTO property_module_images (`img_link`,`img_cnct_id`, `img_user_id`) VALUES ?";
+  const values = req.files.map((item) => [
+    item.filename,
+    req.body.proId,
+    req.body.userId,
+  ]);
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("INSERTED SUCCESSFULLY");
@@ -54,7 +54,7 @@ router.get("/fetchPropertyData", fetchPropertyData);
 router.get("/fetchPropertyDataById/:proId", fetchPropertyDataById);
 router.get("/fetchLatestProperty", fetchLatestProperty);
 router.get("/fetchPropertyDataByCat/:proType", fetchPropertyDataByCat);
-router.get("/fetchPropertySubCatNo/:proType", fetchPropertySubCatNo);
+router.get("/fetchPropertySubCatNo", fetchPropertySubCatNo);
 router.get("/fetchPropertyDataBySubCat/:proSubType", fetchPropertyDataBySubCat);
 router.get("/fetchPropertyDataByUserId/:userId", fetchPropertyDataByUserId);
 router.get("/fetchShortListProperty/:userId", fetchShortListProperty);
