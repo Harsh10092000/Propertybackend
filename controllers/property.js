@@ -2,7 +2,7 @@ import { db } from "../connect.js";
 
 export const addProperty = (req, res) => {
   const q =
-    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode) Values (?)";
+    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_locality_2) Values (?)";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -42,6 +42,7 @@ export const addProperty = (req, res) => {
 
     req.body.pro_amt_unit,
     req.body.pro_pincode,
+    req.body.pro_locality_2,
   ];
   console.log(values);
   db.query(q, [values], (err, data) => {
@@ -54,7 +55,7 @@ export const addProperty = (req, res) => {
 
 export const updateProperty = (req, res) => {
   const q =
-    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_sub_cat = ? , pro_user_id = ? , pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? WHERE pro_id = ?";
+    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_sub_cat = ? , pro_user_id = ? , pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_locality_2 = ? WHERE pro_id = ?";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -93,6 +94,7 @@ export const updateProperty = (req, res) => {
     req.body.pro_facing_road_unit,
     req.body.pro_amt_unit,
     req.body.pro_pincode,
+    req.body.pro_locality_2,
   ];
   db.query(q, values, (err, data) => {
     console.log(values);
@@ -102,7 +104,8 @@ export const updateProperty = (req, res) => {
 };
 
 export const fetchPropertyData = (req, res) => {
-  const q = "SELECT * from property_module ";
+  const q =
+    "SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id group by img_cnct_id";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -183,33 +186,14 @@ export const deleteProperty = (req, res) => {
   });
 };
 
-//   "pro_user_type" : "fgh",
-//     "pro_ad_type" : "fgh",
-//     "pro_type" : "fgh",
-//     "pro_city" : "fg",
-//     "pro_locality" : "hgf",
+export const fetchImagesWithId = (req, res) => {
+  const q = "SELECT * from property_module_images WHERE img_cnct_id = ?";
+  db.query(q, [req.params.imgId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
 
-//     "pro_plot_no" : "fh",
-//     "pro_street" : "gfh",
-//     "pro_age" : 7,
-//     "pro_floor" : 9,
-//     "pro_bedroom" : 15,
-//     "pro_washrooms" : 12,
-
-//     "pro_balcony" : 9,
-//     "pro_parking" : 20,
-//     "pro_facing" : "south",
-//     "pro_area_size" : "459",
-//     "pro_width" : "45",
-
-//     "pro_length" : "5",
-//     "pro_facing_road_width" : "45",
-//     "pro_open_sides" : "22",
-//     "pro_furnishing" : "yes",
-//     "pro_ownership_type" : "fggg",
-
-//     "pro_approval" : "tes",
-//     "pro_amt" : "56700000",
-//     "pro_rental_status" : "no",
-//     "pro_desc" : "test",
-//     "pro_possession" : "tesy",
+export const fetchCoverImg = (req, res) => {
+  const q = "SELECT * from property";
+};
