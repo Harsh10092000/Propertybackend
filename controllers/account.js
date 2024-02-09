@@ -1,22 +1,12 @@
 import { db } from "../connect.js";
 
 export const fetchUserData = (req, res) => {
-  const q = "SELECT * FROM register_module where reg_email = ?";
-  db.query(q, [req.params.userEmail], (err, data) => {
+  const q = "SELECT * FROM login_module where login_id = ?";
+  db.query(q, [req.params.loginId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
-
-
-export const fetchAllUser = (req, res) => {
-    const q = "SELECT * FROM register_module";
-    db.query(q , (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.status(200).json(data);
-    });
-  };
-
 
 const delReg = (email, res) => {
   const q = "delete from register_module where reg_email = ?";
@@ -44,30 +34,28 @@ const delShortlist = (id, res) => {
   });
 };
 
-
 const delProperty = (id, res) => {
-    const check = "select * from property_module where pro_user_id = ?";
-    db.query(check, id, (err, data) => {
+  const check = "select * from property_module where pro_user_id = ?";
+  db.query(check, id, (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length < 1) return false;
+    const q = "delete from property_module where pro_user_id = ?";
+    db.query(q, id, (err, data) => {
       if (err) return res.status(500).json(err);
-      if (data.length < 1) return false;
-      const q = "delete from property_module where pro_user_id = ?";
-      db.query(q, id, (err, data) => {
-        if (err) return res.status(500).json(err);
-      });
     });
+  });
 };
 
-
 const delPropertyImages = (id, res) => {
-    const check = "select * from property_module_images where img_user_id = ?";
-    db.query(check, id, (err, data) => {
+  const check = "select * from property_module_images where img_user_id = ?";
+  db.query(check, id, (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length < 1) return false;
+    const q = "delete from property_module_images where img_user_id = ?";
+    db.query(q, id, (err, data) => {
       if (err) return res.status(500).json(err);
-      if (data.length < 1) return false;
-      const q = "delete from property_module_images where img_user_id = ?";
-      db.query(q, id, (err, data) => {
-        if (err) return res.status(500).json(err);
-      });
     });
+  });
 };
 
 export const delData = (req, res) => {

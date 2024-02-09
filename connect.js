@@ -8,9 +8,9 @@
 import { createPool } from "mysql";
 
 export const db = createPool({
-  host: "156.67.64.3",
-  user: "u604430330_propertyease",
-  password: "wX=5[ULr>",
-  database: "u604430330_property",
-  connectionLimit: 1000,
+  host: "191.101.230.154",
+  user: "u747016719_property",
+  password: "~rXHj4h0=R",
+  database: "u747016719_propertyease",
+  connectionLimit: 10000,
 });
