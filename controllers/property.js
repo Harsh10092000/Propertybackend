@@ -2,7 +2,7 @@ import { db } from "../connect.js";
 
 export const addProperty = (req, res) => {
   const q =
-    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable) Values (?)";
+    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state) Values (?)";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -43,6 +43,7 @@ export const addProperty = (req, res) => {
     req.body.pro_amt_unit,
     req.body.pro_pincode,
     req.body.pro_negotiable,
+    req.body.pro_state,
   ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -93,7 +94,6 @@ export const updateProperty = (req, res) => {
     req.body.pro_facing_road_unit,
     req.body.pro_amt_unit,
     req.body.pro_pincode,
-    req.body.pro_locality_2,
   ];
   db.query(q, values, (err, data) => {
     console.log(values);
@@ -173,15 +173,16 @@ export const fetchShortListProperty = (req, res) => {
 };
 
 export const deleteShortlist = (req, res) => {
-  const q = "delete from shortlist_module where shortlist_id = ?";
-  db.query(q, [req.params.userId], (err, data) => {
+  const q = "DELETE FROM shortlist_module WHERE shortlist_id = ?";
+  db.query(q, [req.params.shortlistId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("Deleted Successfully");
   });
 };
 
 export const deleteProperty = (req, res) => {
-  const q = "delete from property_module where pro_id = ?";
+  const q =
+    "DELETE property_module.* ,property_module_images.* from property_module RIGHT JOIN property_images_module on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_id = ?";
   db.query(q, [req.params.proId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("Deleted Successfully");
