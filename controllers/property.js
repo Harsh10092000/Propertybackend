@@ -55,7 +55,7 @@ export const addProperty = (req, res) => {
 
 export const updateProperty = (req, res) => {
   const q =
-    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_sub_cat = ? , pro_user_id = ? , pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_locality_2 = ? WHERE pro_id = ?";
+    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_negotiable = ? , pro_state = ? WHERE pro_id = ?";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -87,13 +87,14 @@ export const updateProperty = (req, res) => {
     req.body.pro_rental_status,
     req.body.pro_desc,
     req.body.pro_possession,
-    req.params.proId,
-    req.body.pro_sub_cat,
-    req.body.pro_user_id,
+
     req.body.pro_area_size_unit,
     req.body.pro_facing_road_unit,
     req.body.pro_amt_unit,
     req.body.pro_pincode,
+    req.body.pro_negotiable,
+    req.body.pro_state,
+    req.body.pro_id,
   ];
   db.query(q, values, (err, data) => {
     console.log(values);
@@ -213,5 +214,12 @@ export const shortlistProperty = (req, res) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json("INSERTED SUCCESSFULLY");
     });
+  });
+};
+export const deletePropertyImages = (req, res) => {
+  const q = "delete from property_module_images where img_cnct_id = ?";
+  db.query(q, [req.params.proId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Deleted Successfully");
   });
 };
