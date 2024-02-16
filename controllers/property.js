@@ -105,7 +105,7 @@ export const updateProperty = (req, res) => {
 
 export const fetchPropertyData = (req, res) => {
   const q =
-    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id group by img_cnct_id";
+    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id group by pro_id;";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
