@@ -88,6 +88,8 @@ import {
   fetchImagesWithId,
   deletePropertyImages,
   shortlistProperty,
+  checkShortlist,
+  checkInterested,
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -171,5 +173,6 @@ router.delete("/deleteShortlist/:shortlistId", deleteShortlist);
 router.delete("/deleteProperty/:proId", deleteProperty);
 router.delete("/deletePropertyImages/:proId", deletePropertyImages);
 router.post("/shortlistProperty", shortlistProperty);
-
+router.post("/checkShortlist", checkShortlist);
+router.post("/checkInterested", checkInterested);
 export default router;

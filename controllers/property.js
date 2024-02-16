@@ -223,3 +223,21 @@ export const deletePropertyImages = (req, res) => {
     return res.status(200).json("Deleted Successfully");
   });
 };
+export const checkShortlist = (req, res) => {
+  const q =
+    "SELECT * from shortlist_module WHERE shortlist_pro_id = ? AND shortlist_cnct_id = ?";
+  db.query(q, [req.body.proId, req.body.cnctId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length > 0) return res.status(200).json("Done");
+    return res.status(404).json("not shortlisted");
+  });
+};
+export const checkInterested = (req, res) => {
+  const q =
+    "SELECT * from property_interest WHERE interest_property_id = ? AND interest_person_id = ?";
+  db.query(q, [req.body.proId, req.body.cnctId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length > 0) return res.status(200).json("Done");
+    return res.status(404).json("Not interested");
+  });
+};
