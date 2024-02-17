@@ -17,3 +17,11 @@ export const deleteProperty = (req, res) => {
     return res.status(200).json("DELETED");
   });
 };
+export const fetchInterested = (req, res) => {
+  const q =
+    "SELECT  property_interest.*, property_module.*, login_module.* FROM property_interest LEFT JOIN login_module ON property_interest.interest_person_id = login_module.login_id left join property_module on property_interest.interest_property_id = property_module.pro_id";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
