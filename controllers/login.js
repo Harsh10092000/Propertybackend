@@ -212,3 +212,14 @@ export const addUser = (req, res) => {
     });
   });
 };
+
+export const checkAdmin = (req, res) => {
+  const q =
+    "SELECT * from admin_module WHERE admin_email = ? AND admin_pass = ?";
+  const values = [req.body.email, req.body.pass];
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length > 0) return res.status(200).json(data);
+    return res.status(404).json("Incorrect Email or Password");
+  });
+};

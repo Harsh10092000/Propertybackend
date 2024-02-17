@@ -4,6 +4,7 @@ import authLogin from "./routes/login.js";
 import authProperty from "./routes/property.js";
 import authAccount from "./routes/account.js";
 import authContact from "./routes/contact.js";
+import authAdmin from "./routes/admin.js";
 const app = express();
 
 app.use(
@@ -19,6 +20,7 @@ app.use("/api/auth", authLogin);
 app.use("/api/act", authAccount);
 app.use("/api/pro", authProperty);
 app.use("/api/contact", authContact);
+app.use("/api/admin", authAdmin);
 app.use(express.static("./public"));
 app.listen(8010, () => {
   console.log("App is running ");
