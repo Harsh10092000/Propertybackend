@@ -113,7 +113,8 @@ const upload = multer({
 
 const setWatermark = async (inputPath, outputPath) => {
   try {
-    sharp(inputPath)
+    await sharp(inputPath)
+      .resize({ width: 500, height: 300 })
       .composite([
         {
           input: "public/propertyImages/logo_2.png",
