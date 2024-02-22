@@ -132,7 +132,7 @@ export const fetchLatestProperty = (req, res) => {
 export const fetchPropertyDataByCat = (req, res) => {
   const para = "%" + req.params.proType + "%";
   const q =
-    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC ;";
+    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC ";
   db.query(q, [para], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -157,7 +157,8 @@ export const fetchPropertyDataBySubCat = (req, res) => {
 };
 
 export const fetchPropertyDataByUserId = (req, res) => {
-  const q = "SELECT * FROM property_module where pro_user_id = ?";
+  const q =
+    "SELECT * FROM property_module where pro_user_id = ? ORDER BY pro_id DESC";
   db.query(q, [req.params.userId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);

@@ -106,4 +106,5 @@ router.delete("/deletePropertyImages/:proId", deletePropertyImages);
 router.post("/shortlistProperty", shortlistProperty);
 router.post("/checkShortlist", checkShortlist);
 router.post("/checkInterested", checkInterested);
+
 export default router;
