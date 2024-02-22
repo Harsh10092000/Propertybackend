@@ -242,3 +242,29 @@ export const checkInterested = (req, res) => {
     return res.status(404).json("Not interested");
   });
 };
+export const fetchCityNo = (req, res) => {
+  const q =
+    "SELECT count(pro_city) as pro_city_number , pro_city FROM property_module group by pro_city";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+export const rentalPropertyTotal = (req, res) => {
+  const q =
+    "SELECT count(pro_type) as pro_sub_cat_number , pro_type FROM property_module WHERE pro_ad_type = 'Rent' group by pro_type";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const rentalProperty = (req, res) => {
+  const para = "%" + req.params.proType + "%";
+  const q =
+    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? AND pro_ad_type = 'Rent' group by pro_id ORDER BY pro_id DESC ";
+  db.query(q, [para], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};

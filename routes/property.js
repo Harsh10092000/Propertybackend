@@ -21,6 +21,9 @@ import {
   shortlistProperty,
   checkShortlist,
   checkInterested,
+  fetchCityNo,
+  rentalPropertyTotal,
+  rentalProperty,
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -106,5 +109,8 @@ router.delete("/deletePropertyImages/:proId", deletePropertyImages);
 router.post("/shortlistProperty", shortlistProperty);
 router.post("/checkShortlist", checkShortlist);
 router.post("/checkInterested", checkInterested);
+router.get("/fetchCityNo", fetchCityNo);
+router.get("/rentalPropertyTotal", rentalPropertyTotal);
+router.get("/rentalProperty/:proType", rentalProperty);
 
 export default router;
