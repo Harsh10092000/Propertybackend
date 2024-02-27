@@ -18,7 +18,9 @@ cloudinary.config({
 const setWatermark = async (inputPath, outputPath) => {
 
     try {
-        sharp(inputPath).composite([{
+        sharp(inputPath)
+        .resize({ width: 800, height: 600 })
+        .composite([{
             input: "public/propertyImages/logo_2.png",
             gravity: 'southeast',
         }]).toFile(outputPath);
