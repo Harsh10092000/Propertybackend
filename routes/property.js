@@ -3,6 +3,7 @@ import multer from "multer";
 import fs from "fs";
 import sharp from "sharp";
 import { db } from "../connect.js";
+import sizeOf from "image-size";
 import {
   addProperty,
   fetchPropertyDataById,
@@ -45,9 +46,26 @@ const upload = multer({
 });
 
 const setWatermark = async (inputPath, outputPath) => {
+  console.log(inputPath)
   try {
     await sharp(inputPath)
-      .resize({ width: 800, height: 600 })
+      .resize({ width: 1000 })
+      .composite([
+        {
+          input: "public/propertyImages/logo_2.png",
+          gravity: "southeast",
+        },
+      ])
+      .toFile(outputPath);
+  } catch (err) {
+    console.error("Error adding watermark:", err);
+  }
+};
+
+const setWatermarkSmallerSize = async (inputPath, outputPath) => {
+  try {
+    sharp(inputPath)
+      .resize({ width: 1000 })
       .composite([
         {
           input: "public/propertyImages/logo_2.png",
@@ -76,7 +94,14 @@ router.post("/addPropertyimages", upload.any("files"), (req, res) => {
     const inputPath = `public/propertyImages//${name}`;
     const path = `public/propertyImages/watermark/${name}`;
     console.log("yha h");
-    setWatermark(inputPath, path);
+    //setWatermark(inputPath, path);
+    sizeOf(inputPath, async (err, dim) => {
+      if (dim.height < 120 || dim.width < 320) {
+        await setWatermarkSmallerSize(inputPath, path);
+      } else {
+        await setWatermark(inputPath, path);
+      }
+    });
     //setTimeout(() => { deleteOP(singleFile) }, 8000);
   });
 
