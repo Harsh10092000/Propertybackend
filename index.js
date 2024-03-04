@@ -7,6 +7,7 @@ import authContact from "./routes/contact.js";
 import authAdmin from "./routes/admin.js";
 import authWatermark from "./routes/watermark.js"
 import authWatermark2 from "./routes/watermark2.js"
+import authPostRequirement from "./routes/postRequirement.js"
 const app = express();
 app.use(express.static("./public"));
 
@@ -30,6 +31,7 @@ app.use("/api/contact", authContact);
 app.use("/api/admin", authAdmin);
 app.use("/api/watermark", authWatermark);
 app.use("/api/watermark2", authWatermark2);
+app.use("/api/postRequirement", authPostRequirement);
 app.listen(8010, () => {
   console.log("App is running ");
 });
