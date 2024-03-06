@@ -11,9 +11,9 @@ export const askquestion = (req, res) => {
     db.query(q, [pro_user_id], (err, data) => {
       let info = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
-        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //   to: "akshit.calinfo07@gmail.com",
-          to: "harshgupta.calinfo@gmail.com",
+        // to: "harshgupta.calinfo@gmail.com",
         subject: `${userId} Showed Interest in a Property`, // Subject line
         html: `<div style="margin:0px;padding:0px;">
        <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -158,17 +158,16 @@ export const freeEnquiry = (req, res) => {
   });
 };
 
-
 export const interestShowed = (req, res) => {
-   const { pro_user_id } = req.body;
-   const q = "SELECT * from login_module where login_id = ?";
-    db.query(q, [pro_user_id], (err, data) => {
-   let info = {
-     from: '"Propertyease " <noreply@propertyease.in>', // sender address
-     //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-     to: data[0].login_email,
-     subject: `Someone Showed Interest in your Property`, // Subject line
-     html: `<div style="margin:0px;padding:0px;">
+  const { pro_user_id } = req.body;
+  const q = "SELECT * from login_module where login_id = ?";
+  db.query(q, [pro_user_id], (err, data) => {
+    let info = {
+      from: '"Propertyease " <noreply@propertyease.in>', // sender address
+      //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+      to: data[0].login_email,
+      subject: `Someone Showed Interest in your Property`, // Subject line
+      html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
         <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
            <tbody>
@@ -225,10 +224,10 @@ export const interestShowed = (req, res) => {
         </table>
      </div>
   </div>`,
-   };
-   transporter.sendMail(info, (err, data) => {
-     if (err) return res.status(500).json(err);
-     return res.status(200).json("Sent");
-   });
-});
- };
+    };
+    transporter.sendMail(info, (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json("Sent");
+    });
+  });
+};
