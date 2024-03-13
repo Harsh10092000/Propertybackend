@@ -25,6 +25,8 @@ import {
   fetchCityNo,
   rentalPropertyTotal,
   rentalProperty,
+  SubDistrictData,
+  StateCityData,
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -137,5 +139,6 @@ router.post("/checkInterested", checkInterested);
 router.get("/fetchCityNo", fetchCityNo);
 router.get("/rentalPropertyTotal", rentalPropertyTotal);
 router.get("/rentalProperty/:proType", rentalProperty);
-
+router.get("/SubDistrictData", SubDistrictData);
+router.get("/StateCityData", StateCityData);
 export default router;

@@ -2,7 +2,7 @@ import { db } from "../connect.js";
 
 export const addProperty = (req, res) => {
   const q =
-    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state) Values (?)";
+    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district) Values (?)";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -44,6 +44,7 @@ export const addProperty = (req, res) => {
     req.body.pro_pincode,
     req.body.pro_negotiable,
     req.body.pro_state,
+    req.body.pro_sub_district,
   ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -55,7 +56,7 @@ export const addProperty = (req, res) => {
 
 export const updateProperty = (req, res) => {
   const q =
-    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_negotiable = ? , pro_state = ? WHERE pro_id = ?";
+    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_negotiable = ? , pro_state = ? , pro_sub_district = ? WHERE pro_id = ?";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -94,7 +95,9 @@ export const updateProperty = (req, res) => {
     req.body.pro_pincode,
     req.body.pro_negotiable,
     req.body.pro_state,
+    req.body.pro_sub_district,
     req.body.pro_id,
+    
   ];
   db.query(q, values, (err, data) => {
     console.log(values);
@@ -268,3 +271,25 @@ export const rentalProperty = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
+
+export const SubDistrictData = (req, res) => {
+  const q =
+    "SELECT district,sub_district FROM sub_district_table ";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const StateCityData = (req, res) => {
+  const q =
+    "SELECT distinct district , state FROM sub_district_table";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+}; 
+
+
+
