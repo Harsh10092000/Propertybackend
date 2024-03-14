@@ -142,6 +142,17 @@ export const fetchPropertyDataByCat = (req, res) => {
   });
 };
 
+export const fetchLatestPropertyByCat = (req, res) => {
+  const para = "%" + req.params.proType + "%";
+  const q =
+    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
+  db.query(q, [para], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
 export const fetchPropertySubCatNo = (req, res) => {
   const q =
     "SELECT count(pro_type) as pro_sub_cat_number , pro_type FROM property_module group by pro_type";

@@ -27,6 +27,7 @@ import {
   rentalProperty,
   SubDistrictData,
   StateCityData,
+  fetchLatestPropertyByCat
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -141,4 +142,6 @@ router.get("/rentalPropertyTotal", rentalPropertyTotal);
 router.get("/rentalProperty/:proType", rentalProperty);
 router.get("/SubDistrictData", SubDistrictData);
 router.get("/StateCityData", StateCityData);
+router.get("/fetchLatestPropertyByCat/:proType", fetchLatestPropertyByCat);
+
 export default router;
