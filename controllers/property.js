@@ -2,7 +2,7 @@ import { db } from "../connect.js";
 
 export const addProperty = (req, res) => {
   const q =
-    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district) Values (?)";
+    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date) Values (?)";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -45,6 +45,7 @@ export const addProperty = (req, res) => {
     req.body.pro_negotiable,
     req.body.pro_state,
     req.body.pro_sub_district,
+    req.body.pro_date,
   ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -105,6 +106,23 @@ export const updateProperty = (req, res) => {
     return res.status(200).json("Updated Successfully");
   });
 };
+
+
+export const addOrigin = (req, res) => {
+  console.log("req.body : ", req.body);
+  const q =
+    "INSERT INTO user_origin_module (origin_url) Values (?)";
+  const values = [
+    req.body,
+  ];
+  db.query(q, [values], (err, data) => {
+    if (err) return res.status(500).json(err);
+    const insertId = data.insertId;
+    console.log(insertId);
+    return res.status(200).json(insertId);
+  });
+};
+
 
 export const fetchPropertyData = (req, res) => {
   const q =
@@ -286,7 +304,7 @@ export const rentalProperty = (req, res) => {
 
 export const SubDistrictData = (req, res) => {
   const q =
-    "SELECT district,sub_district FROM sub_district_table ";
+    "SELECT district,sub_district FROM sub_district_table ORDER BY sub_district ASC ";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -295,7 +313,7 @@ export const SubDistrictData = (req, res) => {
 
 export const StateCityData = (req, res) => {
   const q =
-    "SELECT distinct district , state FROM sub_district_table";
+    "SELECT distinct district , state FROM sub_district_table ORDER BY district ASC";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);

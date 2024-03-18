@@ -27,7 +27,8 @@ import {
   rentalProperty,
   SubDistrictData,
   StateCityData,
-  fetchLatestPropertyByCat
+  fetchLatestPropertyByCat,
+  addOrigin
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -122,6 +123,7 @@ router.post("/addPropertyimages", upload.any("files"), (req, res) => {
 
 router.post("/addProperty", addProperty);
 router.put("/updateProperty", updateProperty);
+router.post("/addOrigin", addOrigin);
 router.get("/fetchPropertyData", fetchPropertyData);
 router.get("/fetchPropertyDataById/:proId", fetchPropertyDataById);
 router.get("/fetchLatestProperty", fetchLatestProperty);
