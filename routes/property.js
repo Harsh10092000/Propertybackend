@@ -29,7 +29,7 @@ import {
   StateCityData,
   fetchLatestPropertyByCat,
   addOrigin,
-  SubDistrictDataByCity
+  //SubDistrictDataByCity
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -146,6 +146,6 @@ router.get("/rentalProperty/:proType", rentalProperty);
 router.get("/SubDistrictData", SubDistrictData);
 router.get("/StateCityData", StateCityData);
 router.get("/fetchLatestPropertyByCat/:proType", fetchLatestPropertyByCat);
-router.get("/SubDistrictDataByCity/:city", SubDistrictDataByCity);
+//router.get("/SubDistrictDataByCity/:city", SubDistrictDataByCity);
 
 export default router;
