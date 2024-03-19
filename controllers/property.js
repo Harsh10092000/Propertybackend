@@ -117,6 +117,7 @@ export const addOrigin = (req, res) => {
   ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
+    req.headers.referer = 'https://propertyease.in/';
     const insertId = data.insertId;
     console.log(insertId);
     return res.status(200).json(insertId);
@@ -320,5 +321,16 @@ export const StateCityData = (req, res) => {
   });
 }; 
 
-
+// export const SubDistrictDataByCity = (req, res) => {
+  
+//   const city = req.params.city ;
+//   console.log("city : " , city )
+//   const q =
+//     "SELECT district,sub_district FROM sub_district_table where district = ? ORDER BY sub_district ASC ";
+//   db.query(q, [city] , (err, data) => {
+//     if (err) return res.status(500).json(err);
+    
+//     return res.status(200).json(data);
+//   });
+// };
 
