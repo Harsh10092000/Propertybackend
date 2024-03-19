@@ -321,16 +321,16 @@ export const StateCityData = (req, res) => {
   });
 }; 
 
-// export const SubDistrictDataByCity = (req, res) => {
+export const SubDistrictDataByCity = (req, res) => {
   
-//   const city = req.params.city ;
-//   console.log("city : " , city )
-//   const q =
-//     "SELECT district,sub_district FROM sub_district_table where district = ? ORDER BY sub_district ASC ";
-//   db.query(q, [city] , (err, data) => {
-//     if (err) return res.status(500).json(err);
+  const city = req.params.city ;
+  console.log("city : " , city )
+  const q =
+    "SELECT district,sub_district FROM sub_district_table where district = ? ORDER BY sub_district ASC ";
+  db.query(q, [city] , (err, data) => {
+    if (err) return res.status(500).json(err);
     
-//     return res.status(200).json(data);
-//   });
-// };
+    return res.status(200).json(data);
+  });
+};
 
