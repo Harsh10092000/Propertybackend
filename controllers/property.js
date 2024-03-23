@@ -151,6 +151,24 @@ export const fetchLatestProperty = (req, res) => {
   });
 };
 
+export const fetchPropertyDataByCity = (req, res) => {
+  const q =
+    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id group by pro_id where pro_city = ? ORDER BY pro_id DESC";
+  db.query(q,[req.params.city], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchLatestPropertyByCity = (req, res) => {
+  const q =
+    "SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_city = ? group by pro_id ORDER BY pro_id DESC LIMIT 2";
+  db.query(q, [req.params.city], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
 export const fetchPropertyDataByCat = (req, res) => {
   const para = "%" + req.params.proType + "%";
   const q =
@@ -334,3 +352,24 @@ export const SubDistrictDataByCity = (req, res) => {
   });
 };
 
+
+export const StateDistinctCityData = (req, res) => {
+  const q =
+    "SELECT distinct district FROM sub_district_table ORDER BY district ASC";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+}; 
+
+export const fetchSuggestions = (req, res) => {
+  const para = req.params.searchValue + "%";
+  console.log("para : " , para )
+  const q =
+    "select distinct * from sub_district_table WHERE district LIKE ? ORDER BY RAND() LIMIT 10; ";
+  db.query(q, [para] , (err, data) => {
+    if (err) return res.status(500).json(err);
+    
+    return res.status(200).json(data);
+  });
+};
