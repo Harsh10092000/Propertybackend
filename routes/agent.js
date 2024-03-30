@@ -43,7 +43,7 @@ router.post("/addAgent", upload.single("image"), (req, res) => {
   console.log("req.body : ", req.body);
   console.log("req.file : ", req.file);
   const q =
-    "INSERT INTO agent_module (agent_name, agent_email, agent_phone , agent_exp, agent_work_area ,agent_state, agent_city, agent_sub_district, agent_locality, agent_comapnay_name, agent_company_website, agent_desc, agent_inage ) Values (?)";
+    "INSERT INTO agent_module (agent_name, agent_email, agent_phone , agent_exp, agent_work_area ,agent_state, agent_city, agent_sub_district, agent_locality, agent_comapnay_name, agent_company_website, agent_desc, agent_image ) Values (?)";
   const values = [
     req.body.user_name,
     req.body.user_email,
