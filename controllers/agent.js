@@ -81,3 +81,91 @@ export const fetchAgentWorkPlace = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
+export const fetchAgentWorkState = (req, res) => {
+  const q =
+    "SELECT * FROM agent_work_state where agent_cnct_id = ?;";
+  db.query(q, [req.params.agentId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
+
+
+export const fetchpPropertiesByUser = (req, res) => {
+  const q =
+    "SELECT * FROM property_module where pro_user_id = ? ORDER BY pro_id DESC LIMIT 3;";
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
+// export const fetchAgents = (req, res) => {
+//   const q =
+//     `SELECT * FROM agent_module where agent_type = "Agent" ORDER BY agent_id DESC;`;
+//   db.query(q, (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json(data);
+//   });
+// };
+
+export const fetchAgents = (req, res) => {
+  const q =
+    `SELECT 
+    agent_module.*,
+    agent_work_state.work_state,
+    COALESCE(Sale_Count, 0) AS Sale_Count,
+    COALESCE(Rent_Count, 0) AS Rent_Count,
+    COALESCE(work_city, '') as work_city
+FROM 
+    agent_module
+LEFT JOIN (
+    SELECT 
+        pro_user_id,
+        SUM(CASE WHEN pro_ad_type = 'Sale' THEN 1 ELSE 0 END) AS Sale_Count,
+        SUM(CASE WHEN pro_ad_type = 'Rent' THEN 1 ELSE 0 END) AS Rent_Count
+    FROM 
+        property_module
+    GROUP BY 
+        pro_user_id
+) AS property_counts ON agent_module.user_cnct_id = property_counts.pro_user_id 
+LEFT JOIN (
+    SELECT 
+        agent_cnct_id,
+        GROUP_CONCAT(DISTINCT work_city SEPARATOR ',  ') AS work_city
+    FROM 
+        agent_work_city__subdistrict
+    GROUP BY 
+        agent_cnct_id
+) AS workCity ON agent_module.user_cnct_id = workCity.agent_cnct_id left join agent_work_state on agent_module.agent_id = agent_work_state.agent_cnct_id 
+WHERE 
+    agent_type = 'Agent'
+ORDER BY 
+    agent_id DESC;`;
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+// SELECT agent_cnct_id,  GROUP_CONCAT( work_city ) as work_city FROM agent_work_city__subdistrict group by work_city;
+// SELECT distinct GROUP_CONCAT( work_city ) as work_city , agent_cnct_id   FROM agent_work_city__subdistrict group by work_city;
+
+// SELECT agent_cnct_id, work_city,GROUP_CONCAT( work_sub_district ) as work_sub_district FROM agent_work_city__subdistrict where agent_cnct_id = 7 group by work_city;
+
+
+
+export const fetchPropertyDataByAgent = (req, res) => {
+  const q =
+    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_user_id = ? group by pro_id ORDER BY pro_id DESC";
+  db.query(q, [req.params.agentId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+

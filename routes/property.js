@@ -33,7 +33,7 @@ import {
   fetchSuggestions,
   StateDistinctCityData,
   fetchPropertyDataByCity,
-fetchLatestPropertyByCity,
+  fetchLatestPropertyByCity,
 } from "../controllers/property.js";
 const router = express.Router();
 
