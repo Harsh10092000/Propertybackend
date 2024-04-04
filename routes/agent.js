@@ -6,7 +6,8 @@ import {
   fetchAgentWorkState,
   fetchpPropertiesByUser,
   fetchAgents,
-  fetchPropertyDataByAgent
+  fetchPropertyDataByAgent,
+  fetchPropertyNo
 } from "../controllers/agent.js";
 import multer from "multer";
 import path from "path";
@@ -154,7 +155,7 @@ router.post("/addAgent", upload.single("image"), (req, res) => {
         ]);
         console.log("values1 :", values1);
 
-        if (values1.length < 0) {
+        if (values1.length > 0) {
         db.query(q1, [values1], (err, data) => {
           if (err) return res.status(500).json(err);
           
@@ -169,7 +170,7 @@ router.post("/addAgent", upload.single("image"), (req, res) => {
             insertId,
           ]);
           console.log("values2 :", values2);
-          if (values2.length < 0) {
+          if (values2.length > 0) {
             db.query(q2, [values2], (err, data) => {
               if (err) return res.status(500).json(err);
               return res.status(200).json(insertId);
@@ -196,6 +197,7 @@ router.get("/fetchAgentWorkState/:agentId", fetchAgentWorkState);
 router.get("/fetchpPropertiesByUser/:userId", fetchpPropertiesByUser);
 router.get("/fetchAgents" , fetchAgents);
 router.get("/fetchPropertyDataByAgent/:agentId", fetchPropertyDataByAgent);
+router.get("/fetchPropertyNo/:userId", fetchPropertyNo);
 
 export default router;
 

@@ -117,10 +117,11 @@ export const fetchAgents = (req, res) => {
   const q =
     `SELECT 
     agent_module.*,
-    agent_work_state.work_state,
+    
     COALESCE(Sale_Count, 0) AS Sale_Count,
     COALESCE(Rent_Count, 0) AS Rent_Count,
-    COALESCE(work_city, '') as work_city
+    COALESCE(work_city, '') as work_city,
+    COALESCE(work_state, '') as work_state
 FROM 
     agent_module
 LEFT JOIN (
@@ -136,12 +137,22 @@ LEFT JOIN (
 LEFT JOIN (
     SELECT 
         agent_cnct_id,
-        GROUP_CONCAT(DISTINCT work_city SEPARATOR ',  ') AS work_city
+        GROUP_CONCAT(DISTINCT work_city) AS work_city
     FROM 
         agent_work_city__subdistrict
     GROUP BY 
         agent_cnct_id
-) AS workCity ON agent_module.user_cnct_id = workCity.agent_cnct_id left join agent_work_state on agent_module.agent_id = agent_work_state.agent_cnct_id 
+) AS workCity ON agent_module.agent_id = workCity.agent_cnct_id
+LEFT JOIN (
+    SELECT 
+        agent_cnct_id,
+        GROUP_CONCAT(DISTINCT work_state) AS work_state
+    FROM 
+        agent_work_state
+    GROUP BY 
+        agent_cnct_id
+) AS workState ON agent_module.agent_id = workState.agent_cnct_id
+
 WHERE 
     agent_type = 'Agent'
 ORDER BY 
@@ -168,4 +179,21 @@ export const fetchPropertyDataByAgent = (req, res) => {
   });
 };
 
+
+
+export const fetchPropertyNo = (req, res) => {
+  const q =
+    `SELECT 
+    SUM(CASE WHEN pro_ad_type = 'Sale' THEN 1 ELSE 0 END) AS Sale_Count,
+    SUM(CASE WHEN pro_ad_type = 'Rent' THEN 1 ELSE 0 END) AS Rent_Count
+FROM 
+    property_module 
+WHERE 
+    pro_user_id = ?;
+    `
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
 
