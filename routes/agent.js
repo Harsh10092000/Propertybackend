@@ -7,7 +7,11 @@ import {
   fetchpPropertiesByUser,
   fetchAgents,
   fetchPropertyDataByAgent,
-  fetchPropertyNo
+  fetchPropertyNo,
+  fetchAgentDataById,
+  fetchWorkStateById,
+  fetchWorkCityById,
+  fetchWorkSubDistrictById,
 } from "../controllers/agent.js";
 import multer from "multer";
 import path from "path";
@@ -198,6 +202,11 @@ router.get("/fetchpPropertiesByUser/:userId", fetchpPropertiesByUser);
 router.get("/fetchAgents" , fetchAgents);
 router.get("/fetchPropertyDataByAgent/:agentId", fetchPropertyDataByAgent);
 router.get("/fetchPropertyNo/:userId", fetchPropertyNo);
+router.get("/fetchAgentDataById/:agentId", fetchAgentDataById);
+
+router.get("/fetchWorkStateById/:agentId", fetchWorkStateById);
+router.get("/fetchWorkCityById/:agentId", fetchWorkCityById);
+router.get("/fetchWorkSubDistrictById/:agentId", fetchWorkSubDistrictById);
 
 export default router;
 

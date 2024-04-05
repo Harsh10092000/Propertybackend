@@ -34,6 +34,8 @@ import {
   StateDistinctCityData,
   fetchPropertyDataByCity,
   fetchLatestPropertyByCity,
+  fetchLatestPropertyByCat1,
+  fetchPropertyDataById1,
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -155,5 +157,7 @@ router.get("/fetchSuggestions/:para", fetchSuggestions);
 router.get("/StateDistinctCityData", StateDistinctCityData);
 router.get("/fetchPropertyDataByCity/:city", fetchPropertyDataByCity);
 router.get("/fetchLatestPropertyByCity/:city", fetchLatestPropertyByCity);
+router.get("/fetchPropertyDataById1/:proId", fetchPropertyDataById1);
+
 
 export default router;

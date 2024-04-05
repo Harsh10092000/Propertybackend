@@ -197,3 +197,42 @@ WHERE
   });
 };
 
+
+export const fetchAgentDataById = (req, res) => {
+  const q =
+    "SELECT * FROM agent_module where agent_id = ?";
+  db.query(q,[req.params.agentId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+}; 
+
+
+export const fetchWorkStateById = (req, res) => {
+  const q =
+    "SELECT * FROM agent_work_state where agent_cnct_id = ?";
+  db.query(q,[req.params.agentId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+}; 
+
+
+export const fetchWorkCityById = (req, res) => {
+  const q =
+    "SELECT * FROM agent_work_state_city where agent_cnct_id = ?";
+  db.query(q,[req.params.agentId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+}; 
+
+
+export const fetchWorkSubDistrictById = (req, res) => {
+  const q =
+    "SELECT * FROM agent_work_city__subdistrict where agent_cnct_id = ?";
+  db.query(q,[req.params.agentId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+}; 

@@ -373,3 +373,58 @@ export const fetchSuggestions = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
+
+
+
+
+
+
+
+
+export const fetchLatestPropertyByCat1 = (req, res) => {
+  const para = "%" + req.params.proType + "%";
+  const q =
+    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
+  db.query(q, [para], (err, data) => {
+    if (err) return res.status(500).json(err);
+    console.log("data : " , data)
+    return res.status(200).json(data);
+  });
+};
+
+
+
+// export const fetchPropertyDataById1 = (req, res) => {
+//   const q = "SELECT * from property_module where pro_id = ? ";
+//   db.query(q, [req.params.proId], (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     console.log("data1 : " , data )
+//     //const para = "%" + req.params.proType + "%";
+//     const para = data[0].pro_type.split(",")[1]
+//     const q =
+//       "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
+//     db.query(q, para, (err, data1) => {
+//       if (err) return res.status(500).json(err);
+//       console.log("data : " , data1)
+//     //   return res.status(200).json(data);
+//     console.log("data1 : " , data, data1 )
+//     return res.status(200).json({data, data1 });
+//   });
+//   });
+// };
+
+export const fetchPropertyDataById1 = (req, res) => {
+  const q = "SELECT * from property_module where pro_id = ? ";
+  db.query(q, [req.params.proId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    const para = "%" + data[0].pro_type.split(",")[1] + "%"; 
+    const secondQ =
+      "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
+    db.query(secondQ, [para], (err, data1) => { 
+      if (err) return res.status(500).json(err);
+      
+      return res.status(200).json({ data, data1 });
+    });
+  });
+};
