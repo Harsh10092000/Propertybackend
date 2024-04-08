@@ -14,6 +14,7 @@ import {
   fetchPropertySubCatNo,
   fetchPropertyDataBySubCat,
   fetchPropertyDataByUserId,
+  fetchPropertyDataByUserId1,
   fetchShortListProperty,
   deleteShortlist,
   deleteProperty,
@@ -36,6 +37,9 @@ import {
   fetchLatestPropertyByCity,
   fetchLatestPropertyByCat1,
   fetchPropertyDataById1,
+  updateViews,
+  updateContacted,
+  updateProListingStatus
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -138,6 +142,8 @@ router.get("/fetchPropertyDataByCat/:proType", fetchPropertyDataByCat);
 router.get("/fetchPropertySubCatNo", fetchPropertySubCatNo);
 router.get("/fetchPropertyDataBySubCat/:proSubType", fetchPropertyDataBySubCat);
 router.get("/fetchPropertyDataByUserId/:userId", fetchPropertyDataByUserId);
+router.get("/fetchPropertyDataByUserId1/:userId", fetchPropertyDataByUserId1);
+
 router.get("/fetchShortListProperty/:userId", fetchShortListProperty);
 router.get("/fetchImagesWithId/:imgId", fetchImagesWithId);
 router.delete("/deleteShortlist/:shortlistId", deleteShortlist);
@@ -158,6 +164,10 @@ router.get("/StateDistinctCityData", StateDistinctCityData);
 router.get("/fetchPropertyDataByCity/:city", fetchPropertyDataByCity);
 router.get("/fetchLatestPropertyByCity/:city", fetchLatestPropertyByCity);
 router.get("/fetchPropertyDataById1/:proId", fetchPropertyDataById1);
+router.put("/updateViews", updateViews);
+router.put("/updateContacted", updateContacted);
+router.put("/updateProListingStatus", updateProListingStatus);
+
 
 
 export default router;

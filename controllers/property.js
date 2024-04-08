@@ -98,7 +98,6 @@ export const updateProperty = (req, res) => {
     req.body.pro_state,
     req.body.pro_sub_district,
     req.body.pro_id,
-    
   ];
   db.query(q, values, (err, data) => {
     console.log(values);
@@ -107,27 +106,22 @@ export const updateProperty = (req, res) => {
   });
 };
 
-
 export const addOrigin = (req, res) => {
   console.log("req.body : ", req.body);
-  const q =
-    "INSERT INTO user_origin_module (origin_url) Values (?)";
-  const values = [
-    req.body,
-  ];
+  const q = "INSERT INTO user_origin_module (origin_url) Values (?)";
+  const values = [req.body];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
-    req.headers.referer = 'https://propertyease.in/';
+    req.headers.referer = "https://propertyease.in/";
     const insertId = data.insertId;
     console.log(insertId);
     return res.status(200).json(insertId);
   });
 };
 
-
 export const fetchPropertyData = (req, res) => {
   const q =
-    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id group by pro_id ORDER BY pro_id DESC";
+    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -144,7 +138,7 @@ export const fetchPropertyDataById = (req, res) => {
 
 export const fetchLatestProperty = (req, res) => {
   const q =
-    "SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id group by pro_id ORDER BY pro_id DESC LIMIT 3";
+    "SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC LIMIT 3";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -153,8 +147,8 @@ export const fetchLatestProperty = (req, res) => {
 
 export const fetchPropertyDataByCity = (req, res) => {
   const q =
-    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id group by pro_id where pro_city = ? ORDER BY pro_id DESC";
-  db.query(q,[req.params.city], (err, data) => {
+    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id group by pro_id where pro_city = ? and pro_listed = 1 ORDER BY pro_id DESC";
+  db.query(q, [req.params.city], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
@@ -162,7 +156,7 @@ export const fetchPropertyDataByCity = (req, res) => {
 
 export const fetchLatestPropertyByCity = (req, res) => {
   const q =
-    "SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_city = ? group by pro_id ORDER BY pro_id DESC LIMIT 2";
+    "SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_city = ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC LIMIT 2";
   db.query(q, [req.params.city], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -172,7 +166,7 @@ export const fetchLatestPropertyByCity = (req, res) => {
 export const fetchPropertyDataByCat = (req, res) => {
   const para = "%" + req.params.proType + "%";
   const q =
-    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC ";
+    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC ";
   db.query(q, [para], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -182,17 +176,16 @@ export const fetchPropertyDataByCat = (req, res) => {
 export const fetchLatestPropertyByCat = (req, res) => {
   const para = "%" + req.params.proType + "%";
   const q =
-    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
+    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
   db.query(q, [para], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
 
-
 export const fetchPropertySubCatNo = (req, res) => {
   const q =
-    "SELECT count(pro_type) as pro_sub_cat_number , pro_type FROM property_module group by pro_type";
+    "SELECT count(pro_type) as pro_sub_cat_number , pro_type FROM property_module where pro_listed = 1 group by pro_type";
   db.query(q, [req.params.proType], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -200,7 +193,8 @@ export const fetchPropertySubCatNo = (req, res) => {
 };
 
 export const fetchPropertyDataBySubCat = (req, res) => {
-  const q = "SELECT * FROM property_module where pro_sub_cat = ?";
+  const q =
+    "SELECT * FROM property_module where pro_sub_cat = ? and pro_listed = 1";
   db.query(q, [req.params.proSubType], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -208,6 +202,15 @@ export const fetchPropertyDataBySubCat = (req, res) => {
 };
 
 export const fetchPropertyDataByUserId = (req, res) => {
+  const q =
+    "SELECT * FROM property_module where pro_user_id = ? and pro_listed = 1 ORDER BY pro_id DESC";
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchPropertyDataByUserId1 = (req, res) => {
   const q =
     "SELECT * FROM property_module where pro_user_id = ? ORDER BY pro_id DESC";
   db.query(q, [req.params.userId], (err, data) => {
@@ -250,9 +253,6 @@ export const fetchImagesWithId = (req, res) => {
   });
 };
 
-export const fetchCoverImg = (req, res) => {
-  const q = "SELECT * from property";
-};
 export const shortlistProperty = (req, res) => {
   const q =
     "SELECT * from shortlist_module WHERE shortlist_pro_id = ? AND shortlist_cnct_id = ?";
@@ -295,7 +295,7 @@ export const checkInterested = (req, res) => {
 };
 export const fetchCityNo = (req, res) => {
   const q =
-    "SELECT count(pro_city) as pro_city_number , pro_city FROM property_module group by pro_city";
+    "SELECT count(pro_city) as pro_city_number , pro_city FROM property_module where pro_listed = 1 group by pro_city";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -303,7 +303,7 @@ export const fetchCityNo = (req, res) => {
 };
 export const rentalPropertyTotal = (req, res) => {
   const q =
-    "SELECT count(pro_type) as pro_sub_cat_number , pro_type FROM property_module WHERE pro_ad_type = 'Rent' group by pro_type";
+    "SELECT count(pro_type) as pro_sub_cat_number , pro_type FROM property_module WHERE pro_ad_type = 'Rent' and pro_listed = 1 group by pro_type";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -313,13 +313,12 @@ export const rentalPropertyTotal = (req, res) => {
 export const rentalProperty = (req, res) => {
   const para = "%" + req.params.proType + "%";
   const q =
-    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? AND pro_ad_type = 'Rent' group by pro_id ORDER BY pro_id DESC ";
+    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? AND pro_ad_type = 'Rent' and pro_listed = 1 group by pro_id ORDER BY pro_id DESC ";
   db.query(q, [para], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
-
 
 export const SubDistrictData = (req, res) => {
   const q =
@@ -337,21 +336,19 @@ export const StateCityData = (req, res) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
-}; 
+};
 
 export const SubDistrictDataByCity = (req, res) => {
-  
-  const city = req.params.city ;
-  console.log("city : " , city )
+  const city = req.params.city;
+  console.log("city : ", city);
   const q =
     "SELECT district,sub_district FROM sub_district_table where district = ? ORDER BY sub_district ASC ";
-  db.query(q, [city] , (err, data) => {
+  db.query(q, [city], (err, data) => {
     if (err) return res.status(500).json(err);
-    
+
     return res.status(200).json(data);
   });
 };
-
 
 export const StateDistinctCityData = (req, res) => {
   const q =
@@ -360,40 +357,30 @@ export const StateDistinctCityData = (req, res) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
-}; 
+};
 
 export const fetchSuggestions = (req, res) => {
   const para = req.params.searchValue + "%";
-  console.log("para : " , para )
+  console.log("para : ", para);
   const q =
     "select distinct * from sub_district_table WHERE district LIKE ? ORDER BY RAND() LIMIT 10; ";
-  db.query(q, [para] , (err, data) => {
+  db.query(q, [para], (err, data) => {
     if (err) return res.status(500).json(err);
-    
+
     return res.status(200).json(data);
   });
 };
-
-
-
-
-
-
-
-
 
 export const fetchLatestPropertyByCat1 = (req, res) => {
   const para = "%" + req.params.proType + "%";
   const q =
-    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
+    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
   db.query(q, [para], (err, data) => {
     if (err) return res.status(500).json(err);
-    console.log("data : " , data)
+    console.log("data : ", data);
     return res.status(200).json(data);
   });
 };
-
-
 
 // export const fetchPropertyDataById1 = (req, res) => {
 //   const q = "SELECT * from property_module where pro_id = ? ";
@@ -418,13 +405,52 @@ export const fetchPropertyDataById1 = (req, res) => {
   const q = "SELECT * from property_module where pro_id = ? ";
   db.query(q, [req.params.proId], (err, data) => {
     if (err) return res.status(500).json(err);
-    const para = "%" + data[0].pro_type.split(",")[1] + "%"; 
-    const secondQ =
-      "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
-    db.query(secondQ, [para], (err, data1) => { 
-      if (err) return res.status(500).json(err);
-      
-      return res.status(200).json({ data, data1 });
-    });
+    console.log("data : " ,data)
+    if (data.length > 0) {
+      const para = "%" + data[0].pro_type.split(",")[1] + "%";
+      const secondQ =
+        "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC LIMIT 3 ";
+      db.query(secondQ, [para], (err, data1) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json({ data, data1 });
+      });
+    } else {
+      //return res.status(200).json({ data, data1 });
+      const q =
+        "SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC LIMIT 3";
+      db.query(q, (err, data1) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json({ data, data1 });
+      });
+    }
+  });
+};
+
+export const updateViews = (req, res) => {
+  const q = "UPDATE property_module SET pro_views = ? WHERE pro_id = ?";
+  const values = [req.body.pro_views, req.body.pro_id];
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Updated Successfully");
+  });
+};
+
+export const updateContacted = (req, res) => {
+  const q = "UPDATE property_module SET pro_contacted = ? WHERE pro_id = ?";
+  const values = [req.body.pro_contacted, req.body.pro_id];
+  db.query(q, values, (err, data) => {
+    console.log(values);
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Updated Successfully");
+  });
+};
+
+export const updateProListingStatus = (req, res) => {
+  const q = "UPDATE property_module SET pro_listed = ? WHERE pro_id = ?";
+  const values = [req.body.pro_listed, req.body.pro_id];
+  db.query(q, values, (err, data) => {
+    console.log(values);
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Updated Successfully");
   });
 };

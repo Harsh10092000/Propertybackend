@@ -34,7 +34,7 @@ export const fetchUsers = (req, res) => {
 };
 export const fetchShorlist = (req, res) => {
   const q =
-    "SELECT  shortlist_module.*, property_module.*, login_module.* FROM property_interest LEFT JOIN login_module ON shortlist_module.shortlist_cnct_id = login_module.login_id left join property_module on shortlist_module.shortlist_pro_id = property_module.pro_id ORDER BY pro_id DESC";
+    "SELECT  shortlist_module.*, property_module.*, login_module.* FROM shortlist_module LEFT JOIN login_module ON shortlist_module.shortlist_cnct_id = login_module.login_id left join property_module on shortlist_module.shortlist_pro_id = property_module.pro_id ORDER BY pro_id DESC";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
