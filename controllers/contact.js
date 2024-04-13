@@ -474,9 +474,9 @@ export const contactUsData = (req, res) => {
      //return res.status(200).json(insertId);
      let info = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
-      //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+      to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
       //   to: "akshit.calinfo07@gmail.com",
-       to: "harshgupta.calinfo@gmail.com",
+      // to: "harshgupta.calinfo@gmail.com",
       subject: `New message from ${req.body.name} `, // Subject line
       html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -541,8 +541,8 @@ export const contactUsData = (req, res) => {
     let userinfo = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
       //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-      //to: data[0].login_email,
-      to: "harshgupta.calinfo@gmail.com",
+      to: data[0].login_email,
+      //to: "harshgupta.calinfo@gmail.com",
       subject: `Thank you for contacting us`, // Subject line
       html: `<div style="margin:0px;padding:0px;">
       <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
