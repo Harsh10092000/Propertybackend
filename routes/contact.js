@@ -1,5 +1,5 @@
 import express from "express";
-import { askquestion, freeEnquiry, interestShowed,contactAgent, interestShowedInAgent } from "../controllers/contact.js";
+import { askquestion, freeEnquiry, interestShowed,contactAgent, interestShowedInAgent,contactUsData } from "../controllers/contact.js";
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ router.post("/freeEnquiry", freeEnquiry);
 router.post("/interestShowed", interestShowed);
 router.post("/contactAgent", contactAgent);
 router.post("/interestShowedInAgent", interestShowedInAgent);
-
+router.post("/contactUsData", contactUsData);
 
 export default router;
 
