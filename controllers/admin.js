@@ -32,6 +32,15 @@ export const fetchUsers = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
+export const fetchUsers1 = (req, res) => {
+  const q = "SELECT login_module.* , agent_module.agent_type from login_module left join agent_module on agent_module.user_cnct_id = login_module.login_id order by login_id desc";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
 export const fetchShorlist = (req, res) => {
   const q =
     "SELECT  shortlist_module.*, property_module.*, login_module.* FROM shortlist_module LEFT JOIN login_module ON shortlist_module.shortlist_cnct_id = login_module.login_id left join property_module on shortlist_module.shortlist_pro_id = property_module.pro_id ORDER BY pro_id DESC";

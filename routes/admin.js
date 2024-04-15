@@ -4,6 +4,7 @@ import {
   fetchInterested,
   fetchShorlist,
   fetchUsers,
+  fetchUsers1,
 } from "../controllers/admin.js";
 import { deleteProperty } from "../controllers/admin.js";
 
@@ -14,4 +15,6 @@ router.delete("/deletePro/:proId", deleteProperty);
 router.get("/fetchInterested", fetchInterested);
 router.get("/fetchUsers", fetchUsers);
 router.get("/fetchShorlist", fetchShorlist);
+router.get("/fetchUsers1", fetchUsers1);
+
 export default router;
