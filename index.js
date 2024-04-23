@@ -9,16 +9,19 @@ import authWatermark from "./routes/watermark.js"
 import authWatermark2 from "./routes/watermark2.js"
 import authPostRequirement from "./routes/postRequirement.js"
 import authAgent from "./routes/agent.js"
+import authAd from "./routes/ad.js"
+
 const app = express();
 app.use(express.static("./public"));
 
-var whitelist = ["https://www.propertyease.in", "https://propertyease.in"   ];
+var whitelist = ["https://www.propertyease.in", "https://propertyease.in"  ];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
+      //callback(null, true);
     }
   },
 };
@@ -45,6 +48,7 @@ app.use("/api/watermark", authWatermark);
 app.use("/api/watermark2", authWatermark2);
 app.use("/api/postRequirement", authPostRequirement);
 app.use("/api/agent", authAgent);
+app.use("/api/ad", authAd);
 app.listen(8010, () => {
   console.log("App is running ");
 });

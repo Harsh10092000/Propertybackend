@@ -309,6 +309,16 @@ export const fetchAgentDataById = (req, res) => {
   });
 };
 
+
+export const fetchAgentNameById = (req, res) => {
+  const q = "SELECT agent_name FROM agent_module where user_cnct_id = ?";
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    
+    return res.status(200).json(data);
+  });
+};
+
 export const fetchAgentDataById1 = (req, res) => {
   const q = "SELECT * FROM agent_module where agent_id = ?";
   db.query(q, [req.params.agentId], (err, data) => {

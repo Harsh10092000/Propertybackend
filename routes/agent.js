@@ -17,7 +17,8 @@ import {
   delData,
   fetchAgentDataByUserId,
   fetchAgentData1,
-  checkUserType
+  checkUserType,
+  fetchAgentNameById
 } from "../controllers/agent.js";
 import multer from "multer";
 import path from "path";
@@ -130,8 +131,8 @@ router.post("/addAgent", upload.single("image"), (req, res) => {
 
 
 router.put("/updateAgent", upload.single("image"), (req, res) => {
-  //console.log("req.body : ", req.body);
-  //console.log("req.file : ", req.file);
+  console.log("req.body : ", req.body);
+  console.log("req.file : ", req.file);
   const q =
     "UPDATE agent_module SET agent_type = ?, agent_name = ?, agent_email = ?, agent_phone  = ?, agent_exp = ?, agent_work_area = ?, agent_state = ?, agent_city = ?, agent_sub_district = ?, agent_locality = ?, agent_comapnay_name = ?, agent_company_website = ?, agent_desc = ?, agent_image = ?  WHERE agent_id = ?";
   const values = [
@@ -242,6 +243,8 @@ router.delete("/delData/:agentId", delData);
 router.get("/fetchAgentDataByUserId/:userId", fetchAgentDataByUserId);
 router.get("/fetchAgentData1/:userId", fetchAgentData1);
 router.get("/checkUserType/:userId", checkUserType);
+
+router.get("/fetchAgentNameById/:userId", fetchAgentNameById);
 
 
 export default router;
