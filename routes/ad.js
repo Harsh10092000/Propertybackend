@@ -1,5 +1,5 @@
 import express from "express";
-import { fetchAdData, deleteAd, fetchAllData, updateAdListingStatus, fetchAdData2, fetchAdData3 } from "../controllers/ad.js";
+import { fetchAdData, deleteAd, fetchAllData, updateAdListingStatus, fetchAdData2, fetchAdData3,fetchAdDataById } from "../controllers/ad.js";
 import multer from "multer";
 import path from "path";
 import { db } from "../connect.js";
@@ -42,7 +42,7 @@ router.put("/updateAd", upload.single("image"), (req, res) => {
     //console.log("req.body : ", req.body);
     //console.log("req.file : ", req.file);
     const q =
-      "UPDATE agent_module SET ad_type = ?, ad_link = ?, ad_image  = ? WHERE ad_id = ?";
+      "UPDATE ad_module SET ad_type = ?, ad_link = ?, ad_image  = ? WHERE ad_id = ?";
     const values = [
       req.body.ad_type,
       req.body.ad_link,
@@ -62,8 +62,8 @@ router.get("/fetchAdData", fetchAdData);
 router.get("/fetchAdData2", fetchAdData2);
 router.get("/fetchAdData3", fetchAdData3);
 router.get("/fetchAllData", fetchAllData);
+router.get("/fetchAdDataById/:adId", fetchAdDataById);
 router.put("/updateAdListingStatus", updateAdListingStatus);
-
 router.delete("/deleteAd/:adId", deleteAd);
 
 export default router;

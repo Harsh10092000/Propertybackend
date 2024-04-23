@@ -33,6 +33,13 @@ export const fetchAdData3 = (req, res) => {
   });
 };
 
+export const fetchAdDataById = (req, res) => {
+  const q = "SELECT * FROM ad_module where ad_id = ?";
+  db.query(q, [req.params.adId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
 
 
 export const fetchAllData = (req, res) => {
