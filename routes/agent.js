@@ -150,7 +150,7 @@ router.put("/updateAgent", upload.single("image"), (req, res) => {
     req.body.user_company_website,
     
     req.body.user_desc,
-    req.file ? req.file.filename : "",
+    req.file ? req.file.filename : req.body.ad_image,
     req.body.agent_id,
   ];
   console.log("values : ", req.body);

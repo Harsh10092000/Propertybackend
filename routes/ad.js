@@ -46,7 +46,7 @@ router.put("/updateAd", upload.single("image"), (req, res) => {
     const values = [
       req.body.ad_type,
       req.body.ad_link,
-      req.file ? req.file.filename : "",
+      req.file ? req.file.filename : req.body.ad_image,
       req.body.ad_id,
     ];
     console.log("values : ", req.body);
