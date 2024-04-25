@@ -454,3 +454,16 @@ export const updateProListingStatus = (req, res) => {
     return res.status(200).json("Updated Successfully");
   });
 };
+
+
+
+
+export const fetchPropertiesAddInLast30Days = (req, res) => {
+  console.log("req.params.userId : ", req.params.userId);
+  const q =
+    "SELECT count(pro_id) as pro_count, pro_creation_date, DATEDIFF(CONVERT_TZ(pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS 'Days' FROM property_module where DATEDIFF(pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30 and pro_user_id = ? limit 1;";
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};

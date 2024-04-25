@@ -33,8 +33,31 @@ export const fetchUsers = (req, res) => {
   });
 };
 
+// export const fetchUsers1 = (req, res) => {
+//   const q = "SELECT login_module.* , agent_module.agent_type from login_module left join agent_module on agent_module.user_cnct_id = login_module.login_id order by login_id desc";
+//   db.query(q, (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json(data);
+//   });
+// };
+
 export const fetchUsers1 = (req, res) => {
-  const q = "SELECT login_module.* , agent_module.agent_type from login_module left join agent_module on agent_module.user_cnct_id = login_module.login_id order by login_id desc";
+  const q = `SELECT 
+  login.*, 
+  agent.agent_type, 
+  property_count.count_of_properties 
+FROM 
+  login_module AS login 
+LEFT JOIN 
+  agent_module AS agent ON agent.user_cnct_id = login.login_id 
+LEFT JOIN 
+  (SELECT pro_user_id, COUNT(pro_id) AS count_of_properties 
+   FROM property_module 
+   GROUP BY pro_user_id) AS property_count 
+ON 
+  login.login_id = property_count.pro_user_id 
+ORDER BY 
+  login.login_id DESC;`
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);

@@ -39,7 +39,8 @@ import {
   fetchPropertyDataById1,
   updateViews,
   updateContacted,
-  updateProListingStatus
+  updateProListingStatus,
+  fetchPropertiesAddInLast30Days
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -167,7 +168,7 @@ router.get("/fetchPropertyDataById1/:proId", fetchPropertyDataById1);
 router.put("/updateViews", updateViews);
 router.put("/updateContacted", updateContacted);
 router.put("/updateProListingStatus", updateProListingStatus);
-
+router.get("/fetchPropertiesAddInLast30Days/:userId", fetchPropertiesAddInLast30Days);
 
 
 export default router;
