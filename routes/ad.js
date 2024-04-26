@@ -24,10 +24,11 @@ const upload = multer({
 router.post("/addAd", upload.single("image"), (req, res) => {
   console.log("req.body : ", req.body);
   console.log("req.file : ", req.file);
-  const q = "INSERT INTO ad_module (ad_type, ad_link, ad_image ) Values (?)";
+  const q = "INSERT INTO ad_module (ad_type, ad_link, ad_days, ad_image ) Values (?)";
   const values = [
     req.body.ad_type,
     req.body.ad_link,
+    req.body.ad_days,
     req.file ? req.file.filename : "",
   ];
   db.query(q, [values], (err, data) => {
@@ -42,10 +43,11 @@ router.put("/updateAd", upload.single("image"), (req, res) => {
     //console.log("req.body : ", req.body);
     //console.log("req.file : ", req.file);
     const q =
-      "UPDATE ad_module SET ad_type = ?, ad_link = ?, ad_image  = ? WHERE ad_id = ?";
+      "UPDATE ad_module SET ad_type = ?, ad_link = ?, ad_days = ?, ad_image  = ? WHERE ad_id = ?";
     const values = [
       req.body.ad_type,
       req.body.ad_link,
+      req.body.ad_days,
       req.file ? req.file.filename : req.body.ad_image,
       req.body.ad_id,
     ];
