@@ -10,6 +10,8 @@ import authWatermark2 from "./routes/watermark2.js"
 import authPostRequirement from "./routes/postRequirement.js"
 import authAgent from "./routes/agent.js"
 import authAd from "./routes/ad.js"
+import authProPlan from "./routes/proPlan.js"
+import authMap from "./routes/map.js"
 
 const app = express();
 app.use(express.static("./public"));
@@ -49,6 +51,9 @@ app.use("/api/watermark2", authWatermark2);
 app.use("/api/postRequirement", authPostRequirement);
 app.use("/api/agent", authAgent);
 app.use("/api/ad", authAd);
+app.use("/api/proPlan", authProPlan);
+app.use("/api/cityMap", authMap);
+
 app.listen(8010, () => {
   console.log("App is running ");
 });
