@@ -40,7 +40,8 @@ import {
   updateViews,
   updateContacted,
   updateProListingStatus,
-  fetchPropertiesAddInLast30Days
+  fetchPropertiesAddInLast30Days,
+  checkPropertyExists
 } from "../controllers/property.js";
 const router = express.Router();
 
@@ -138,6 +139,8 @@ router.put("/updateProperty", updateProperty);
 router.post("/addOrigin", addOrigin);
 router.get("/fetchPropertyData", fetchPropertyData);
 router.get("/fetchPropertyDataById/:proId", fetchPropertyDataById);
+router.get("/checkPropertyExists/:proId", checkPropertyExists);
+
 router.get("/fetchLatestProperty", fetchLatestProperty);
 router.get("/fetchPropertyDataByCat/:proType", fetchPropertyDataByCat);
 router.get("/fetchPropertySubCatNo", fetchPropertySubCatNo);

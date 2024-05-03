@@ -1,6 +1,11 @@
 import { db } from "../connect.js";
+import { transporter } from "../nodemailer.js";
 
 export const addProperty = (req, res) => {
+  
+
+     
+      
   const q =
     "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date) Values (?)";
   const values = [
@@ -50,14 +55,282 @@ export const addProperty = (req, res) => {
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
     const insertId = data.insertId;
-    console.log(insertId);
-    return res.status(200).json(insertId);
+    const url =
+  req.body.pro_area_size +
+    "-" +
+    req.body.pro_area_size_unit
+      .toLowerCase()
+      .replaceAll(" ", "-")
+      .replaceAll(".", "") +
+    "-" +
+    (req.body.pro_type
+      ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+      : "") + "-for-" + (req.body.pro_ad_type === "Rent"
+      ? "rent"
+      : "sale") + "-in-" + req.body.pro_locality.trim()
+      .toLowerCase()
+      .replaceAll(" ", "-") + "-" + req.body.pro_city
+      .toLowerCase()
+      .replaceAll(" ", "-") + "-" + insertId;
+
+      const q =
+      "UPDATE property_module SET pro_url = ? where pro_id = ?";
+      const updateValues = [
+        url,
+        insertId
+      ]
+      db.query(q, updateValues, (err, data) => {
+        console.log(updateValues);
+        if (err) return res.status(500).json(err);
+    let info = {
+      from: '"Propertyease " <noreply@propertyease.in>', // sender address
+      //to: data[0].login_email,
+      to: "harshgupta.calinfo@gmail.com",
+      //to: req.body.pro_user_email,
+      subject: `Thanks for your time and trust!`, // Subject line
+      html: `<div style="margin:0px;padding:0px;">
+     <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
+        <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
+           <tbody>
+              <tr>
+                 <td style="width:700px;display:block;clear:both">
+                    <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style=" margin-top:30px;background-clip:padding-box;border-collapse:collapse;border-radius:5px;">
+  
+                       <tr style="height:80px; text-align:center;">
+                          <td style="padding-left:22px; padding-bottom: 10px"><img src="https://property-five.vercel.app/images/logo.png">
+                          </td>
+                       </tr>
+                 </td>
+              </tr>
+              <tr>
+                 <td>
+                    <table style="width:500px;clear:both" border="0" align="center" cellpadding="0" cellspacing="0">
+  
+                       <tr>
+                          <td>
+                             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 30px 0px 0px 0px;">
+  
+                                <tr>
+                                   <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom: 10px;"> Dear User,</b>
+                                      
+                                      <p style="margin-bottom: 10px; font-size: 16px;">Thank you for listing your property on our platform. We look forward to assisting you throughout the process.</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">Check out your property: <a href="https://propertyease.in/${
+                                        req.body.pro_area_size.toLowerCase() +
+                                        "-" +
+                                        req.body.pro_area_size_unit
+                                          .toLowerCase()
+                                          .replaceAll(" ", "-")
+                                          .replaceAll(".", "") +
+                                        "-"
+                                      }${
+        req.body.pro_type
+          ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+          : ""
+      }-for-${
+        req.body.pro_ad_type === "rent" ? "rent" : "sale"
+      }-in-${req.body.pro_locality
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${req.body.pro_city
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${insertId}">https://propertyease.in/${
+        req.body.pro_area_size.toLowerCase() +
+        "-" +
+        req.body.pro_area_size_unit
+          .toLowerCase()
+          .replaceAll(" ", "-")
+          .replaceAll(".", "") +
+        "-"
+      }${
+        req.body.pro_type
+          ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+          : ""
+      }-for-${
+        req.body.pro_ad_type === "rent" ? "rent" : "sale"
+      }-in-${req.body.pro_locality
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${req.body.pro_city
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${insertId}</a></p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at +91-99967-16787 anytime for any information related to this enquiry.</p>
+                                      
+                                      </td>
+                                </tr>
+                                <tr>
+                                   <td height="10px" style="font-size: 15px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom:0px;"> <b>Thanks & Regards,
+                                         </b></p>
+                                      <p style="margin-bottom:0px; font-size: 15px;">Admin Team</p>
+                                      <p style="margin-bottom: 10px; font-size: 15px;">Propertyease.in</p>
+  
+                                   </td>
+                                </tr>
+                             </table>
+                          </td>
+                       </tr>
+  
+                    </table>
+                 </td>
+              </tr>
+              <tr>
+                 <td style="font-size: 14px;text-align: center;line-height: 21px;letter-spacing: .3px; color: #155298; height: 68px;">
+  
+                    <p style="line-height:22px;margin-bottom:0px;padding: 10px;  color:#000;font-size: 12px;">
+                       &copy; Copyright ${new Date().getFullYear()} All Rights Reserved.</p>
+                 </td>
+              </tr>
+  
+           </tbody>
+        </table>
+     </div>
+  </div>`,
+    };
+    let info2 = {
+      from: '"Propertyease " <noreply@propertyease.in>', // sender address
+      //to: data[0].login_email,
+      to: "harshgupta.calinfo@gmail.com",
+      //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+      //to: req.body.pro_user_email,
+      subject: `Property Id: ${5000 + parseInt(insertId)} ${
+        req.body.pro_user_email
+      } listed new Property`, // Subject line
+      html: `<div style="margin:0px;padding:0px;">
+     <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
+        <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
+           <tbody>
+              <tr>
+                 <td style="width:700px;display:block;clear:both">
+                    <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style=" margin-top:30px;background-clip:padding-box;border-collapse:collapse;border-radius:5px;">
+  
+                       <tr style="height:80px; text-align:center;">
+                          <td style="padding-left:22px; padding-bottom: 10px"><img src="https://property-five.vercel.app/images/logo.png">
+                          </td>
+                       </tr>
+                 </td>
+              </tr>
+              <tr>
+                 <td>
+                    <table style="width:500px;clear:both" border="0" align="center" cellpadding="0" cellspacing="0">
+  
+                       <tr>
+                          <td>
+                             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 30px 0px 0px 0px;">
+  
+                                <tr>
+                                   <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom: 10px;"> Dear Admin,</b>
+                                      
+                                      <p style="margin-bottom: 10px; font-size: 16px;">${
+                                        req.body.pro_user_email
+                                      } has list following Property, Property Id: ${
+        5000 + parseInt(insertId)
+      } .</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">Check out the property: <a href="https://propertyease.in/${
+                                        req.body.pro_area_size.toLowerCase() +
+                                        "-" +
+                                        req.body.pro_area_size_unit
+                                          .toLowerCase()
+                                          .replaceAll(" ", "-")
+                                          .replaceAll(".", "") +
+                                        "-"
+                                      }${
+        req.body.pro_type
+          ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+          : ""
+      }-for-${
+        req.body.pro_ad_type === "rent" ? "rent" : "sale"
+      }-in-${req.body.pro_locality
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${req.body.pro_city
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${insertId}">https://propertyease.in/${
+        req.body.pro_area_size.toLowerCase() +
+        "-" +
+        req.body.pro_area_size_unit
+          .toLowerCase()
+          .replaceAll(" ", "-")
+          .replaceAll(".", "") +
+        "-"
+      }${
+        req.body.pro_type
+          ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+          : ""
+      }-for-${
+        req.body.pro_ad_type === "rent" ? "rent" : "sale"
+      }-in-${req.body.pro_locality
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${req.body.pro_city
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${insertId}</a></p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on ${
+                                        req.body.pro_login_number
+                                      }.</p>
+                                      
+                                      </td>
+                                </tr>
+                                <tr>
+                                   <td height="10px" style="font-size: 15px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom:0px;"> <b>Thanks & Regards,
+                                         </b></p>
+                                      <p style="margin-bottom:0px; font-size: 15px;">Admin Team</p>
+                                      <p style="margin-bottom: 10px; font-size: 15px;">Propertyease.in</p>
+  
+                                   </td>
+                                </tr>
+                             </table>
+                          </td>
+                       </tr>
+  
+                    </table>
+                 </td>
+              </tr>
+              <tr>
+                 <td style="font-size: 14px;text-align: center;line-height: 21px;letter-spacing: .3px; color: #155298; height: 68px;">
+  
+                    <p style="line-height:22px;margin-bottom:0px;padding: 10px;  color:#000;font-size: 12px;">
+                       &copy; Copyright ${new Date().getFullYear()} All Rights Reserved.</p>
+                 </td>
+              </tr>
+  
+           </tbody>
+        </table>
+     </div>
+  </div>`,
+    };
+    //return res.status(200).json(insertId);
+    transporter.sendMail(info, (err, data) => {
+      if (err) return res.status(500).json(err);
+      transporter.sendMail(info2, (err, data) => {
+        if (err) return res.status(500).json(err);
+
+        return res.status(200).json(insertId);
+      });
+      //return res.status(200).json(insertId);
+    });
   });
+});
 };
 
 export const updateProperty = (req, res) => {
+  const url =
+  req.body.pro_area_size +
+    "-" +
+    req.body.pro_area_size_unit
+      .toLowerCase()
+      .replaceAll(" ", "-")
+      .replaceAll(".", "") +
+    "-" +
+    (req.body.pro_type
+      ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+      : "") + "-for-" + (req.body.pro_ad_type === "Rent"
+      ? "rent"
+      : "sale") + "-in-" + req.body.pro_locality.trim()
+      .toLowerCase()
+      .replaceAll(" ", "-") + "-" + req.body.pro_city
+      .toLowerCase()
+      .replaceAll(" ", "-") + "-" + req.body.pro_id;
   const q =
-    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_negotiable = ? , pro_state = ? , pro_sub_district = ? WHERE pro_id = ?";
+    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_negotiable = ? , pro_state = ? , pro_sub_district = ?, pro_url = ? WHERE pro_id = ?";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -95,13 +368,16 @@ export const updateProperty = (req, res) => {
     req.body.pro_amt_unit,
     req.body.pro_pincode,
     req.body.pro_negotiable,
+
     req.body.pro_state,
     req.body.pro_sub_district,
+    url,
     req.body.pro_id,
   ];
   db.query(q, values, (err, data) => {
     console.log(values);
     if (err) return res.status(500).json(err);
+
     return res.status(200).json("Updated Successfully");
   });
 };
@@ -130,6 +406,15 @@ export const fetchPropertyData = (req, res) => {
 
 export const fetchPropertyDataById = (req, res) => {
   const q = "SELECT * from property_module where pro_id = ? ";
+  db.query(q, [req.params.proId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const checkPropertyExists = (req, res) => {
+  const q =
+    "SELECT count(*) as pro_count FROM property_module where pro_id = ? ";
   db.query(q, [req.params.proId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -405,7 +690,7 @@ export const fetchPropertyDataById1 = (req, res) => {
   const q = "SELECT * from property_module where pro_id = ? ";
   db.query(q, [req.params.proId], (err, data) => {
     if (err) return res.status(500).json(err);
-    console.log("data : " ,data)
+    console.log("data : ", data);
     if (data.length > 0) {
       const para = "%" + data[0].pro_type.split(",")[1] + "%";
       const secondQ =
@@ -455,13 +740,43 @@ export const updateProListingStatus = (req, res) => {
   });
 };
 
+const updateProPlanStatus = (res) => {
+  const updateData =
+    "update list_plan_transactions set plan_status = 0 where DATEDIFF(CONVERT_TZ(list_plan_starts_on,'+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) < -list_plan_valid_for_days ;";
+  db.query(updateData, (err, data) => {
+    if (err) return res.status(500).json(err);
+  });
+};
 
-
+// export const fetchPropertiesAddInLast30Days = (req, res) => {
+//   console.log("req.params.userId : ", req.params.userId);
+//   const q =
+//     "SELECT count(pro_id) as pro_count, pro_creation_date, DATEDIFF(CONVERT_TZ(pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS 'Days' FROM property_module where DATEDIFF(pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30 and pro_user_id = ? limit 1;";
+//   db.query(q, [req.params.userId], (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json(data);
+//   });
+// };
 
 export const fetchPropertiesAddInLast30Days = (req, res) => {
   console.log("req.params.userId : ", req.params.userId);
-  const q =
-    "SELECT count(pro_id) as pro_count, pro_creation_date, DATEDIFF(CONVERT_TZ(pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS 'Days' FROM property_module where DATEDIFF(pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30 and pro_user_id = ? limit 1;";
+  const q = `SELECT 
+    COUNT(property_module.pro_id) AS pro_count, 
+    property_module.pro_creation_date, 
+    DATEDIFF(CONVERT_TZ(property_module.pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS Days, 
+    -- list_plan_transactions.pro_plan_added_slots ,
+--     list_plan_transactions.plan_status ,
+    COALESCE(list_plan_transactions.pro_plan_added_slots, 0) AS pro_plan_added_slots,
+    COALESCE(list_plan_transactions.plan_status, 0) AS plan_status,
+    COALESCE(list_plan_transactions.list_plan_starts_on, 0) AS list_plan_starts_on
+FROM 
+    property_module 
+LEFT JOIN 
+    list_plan_transactions ON list_plan_transactions.user_id = property_module.pro_user_id and list_plan_transactions.plan_status = 1
+WHERE 
+    DATEDIFF(property_module.pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30 
+    AND property_module.pro_user_id = ?
+LIMIT 1;`;
   db.query(q, [req.params.userId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
