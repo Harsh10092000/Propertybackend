@@ -128,7 +128,7 @@ export const addProperty = (req, res) => {
           ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
           : ""
       }-for-${
-        req.body.pro_ad_type === "rent" ? "rent" : "sale"
+        req.body.pro_ad_type === "Rent" ? "rent" : "sale"
       }-in-${req.body.pro_locality
         .toLowerCase()
         .replaceAll(" ", "-")}-${req.body.pro_city
@@ -146,7 +146,7 @@ export const addProperty = (req, res) => {
           ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
           : ""
       }-for-${
-        req.body.pro_ad_type === "rent" ? "rent" : "sale"
+        req.body.pro_ad_type === "Rent" ? "rent" : "sale"
       }-in-${req.body.pro_locality
         .toLowerCase()
         .replaceAll(" ", "-")}-${req.body.pro_city
@@ -238,7 +238,7 @@ export const addProperty = (req, res) => {
           ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
           : ""
       }-for-${
-        req.body.pro_ad_type === "rent" ? "rent" : "sale"
+        req.body.pro_ad_type === "Rent" ? "rent" : "sale"
       }-in-${req.body.pro_locality
         .toLowerCase()
         .replaceAll(" ", "-")}-${req.body.pro_city
@@ -256,7 +256,7 @@ export const addProperty = (req, res) => {
           ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
           : ""
       }-for-${
-        req.body.pro_ad_type === "rent" ? "rent" : "sale"
+        req.body.pro_ad_type === "Rent" ? "rent" : "sale"
       }-in-${req.body.pro_locality
         .toLowerCase()
         .replaceAll(" ", "-")}-${req.body.pro_city
