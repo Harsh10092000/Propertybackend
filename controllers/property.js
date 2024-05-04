@@ -85,8 +85,8 @@ export const addProperty = (req, res) => {
     let info = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
       //to: data[0].login_email,
-      to: "harshgupta.calinfo@gmail.com",
-      //to: req.body.pro_user_email,
+      //to: "harshgupta.calinfo@gmail.com",
+      to: req.body.pro_user_email,
       subject: `Thanks for your time and trust!`, // Subject line
       html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -152,7 +152,7 @@ export const addProperty = (req, res) => {
         .replaceAll(" ", "-")}-${req.body.pro_city
         .toLowerCase()
         .replaceAll(" ", "-")}-${insertId}</a></p>
-                                      <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at +91-99967-16787 anytime for any information related to this enquiry.</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at <a href="https://wa.me/9996716787">+91-99967-16787</a> anytime for any information related to this enquiry.</p>
                                       
                                       </td>
                                 </tr>
@@ -262,9 +262,7 @@ export const addProperty = (req, res) => {
         .replaceAll(" ", "-")}-${req.body.pro_city
         .toLowerCase()
         .replaceAll(" ", "-")}-${insertId}</a></p>
-                                      <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on ${
-                                        req.body.pro_login_number
-                                      }.</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on <a href="https://wa.me/${req.body.pro_login_number}">+91-${req.body.pro_login_number}</a>.</p>
                                       
                                       </td>
                                 </tr>
