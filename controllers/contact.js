@@ -13,7 +13,7 @@ export const askquestion = (req, res) => {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
         to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //   to: "akshit.calinfo07@gmail.com",
-        // to: "harshgupta.calinfo@gmail.com",
+         //to: "harshgupta.calinfo@gmail.com",
         subject: `${userId} Showed Interest in a Property`, // Subject line
         html: `<div style="margin:0px;padding:0px;">
        <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -41,13 +41,11 @@ export const askquestion = (req, res) => {
                                      <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
                                         <p style="color:#404040; margin-bottom: 10px;"> Dear Admin,</b>
                                         <p style="margin-bottom: 10px; font-size: 16px;">${userId} has shown interest in the following Property</b></p>
-                                        <a href='https://www.propertyease.in/property/${propertySlug}' style="margin-bottom: 10px; font-size: 16px;">${propertySlug}</a>
-                                        <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on ${phone}</p>
+                                        <a href='https://www.propertyease.in/${propertySlug}' style="margin-bottom: 10px; font-size: 16px;">${propertySlug}</a>
+                                        <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on <a href="https://wa.me/91${phone}">+91-${phone}</a></p>
                                         <p style="margin-bottom: 10px; font-size: 16px;">${
                                           data[0].login_email
-                                        } posted this property. You can contact him/her on ${
-          data[0].login_number
-        }.</p>
+                                        } posted this property. You can contact him/her on <a href="https://wa.me/91${data[0].login_number}">+91-${data[0].login_number}</a>.</p>
                                      </td>
                                   </tr>
                                   <tr>
@@ -280,7 +278,7 @@ export const interestShowed = (req, res) => {
                                    <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
                                       <p style="color:#404040; margin-bottom: 10px;"> Dear User,</b>
                                       <p style="margin-bottom: 10px; font-size: 16px;">Someone showed interest in your property. Our team is going through it and get back to you.  </b></p>
-                                      <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support +91-99967-16787 anytime for any information related to this enquiry.</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support  <a href="https://wa.me/919996716787">+91-99967-16787</a> anytime for any information related to this enquiry.</p>
                                    </td>
                                 </tr>
                                 <tr>
@@ -355,7 +353,7 @@ export const interestShowedInAgent = (req, res) => {
                                     <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
                                        <p style="color:#404040; margin-bottom: 10px;"> Dear User,</b>
                                        <p style="margin-bottom: 10px; font-size: 16px;">Someone showed interest in your property. Our team is going through it and get back to you.  </b></p>
-                                       <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support +91-99967-16787 anytime for any information related to this enquiry.</p>
+                                       <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support  <a href="https://wa.me/919996716787">+91-99967-16787</a> anytime for any information related to this enquiry.</p>
                                     </td>
                                  </tr>
                                  <tr>
@@ -507,7 +505,7 @@ export const contactUsData = (req, res) => {
                                     <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
                                        <p style="color:#404040; margin-bottom: 10px;"> Dear User,</b>
                                        <p style="margin-bottom: 10px; font-size: 16px;">Thank you for contacting with us. We will be in touch with you soon. </b></p>
-                                       <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support +91-99967-16787 anytime for any information related to this enquiry.</p>
+                                       <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support  <a href="https://wa.me/919996716787">+91-99967-16787</a> anytime for any information related to this enquiry.</p>
                                     </td>
                                  </tr>
                                  <tr>
@@ -593,7 +591,7 @@ export const contactUsData = (req, res) => {
 //                                       <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
 //                                          <p style="color:#404040; margin-bottom: 10px;"> Dear Admin,</b>
 //                                          <p style="margin-bottom: 10px; font-size: 16px;">${userId} has shown interest in the following Property</b></p>
-//                                          <a href='https://www.propertyease.in/property/${propertySlug}' style="margin-bottom: 10px; font-size: 16px;">${propertySlug}</a>
+//                                          <a href='https://www.propertyease.in/${propertySlug}' style="margin-bottom: 10px; font-size: 16px;">${propertySlug}</a>
 //                                          <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on ${phone}</p>
 //                                          <p style="margin-bottom: 10px; font-size: 16px;">${
 //                                            data[0].login_email
