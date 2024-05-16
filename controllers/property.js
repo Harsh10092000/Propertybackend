@@ -1,11 +1,8 @@
 import { db } from "../connect.js";
 import { transporter } from "../nodemailer.js";
 
-export const addProperty = (req, res) => {
-  
 
-     
-      
+export const addProperty = (req, res) => {      
   const q =
     "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date) Values (?)";
   const values = [
@@ -152,7 +149,7 @@ export const addProperty = (req, res) => {
         .replaceAll(" ", "-")}-${req.body.pro_city
         .toLowerCase()
         .replaceAll(" ", "-")}-${insertId}</a></p>
-                                      <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at <a href="https://wa.me/9996716787">+91-99967-16787</a> anytime for any information related to this enquiry.</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at <a href="https://wa.me/919996716787">+91-99967-16787</a> anytime for any information related to this enquiry.</p>
                                       
                                       </td>
                                 </tr>
@@ -262,7 +259,7 @@ export const addProperty = (req, res) => {
         .replaceAll(" ", "-")}-${req.body.pro_city
         .toLowerCase()
         .replaceAll(" ", "-")}-${insertId}</a></p>
-                                      <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on <a href="https://wa.me/${req.body.pro_login_number}">+91-${req.body.pro_login_number}</a>.</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on <a href="https://wa.me/${"91"+req.body.pro_login_number}">+91-${req.body.pro_login_number}</a>.</p>
                                       
                                       </td>
                                 </tr>
@@ -394,6 +391,10 @@ export const addOrigin = (req, res) => {
 };
 
 export const fetchPropertyData = (req, res) => {
+  // res.setHeader('Set-Cookie', `token=sdf; HttpOnly`);
+  // console.log("fg")
+  // const refreshToken = req.cookies.jwt;
+  // console.log("refreshToken : " , refreshToken);
   const q =
     "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC";
   db.query(q, (err, data) => {
@@ -456,6 +457,44 @@ export const fetchPropertyDataByCat = (req, res) => {
   });
 };
 
+
+
+// export const fetchPropertyDataByCatAndCity = (req, res) => {
+//   console.log("req.params : " , req.params);
+//   const para = "%" + req.params.proType + "%";
+//   const q =
+//     "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? and pro_city = ? and pro_ad_type = ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC ";
+//   db.query(q, [para, req.params.proCity, req.params.proAd], (err, data) => {
+//     if (err) return res.status(500).json(err);
+   
+//     return res.status(200).json(data);
+//   });
+// };
+
+export const fetchPropertyDataByCatAndCity = (req, res) => {
+  console.log("req.params : " , req.params);
+  const para = "%" + req.params.proType + "%";
+  const q =
+    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? and pro_ad_type = ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC ";
+  db.query(q, [para, req.params.proAd], (err, data) => {
+    if (err) return res.status(500).json(err);
+   
+    return res.status(200).json(data);
+  });
+};
+
+export const moreProperties = (req, res) => {
+  console.log("req.params" , req.params.proAd);
+  const q =
+    "SELECT * FROM property_module where pro_ad_type = ? and pro_listed = 1 order by pro_id desc limit 5;";
+  db.query(q, [req.params.proAd], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
+
 export const fetchLatestPropertyByCat = (req, res) => {
   const para = "%" + req.params.proType + "%";
   const q =
@@ -494,10 +533,12 @@ export const fetchPropertyDataByUserId = (req, res) => {
 };
 
 export const fetchPropertyDataByUserId1 = (req, res) => {
+  //await verifyJwt(req,res);
   const q =
     "SELECT * FROM property_module where pro_user_id = ? ORDER BY pro_id DESC";
   db.query(q, [req.params.userId], (err, data) => {
     if (err) return res.status(500).json(err);
+    
     return res.status(200).json(data);
   });
 };
@@ -592,6 +633,17 @@ export const rentalPropertyTotal = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
+export const salePropertyTotal = (req, res) => {
+  const q =
+    "SELECT count(pro_type) as pro_sub_cat_number , pro_type FROM property_module WHERE pro_ad_type = 'Sale' and pro_listed = 1 group by pro_type;";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
 
 export const rentalProperty = (req, res) => {
   const para = "%" + req.params.proType + "%";
