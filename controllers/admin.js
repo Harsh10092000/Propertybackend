@@ -218,7 +218,7 @@ export const updateCouponStatus = (req, res) => {
 
 
 export const fetchCouponCode = (req, res) => {
-  const q = "SELECT * FROM pro_listing_coupon_module where coupon_code = ?";
+  const q = "SELECT * FROM pro_listing_coupon_module where coupon_code = ? and coupon_status = 1 and DATEDIFF(coupon_valid_till, CONVERT_TZ(NOW(), '+00:00', '+05:30')) != 0";
   db.query(q, [req.params.couponCode], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
