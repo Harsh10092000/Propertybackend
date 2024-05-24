@@ -279,7 +279,9 @@ ORDER BY
 
 export const fetchPropertyDataByAgent = (req, res) => {
   const q =
-    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_user_id = ? group by pro_id ORDER BY pro_id DESC";
+    `SELECT DISTINCT property_module_images.* , property_module.*, agent_data.agent_type as user_type, agent_data.agent_name FROM property_module left join property_module_images on 
+    property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) 
+    as agent_data on property_module.pro_user_id = agent_data.user_cnct_id where pro_user_id = ? group by pro_id ORDER BY pro_id DESC`;
   db.query(q, [req.params.agentId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);

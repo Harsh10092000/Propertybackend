@@ -61,7 +61,7 @@ export const fetchAdDataById = (req, res) => {
 
 
 export const fetchAllData = (req, res) => {
-  updateAdListing();
+updateAdListing();
   //const q = "SELECT * FROM ad_module";
   const q = "SELECT ad_module.*,  IF( DATEDIFF(ad_created_at, CONVERT_TZ(NOW(), '+00:00', '+05:30')) < -ad_days, '0', '1') as status  FROM ad_module;"
   db.query(q, (err, data) => {

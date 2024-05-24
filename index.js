@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+ 
 import authLogin from "./routes/login.js";
 import authProperty from "./routes/property.js";
 import authAccount from "./routes/account.js";
@@ -12,11 +13,16 @@ import authAgent from "./routes/agent.js"
 import authAd from "./routes/ad.js"
 import authProPlan from "./routes/proPlan.js"
 import authMap from "./routes/map.js"
+import authPay from "./routes/pay.js"
+import "dotenv/config"
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(express.static("./public"));
+app.use(cookieParser());
 
-var whitelist = ["https://www.propertyease.in", "https://propertyease.in"  ];
+// var whitelist = ["https://www.propertyease.in", "https://propertyease.in" , "http://localhost:8010" , "http://localhost:5173" ];
+var whitelist = ["https://www.propertyease.in", "https://propertyease.in" ];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -53,6 +59,7 @@ app.use("/api/agent", authAgent);
 app.use("/api/ad", authAd);
 app.use("/api/proPlan", authProPlan);
 app.use("/api/cityMap", authMap);
+app.use("/api/pay", authPay);
 
 app.listen(8010, () => {
   console.log("App is running ");

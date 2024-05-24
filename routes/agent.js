@@ -23,6 +23,8 @@ import {
 import multer from "multer";
 import path from "path";
 import { db } from "../connect.js";
+import { verifyJwt } from "../controllers/verifyjwt.js";
+
 const router = express.Router();
 
 
@@ -240,7 +242,7 @@ router.get("/fetchWorkSubDistrictById/:agentId", fetchWorkSubDistrictById);
 
 router.post("/addAgentData", addAgentData);
 router.delete("/delData/:agentId", delData);
-router.get("/fetchAgentDataByUserId/:userId", fetchAgentDataByUserId);
+router.get("/fetchAgentDataByUserId/:userId", verifyJwt, fetchAgentDataByUserId);
 router.get("/fetchAgentData1/:userId", fetchAgentData1);
 router.get("/checkUserType/:userId", checkUserType);
 

@@ -390,18 +390,36 @@ export const addOrigin = (req, res) => {
   });
 };
 
+// export const fetchPropertyData = (req, res) => {
+//   // res.setHeader('Set-Cookie', `token=sdf; HttpOnly`);
+//   // console.log("fg")
+//   // const refreshToken = req.cookies.jwt;
+//   // console.log("refreshToken : " , refreshToken);
+//   const q =
+//     "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC";
+//   db.query(q, (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json(data);
+//   });
+// };
+
+
 export const fetchPropertyData = (req, res) => {
   // res.setHeader('Set-Cookie', `token=sdf; HttpOnly`);
   // console.log("fg")
   // const refreshToken = req.cookies.jwt;
   // console.log("refreshToken : " , refreshToken);
   const q =
-    "SELECT DISTINCT property_module_images.* , property_module.* FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC";
+    `SELECT DISTINCT property_module_images.* , property_module.* , agent_data.agent_type as user_type, agent_data.agent_name FROM property_module left join property_module_images on 
+    property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) as agent_data on 
+    property_module.pro_user_id = agent_data.user_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC`;
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
+
+
 
 export const fetchPropertyDataById = (req, res) => {
   const q = "SELECT * from property_module where pro_id = ? ";
@@ -447,10 +465,24 @@ export const fetchLatestPropertyByCity = (req, res) => {
   });
 };
 
+// export const fetchPropertyDataByCat = (req, res) => {
+//   const para = "%" + req.params.proType + "%";
+//   const q =
+//     "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC ";
+//   db.query(q, [para], (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json(data);
+//   });
+// };
+
+
 export const fetchPropertyDataByCat = (req, res) => {
   const para = "%" + req.params.proType + "%";
   const q =
-    "SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link FROM property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id WHERE pro_type like ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC ";
+    `SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link, agent_data.agent_type as user_type, agent_data.agent_name FROM 
+    property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id 
+    left join (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) as agent_data on property_module.
+    pro_user_id = agent_data.user_cnct_id WHERE pro_type like ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC; `;
   db.query(q, [para], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -486,7 +518,9 @@ export const fetchPropertyDataByCatAndCity = (req, res) => {
 export const moreProperties = (req, res) => {
   console.log("req.params" , req.params.proAd);
   const q =
-    "SELECT * FROM property_module where pro_ad_type = ? and pro_listed = 1 order by pro_id desc limit 5;";
+    `SELECT property_module.*, agent_data.agent_type as user_type, agent_data.agent_name FROM property_module left join 
+    (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) as agent_data on property_module.pro_user_id = 
+    agent_data.user_cnct_id where pro_ad_type = "Rent" and pro_listed = 1 order by pro_id desc limit 5;`;
   db.query(q, [req.params.proAd], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -822,7 +856,7 @@ export const fetchPropertiesAddInLast30Days = (req, res) => {
 FROM 
     property_module 
 LEFT JOIN 
-    list_plan_transactions ON list_plan_transactions.user_id = property_module.pro_user_id and list_plan_transactions.plan_status = 1
+    list_plan_transactions ON list_plan_transactions.user_id = property_module.pro_user_id and (list_plan_transactions.plan_status = 1 OR list_plan_transactions.plan_status = 2 )
 WHERE 
     DATEDIFF(property_module.pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30 
     AND property_module.pro_user_id = ?

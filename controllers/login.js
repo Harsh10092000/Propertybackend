@@ -1,5 +1,8 @@
 import { transporter } from "../nodemailer.js";
 import { db } from "../connect.js";
+import { genrateAccessToken } from "./jwt.js";
+
+
 
 const updateOtp = (otp, email, res) => {
   const q = "update login_module set login_otp = ? where login_email = ?";
@@ -92,10 +95,18 @@ export const sendOtp = (req, res) => {
 export const checkLogin = (req, res) => {
   const q =
     "SELECT * from login_module WHERE login_email = ? and login_otp = ?";
-  db.query(q, [req.body.inputs.email, req.body.inputs.otp], (err, data) => {
+  db.query(q, [req.body.inputs.email, req.body.inputs.otp], async (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length > 0) {
-      return res.status(200).json(data);
+      const token = await genrateAccessToken(data,res)
+      console.log("token : " , token)
+      //res.cookie('name', 'John Doe');
+      return res.status(200).json({
+         message: 'Authentication successful!',
+         token,
+         data,
+       });
+      //return res.status(200).json(data);
     } else {
       return res.status(409).json("Login Failed");
     }
