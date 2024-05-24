@@ -25,7 +25,7 @@ import jwt from 'jsonwebtoken';
 // }
 
 export const verifyJwt = (req,res, next) => {
-  const secretKey = "harsh123";
+  const secretKey = "sdfhj@j13j24";
   console.log("secretKey : " , secretKey);
   const token = req.headers['x-access-token']
 
