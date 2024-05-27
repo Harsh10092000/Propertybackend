@@ -49,6 +49,8 @@ router.post("/paymentVerification", async (req, res) => {
     payment_status,
     discount,
     original_price,
+    pro_added_recently,
+    total_no_pro_user_can_add,
     login_email,
     login_number,
 
@@ -67,7 +69,7 @@ router.post("/paymentVerification", async (req, res) => {
   if (isAuthentic) {
     
     const q =
-    "INSERT INTO list_plan_transactions ( list_plan_id, plan_name, tran_amt, user_id, list_plan_valid_for_days, pro_plan_added_slots, plan_status, order_id, payment_id, payment_status, payment_discount, original_price) Values (?)";
+    "INSERT INTO list_plan_transactions ( list_plan_id, plan_name, tran_amt, user_id, list_plan_valid_for_days, pro_plan_added_slots, plan_status, order_id, payment_id, payment_status, payment_discount, original_price, pro_added_recently, total_no_pro_user_can_add) Values (?)";
   const values = [
     list_plan_id,
     plan_name,
@@ -80,7 +82,9 @@ router.post("/paymentVerification", async (req, res) => {
     razorpayPaymentId,
     payment_status,
     discount,
-    original_price
+    original_price,
+    pro_added_recently,
+    total_no_pro_user_can_add
   ];
     db.query(q, [values], (err, data) => {
       const insertId = data.insertId;
