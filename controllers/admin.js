@@ -106,7 +106,7 @@ export const fetchShorlist = (req, res) => {
 export const grantAccessToListProperty = (req, res) => {
   console.log(req.body)
   const q =
-    "INSERT INTO list_plan_transactions ( list_plan_id, plan_name, tran_amt, user_id, list_plan_valid_for_days, pro_plan_added_slots, plan_status, order_id, payment_id, payment_status) Values (?)";
+    "INSERT INTO list_plan_transactions ( list_plan_id, plan_name, tran_amt, user_id, list_plan_valid_for_days, pro_plan_added_slots, plan_status, order_id, payment_id, payment_status, pro_added_recently, total_no_pro_user_can_add) Values (?)";
   const values = [
     "Access granted by Admin",
     "Access granted by Admin",
@@ -118,6 +118,8 @@ export const grantAccessToListProperty = (req, res) => {
     "0",
     "0",
     "Success",
+    "0",
+    "5000",
   ];
     db.query(q, [values], (err, data) => {
       console.log(values);

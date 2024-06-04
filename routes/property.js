@@ -45,6 +45,7 @@ import {
   checkPropertyExists,
   salePropertyTotal,
   moreProperties,
+  fetchLatestProperty1
   
 } from "../controllers/property.js";
 
@@ -149,6 +150,8 @@ router.get("/fetchPropertyDataById/:proId", fetchPropertyDataById);
 router.get("/checkPropertyExists/:proId", checkPropertyExists);
 
 router.get("/fetchLatestProperty", fetchLatestProperty);
+router.get("/fetchLatestProperty1", fetchLatestProperty1);
+
 router.get("/fetchPropertyDataByCat/:proType", fetchPropertyDataByCat);
 // router.get("/fetchPropertyDataByCatAndCity/:proAd/:proType/:proCity", fetchPropertyDataByCatAndCity);
 router.get("/fetchPropertyDataByCatAndCity/:proAd/:proType", fetchPropertyDataByCatAndCity);

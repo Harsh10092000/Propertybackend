@@ -298,8 +298,13 @@ export const addProperty = (req, res) => {
         if (err) return res.status(500).json(err);
         transporter.sendMail(info2, (err, data) => {
           if (err) return res.status(500).json(err);
-
-          return res.status(200).json(insertId);
+          const updateq =
+            "UPDATE list_plan_transactions SET pro_added_recently = pro_added_recently + 1 where user_id = ? order by tran_id desc limit 1";
+          
+            db.query(updateq, [req.body.pro_user_id], (err, data) => {
+            if (err) return res.status(500).json(err);
+            return res.status(200).json(insertId);
+          });
         });
         //return res.status(200).json(insertId);
       });
@@ -440,6 +445,15 @@ export const checkPropertyExists = (req, res) => {
 export const fetchLatestProperty = (req, res) => {
   const q =
     "SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC LIMIT 6";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchLatestProperty1 = (req, res) => {
+  const q =
+    "SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -823,9 +837,26 @@ const updateProPlanStatus = (res) => {
 };
 
 // export const fetchPropertiesAddInLast30Days = (req, res) => {
+//   updateProPlanStatus();
 //   console.log("req.params.userId : ", req.params.userId);
-//   const q =
-//     "SELECT count(pro_id) as pro_count, pro_creation_date, DATEDIFF(CONVERT_TZ(pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS 'Days' FROM property_module where DATEDIFF(pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30 and pro_user_id = ? limit 1;";
+//   const q = `SELECT
+//     COUNT(property_module.pro_id) AS pro_count,
+//     property_module.pro_creation_date,
+//     DATEDIFF(CONVERT_TZ(property_module.pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS Days,
+//     -- list_plan_transactions.pro_plan_added_slots ,
+// --     list_plan_transactions.plan_status ,
+//     COALESCE(list_plan_transactions.pro_plan_added_slots, 0) AS pro_plan_added_slots,
+//     COALESCE(list_plan_transactions.plan_status, 0) AS plan_status,
+//     COALESCE(list_plan_transactions.list_plan_starts_on, 0) AS list_plan_starts_on,
+//     coalesce(total_no_pro_user_can_add, 0) as total_no_pro_user_can_add
+// FROM
+//     property_module
+// LEFT JOIN
+//     list_plan_transactions ON list_plan_transactions.user_id = property_module.pro_user_id and (list_plan_transactions.plan_status = 1 OR list_plan_transactions.plan_status = 2 )
+// WHERE
+//     DATEDIFF(property_module.pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30
+//     AND property_module.pro_user_id = ?
+// LIMIT 1;`;
 //   db.query(q, [req.params.userId], (err, data) => {
 //     if (err) return res.status(500).json(err);
 //     return res.status(200).json(data);
@@ -836,24 +867,24 @@ export const fetchPropertiesAddInLast30Days = (req, res) => {
   updateProPlanStatus();
   console.log("req.params.userId : ", req.params.userId);
   const q = `SELECT 
-    COUNT(property_module.pro_id) AS pro_count, 
-    property_module.pro_creation_date, 
-    DATEDIFF(CONVERT_TZ(property_module.pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS Days, 
-    -- list_plan_transactions.pro_plan_added_slots ,
+  COUNT(property_module.pro_id) AS pro_count, 
+  property_module.pro_creation_date, 
+  DATEDIFF(CONVERT_TZ(property_module.pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS Days, 
+  -- list_plan_transactions.pro_plan_added_slots ,
 --     list_plan_transactions.plan_status ,
-    COALESCE(list_plan_transactions.pro_plan_added_slots, 0) AS pro_plan_added_slots,
-    COALESCE(list_plan_transactions.plan_status, 0) AS plan_status,
-    COALESCE(list_plan_transactions.list_plan_starts_on, 0) AS list_plan_starts_on,
-    coalesce(total_no_pro_user_can_add, 0) as total_no_pro_user_can_add
+  COALESCE(list_plan_transactions.pro_plan_added_slots, 0) AS pro_plan_added_slots,
+  COALESCE(list_plan_transactions.plan_status, 0) AS plan_status,
+  COALESCE(list_plan_transactions.list_plan_starts_on, 0) AS list_plan_starts_on,
+  coalesce(total_no_pro_user_can_add, 0) as total_no_pro_user_can_add,
+  tran_id
 FROM 
-    property_module 
+  property_module 
 LEFT JOIN 
-    list_plan_transactions ON list_plan_transactions.user_id = property_module.pro_user_id and (list_plan_transactions.plan_status = 1 OR list_plan_transactions.plan_status = 2 )
+  ( select * from list_plan_transactions where user_id = ? order by tran_id desc limit 1) as list_plan_transactions ON list_plan_transactions.user_id = property_module.pro_user_id and (list_plan_transactions.plan_status = 1 OR list_plan_transactions.plan_status = 2 )
 WHERE 
-    DATEDIFF(property_module.pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30 
-    AND property_module.pro_user_id = ?
-LIMIT 1;`;
-  db.query(q, [req.params.userId], (err, data) => {
+  DATEDIFF(property_module.pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30 
+  AND property_module.pro_user_id = ?;`;
+  db.query(q, [req.params.userId, req.params.userId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
