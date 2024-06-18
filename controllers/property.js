@@ -1,5 +1,19 @@
 import { db } from "../connect.js";
 import { transporter } from "../nodemailer.js";
+import fs from "fs";
+
+// const jsonData1 = fs.readFileSync("test.json", "utf8");
+// const myObject = JSON.parse(jsonData1);
+// console.log(myObject, myObject.intents);
+
+// const dataToWrite = {
+//   tag: "properties detail",
+//   patterns: ["tell me about all properties"],
+//   responses: ["Property is inkkr of price 3000 867989769"],
+//   context: [""],
+// };
+
+
 
 export const addProperty = (req, res) => {
   const q =
@@ -48,6 +62,9 @@ export const addProperty = (req, res) => {
     req.body.pro_sub_district,
     req.body.pro_date,
   ];
+
+  //const newPropety="Property is in "+req.body.pro_city+"of price"+req.body.pro_amt;
+
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
     const insertId = data.insertId;
@@ -300,8 +317,8 @@ export const addProperty = (req, res) => {
           if (err) return res.status(500).json(err);
           const updateq =
             "UPDATE list_plan_transactions SET pro_added_recently = pro_added_recently + 1 where user_id = ? order by tran_id desc limit 1";
-          
-            db.query(updateq, [req.body.pro_user_id], (err, data) => {
+
+          db.query(updateq, [req.body.pro_user_id], (err, data) => {
             if (err) return res.status(500).json(err);
             return res.status(200).json(insertId);
           });
@@ -411,19 +428,94 @@ export const addOrigin = (req, res) => {
 //   });
 // };
 
+// myObject.intents.push({
+//   tag: "listing",
+//   patterns: ["property 1 , property 1"],
+//   responses: ["newresponse"],
+//   context: [""],
+// });
+
+// fs.appendFile("test.json", jsonData, 'utf8', (err) => {
+//   if (err) {
+//       console.error("Error writing to file:", err);
+//   } else {
+//       console.log("Data has been written to test.json");
+//   }
+// });
+
+// export const fetchPropertyData = (req, res) => {
+
+
+//   const filePath = path.resolve(__dirname, "./build", "index.html");
+//   fs.readFile(filePath, "utf8", (err, data) => {
+//     if (err) {
+//       return console.log(err);
+//     }
+
+//     data = data
+//       .replace(/__TITLE__/g, "Home Page")
+//       .replace(/__DESCRIPTION__/g, "Home page description.");
+//   )
+//   const q = `SELECT DISTINCT property_module_images.* , property_module.* , agent_data.agent_type as user_type, agent_data.agent_name FROM property_module left join property_module_images on 
+//     property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) as agent_data on 
+//     property_module.pro_user_id = agent_data.user_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC`;
+//   db.query(q, (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     // const updatedJsonData = JSON.stringify(myObject, null, 4);
+//     // fs.writeFileSync("test.json", updatedJsonData, "utf8");
+//     // console.log("Data has been appended to test.json");
+//     return res.status(200).json(data);
+//   });
+// };
+
+
 export const fetchPropertyData = (req, res) => {
-  // res.setHeader('Set-Cookie', `token=sdf; HttpOnly`);
-  // console.log("fg")
-  // const refreshToken = req.cookies.jwt;
-  // console.log("refreshToken : " , refreshToken);
-  const q = `SELECT DISTINCT property_module_images.* , property_module.* , agent_data.agent_type as user_type, agent_data.agent_name FROM property_module left join property_module_images on 
-    property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) as agent_data on 
-    property_module.pro_user_id = agent_data.user_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC`;
-  db.query(q, (err, data) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
+
+
+  const filePath = path.resolve(__dirname, './build', 'index.html');
+
+  // Read index.html file asynchronously
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading index.html:', err);
+      return res.status(500).send('Error reading index.html');
+    }
+
+    // Replace placeholders with dynamic content
+    data = data.replace(/__TITLE__/g, 'Home Page')
+               .replace(/__DESCRIPTION__/g, 'Home page description.');
+
+    // Perform database query to fetch data
+    const query = `SELECT DISTINCT property_module_images.*, property_module.*, agent_data.agent_type AS user_type, agent_data.agent_name
+                   FROM property_module
+                   LEFT JOIN property_module_images ON property_module.pro_id = property_module_images.img_cnct_id
+                   LEFT JOIN (SELECT agent_type, user_cnct_id, agent_name FROM agent_module) AS agent_data ON property_module.pro_user_id = agent_data.user_cnct_id
+                   WHERE pro_listed = 1
+                   GROUP BY pro_id
+                   ORDER BY pro_id DESC`;
+
+    db.query(query, (err, dbData) => {
+      if (err) {
+        console.error('Error executing database query:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+
+      // Here, you can manipulate dbData as needed before sending it as a response
+      // For example, you may want to process or format the data before sending it
+
+      // Send the modified index.html or other response as needed
+      // Example: 
+      res.status(200).send(data);
+      //res.status(200).json(dbData); // Sending JSON response for demonstration
+    });
   });
 };
+
+
+
+
+
+
 
 export const fetchPropertyDataById = (req, res) => {
   const q = "SELECT * from property_module where pro_id = ? ";
