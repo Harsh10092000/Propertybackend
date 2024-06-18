@@ -1,7 +1,7 @@
 import { db } from "../connect.js";
 import { transporter } from "../nodemailer.js";
 import fs from "fs";
-
+import path from "path";
 // const jsonData1 = fs.readFileSync("test.json", "utf8");
 // const myObject = JSON.parse(jsonData1);
 // console.log(myObject, myObject.intents);
