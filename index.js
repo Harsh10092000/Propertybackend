@@ -16,7 +16,7 @@ import authMap from "./routes/map.js"
 import authPay from "./routes/pay.js"
 import "dotenv/config"
 import cookieParser from 'cookie-parser';
-
+import path from "path";
 const app = express();
 app.use(express.static("./public"));
 app.use(cookieParser());
