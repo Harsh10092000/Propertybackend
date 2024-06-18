@@ -505,7 +505,7 @@ export const fetchPropertyData = (req, res) => {
 
       // Send the modified index.html or other response as needed
       // Example: 
-      res.status(200).send(data);
+      res.status(200).send(dbData);
       //res.status(200).json(dbData); // Sending JSON response for demonstration
     });
   });
