@@ -472,7 +472,7 @@ export const addOrigin = (req, res) => {
 export const fetchPropertyData = (req, res) => {
 
 
-  const filePath = path.resolve(__dirname, './build', 'index.html');
+  const filePath = path.resolve(process.cwd(), './build', 'index.html');
 
   // Read index.html file asynchronously
   fs.readFile(filePath, 'utf8', (err, data) => {
