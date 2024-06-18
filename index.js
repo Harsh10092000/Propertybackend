@@ -23,31 +23,6 @@ app.use(cookieParser());
 
 
 
-ChatGPT
-The issue you're encountering is related to the use of __dirname in an ES module (type: "module") in Node.js. When using ES modules, Node.js does not support the use of __dirname and __filename directly due to how modules are handled in this mode.
-
-To resolve this issue, you have a couple of options:
-
-Option 1: Use import.meta.url
-In ES modules, you can use import.meta.url to get the current module's URL. From this URL, you can derive the directory path using the new URL() constructor:
-
-javascript
-Copy code
-import express from 'express';
-import path from 'path';
-
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
-const app = express();
-
-app.use(express.static(path.resolve(__dirname, "./build")));
-
-// Other routes and middleware
-
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
-
 app.use(express.static(path.resolve(process.cwd(), "./build")));
 
 // var whitelist = ["https://www.propertyease.in", "https://propertyease.in" , "http://localhost:8010" , "http://localhost:5173" ];
