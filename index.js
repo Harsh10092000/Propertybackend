@@ -23,10 +23,10 @@ app.use(cookieParser());
 
 
 
-app.use(express.static(path.resolve(process.cwd(), "./build")));
+// app.use(express.static(path.resolve(process.cwd(), "./build")));
 
-// var whitelist = ["https://www.propertyease.in", "https://propertyease.in" , "http://localhost:8010" , "http://localhost:5173" ];
-var whitelist = ["https://www.propertyease.in", "https://propertyease.in" ];
+var whitelist = ["https://www.propertyease.in", "https://propertyease.in" , "http://localhost:8010" , "http://localhost:5173" ];
+//var whitelist = ["https://www.propertyease.in", "https://propertyease.in" ];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
