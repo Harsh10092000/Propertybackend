@@ -21,6 +21,9 @@ const app = express();
 app.use(express.static("./public"));
 app.use(cookieParser());
 
+
+app.use(express.static(path.resolve(__dirname, "./build")))
+
 // var whitelist = ["https://www.propertyease.in", "https://propertyease.in" , "http://localhost:8010" , "http://localhost:5173" ];
 var whitelist = ["https://www.propertyease.in", "https://propertyease.in" ];
 var corsOptions = {
