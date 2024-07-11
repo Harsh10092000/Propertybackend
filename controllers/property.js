@@ -106,7 +106,7 @@ export const addProperty = (req, res) => {
 
       let info = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
-        to: data[0].login_email,
+        //to: data[0].login_email,
         //to: "harshgupta.calinfo@gmail.com",
         to: req.body.pro_user_email,
         subject: `Thanks for your time and trust!`, // Subject line
