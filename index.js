@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
- 
+import cron from 'node-cron'; 
+
+
 import authLogin from "./routes/login.js";
 import authProperty from "./routes/property.js";
 import authAccount from "./routes/account.js";
@@ -14,13 +16,36 @@ import authAd from "./routes/ad.js"
 import authProPlan from "./routes/proPlan.js"
 import authMap from "./routes/map.js"
 import authPay from "./routes/pay.js"
+import authMailDigest from "./routes/maildigest.js"
 import "dotenv/config"
 import cookieParser from 'cookie-parser';
 import path from "path";
+import authSettings from "./routes/settings.js"
+
+import { maildigest } from "./controllers/maildigest.js";
+import dotenv from 'dotenv';
+dotenv.config({ debug: true });
+
+
 const app = express();
 app.use(express.static("./public"));
 app.use(cookieParser());
 
+// const recipients = ["harshgupta.calinfo@gmail.com,harshwork1009@gmail.com"];
+// const batchSize = 50; // Number of emails to send in each batch
+// const delay = 2000; // Delay between batches in milliseconds (e.g., 2 seconds)
+
+cron.schedule(`${process.env.BROADCAST_EMAIL_MIN} ${process.env.BROADCAST_EMAIL_HR} */${process.env.BROADCAST_EMAIL_DAYS} * *`, () => {
+  maildigest();
+  console.log("mail sent");
+});
+
+
+//cron.schedule(`5 * * * * *`, () => {
+//   cron.schedule('*/10 * * * * *', () => {
+//   maildigest();
+//   console.log("mail sent");
+// });
 
 
 // app.use(express.static(path.resolve(process.cwd(), "./build")));
@@ -64,7 +89,8 @@ app.use("/api/ad", authAd);
 app.use("/api/proPlan", authProPlan);
 app.use("/api/cityMap", authMap);
 app.use("/api/pay", authPay);
-
+app.use("/api/setting", authSettings);
+app.use("/api/maildigest", authMailDigest);
 app.listen(8010, () => {
   console.log("App is running ");
 });
