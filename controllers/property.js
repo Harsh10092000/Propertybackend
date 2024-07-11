@@ -751,8 +751,8 @@ export const addProperty = (req, res) => {
 
           db.query(updateq, [req.body.pro_user_id], (err, data) => {
             if (err) return res.status(500).json(err);
-            console.log("process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : " , process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME)
-            if(process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME === 1) {
+            console.log("process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : " , process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME , typeof(process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME))
+            if(process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
               console.log("inside 3rd block")
               digesttransporter.sendMail(info3, (err, data) => {
                 if (err) return res.status(500).json(err);
