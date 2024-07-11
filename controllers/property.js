@@ -368,7 +368,7 @@ export const addProperty = (req, res) => {
                                                                   style="padding:0;Margin:0;padding-top:20px;padding-bottom:20px">
                                                                   <h1
                                                                       style="Margin:0;line-height:36px;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;font-size:30px;font-style:normal;font-weight:normal;color:#014751">
-                                                                      New listing alert:</h1>
+                                                                      New listing alert</h1>
                                                                   
                                                               </td>
                                                           </tr>
