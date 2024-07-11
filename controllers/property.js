@@ -210,8 +210,8 @@ export const addProperty = (req, res) => {
       let info2 = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
        
-        //to: "harshgupta.calinfo@gmail.com",
-        to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        to: "harshgupta.calinfo@gmail.com",
+        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //to: req.body.pro_user_email,
         subject: `Property Id: ${5000 + parseInt(insertId)} ${
           req.body.pro_user_email
@@ -751,7 +751,7 @@ export const addProperty = (req, res) => {
 
           db.query(updateq, [req.body.pro_user_id], (err, data) => {
             if (err) return res.status(500).json(err);
-            
+            console.log("process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : " , process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME)
             if(process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME === 1) {
               console.log("inside 3rd block")
               digesttransporter.sendMail(info3, (err, data) => {
