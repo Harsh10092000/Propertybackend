@@ -210,8 +210,8 @@ export const addProperty = (req, res) => {
       let info2 = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
        
-        to: "harshgupta.calinfo@gmail.com",
-        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        //to: "harshgupta.calinfo@gmail.com",
+        to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //to: req.body.pro_user_email,
         subject: `Property Id: ${5000 + parseInt(insertId)} ${
           req.body.pro_user_email
