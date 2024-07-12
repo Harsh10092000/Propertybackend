@@ -177,9 +177,9 @@ export const freeEnquiry2 = (req, res) => {
   db.query(q, [pro_user_id], (err, data) => {
     let info = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
-      to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-      //to: "harshgupta.calinfo@gmail.com",
-      subject: `${name} Showed Interest in a Property`,
+      //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+      to: "harshgupta.calinfo@gmail.com",
+      subject: `${name} Showed Interest in a Property (ID: ${pro_id})`,
       html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
         <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
@@ -251,8 +251,8 @@ export const freeEnquiry2 = (req, res) => {
     };
     let info2 = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
-      to: data[0].login_email,
-      //to: "harshgupta.calinfo@gmail.com",
+      //to: data[0].login_email,
+      to: "harshgupta.calinfo@gmail.com",
       subject: `Someone Showed Interest in your Property`, // Subject line
       html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
