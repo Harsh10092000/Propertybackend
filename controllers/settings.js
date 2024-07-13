@@ -1,4 +1,3 @@
-
 import fs from "fs";
 import path from "path";
 import CryptoJS from "crypto-js";
@@ -32,28 +31,29 @@ export const emailConfigSetting = (req, res) => {
   const envFilePath = ".env";
   let envFileContent = fs.readFileSync(envFilePath, "utf8");
 
+  if (
+    decryptAES(req.body.email_config_old_pass, cdfgd) === process.env.PASSWORD
+  ) {
+    envFileContent = removeExistingEntries(envFileContent, [
+      "EMAIL",
+      "PASSWORD",
+      "HOST",
+      "PORT",
+    ]);
 
-  if (decryptAES(req.body.email_config_old_pass, cdfgd) === process.env.PASSWORD) {
-  envFileContent = removeExistingEntries(envFileContent, [
-    "EMAIL",
-    "PASSWORD",
-    "HOST",
-    "PORT",
-  ]);
+    envFileContent += "";
+    envFileContent += `${"EMAIL"}=${decryptedEmail}\n`;
+    envFileContent += `${"PASSWORD"}=${decryptedPassword}\n`;
+    envFileContent += `${"HOST"}=${decryptedHost}\n`;
+    envFileContent += `${"PORT"}=${decryptedPort}\n`;
+    envFileContent += "";
 
-  envFileContent += "";
-  envFileContent += `${"EMAIL"}=${decryptedEmail}\n`;
-  envFileContent += `${"PASSWORD"}=${decryptedPassword}\n`;
-  envFileContent += `${"HOST"}=${decryptedHost}\n`;
-  envFileContent += `${"PORT"}=${decryptedPort}\n`;
-  envFileContent += "";
+    fs.writeFileSync(envFilePath, envFileContent, "utf8");
 
-  fs.writeFileSync(envFilePath, envFileContent, "utf8");
-
-  return res.status(200).json("done");
-} else {
-  return res.status(401).json("Old password is incorrect");
-}
+    return res.status(200).json("done");
+  } else {
+    return res.status(401).json("Old password is incorrect");
+  }
 };
 
 function removeExistingEntries(envFileContent, keys) {
@@ -73,9 +73,6 @@ function removeExistingEntries(envFileContent, keys) {
 
 // #test
 
-
-
-
 export const emailConfigSetting2 = (req, res) => {
   const cdfgd = process.env.EMAIL_CONFIG_KEY_1;
 
@@ -90,36 +87,31 @@ export const emailConfigSetting2 = (req, res) => {
   const envFilePath = ".env";
   let envFileContent = fs.readFileSync(envFilePath, "utf8");
 
-
-
-  if (decryptAES(req.body.email_config_old_pass, cdfgd) === process.env.BROADCAST_PASSWORD) {
-
+  if (
+    decryptAES(req.body.email_config_old_pass, cdfgd) ===
+    process.env.BROADCAST_PASSWORD
+  ) {
     envFileContent = removeExistingEntries2(envFileContent, [
       "BROADCAST_EMAIL",
       "BROADCAST_PASSWORD",
       "BROADCAST_HOST",
       "BROADCAST_PORT",
     ]);
-  
+
     envFileContent += "";
     envFileContent += `${"BROADCAST_EMAIL"}=${decryptedEmail}\n`;
     envFileContent += `${"BROADCAST_PASSWORD"}=${decryptedPassword}\n`;
     envFileContent += `${"BROADCAST_HOST"}=${decryptedHost}\n`;
     envFileContent += `${"BROADCAST_PORT"}=${decryptedPort}\n`;
     envFileContent += "";
-  
-  
-  
+
     fs.writeFileSync(envFilePath, envFileContent, "utf8");
-  
+
     return res.status(200).json("done");
   } else {
     return res.status(401).json("Old password is incorrect");
   }
 };
-
-
-
 
 function removeExistingEntries2(envFileContent, keys) {
   keys.forEach((key) => {
@@ -130,25 +122,19 @@ function removeExistingEntries2(envFileContent, keys) {
   return envFileContent;
 }
 
-
-
 export const emailConfigBroadcastSetting = (req, res) => {
   const cdfgd = process.env.EMAIL_CONFIG_KEY_1;
   const decryptedName =
-  '"' + decryptAES(req.body.email_sender_name, cdfgd) + '"';
+    '"' + decryptAES(req.body.email_sender_name, cdfgd) + '"';
   const decryptedSubject =
     '"' + decryptAES(req.body.email_subject, cdfgd) + '"';
-  const decryptedDays =
-     decryptAES(req.body.email_days, cdfgd) ;
+  const decryptedDays = decryptAES(req.body.email_days, cdfgd);
   const decryptedEmail =
     '"' + decryptAES(req.body.email_sender_id, cdfgd) + '"';
   //const decryptedTime = decryptAES(req.body.value, cdfgd);
 
   const envFilePath = ".env";
   let envFileContent = fs.readFileSync(envFilePath, "utf8");
-
-
-  
 
   envFileContent = removeExistingBroadEntries(envFileContent, [
     "SEND_NEW_LISTING_EMAIL_EVERYTIME",
@@ -157,7 +143,7 @@ export const emailConfigBroadcastSetting = (req, res) => {
     "BROADCAST_EMAIL_HR",
     "BROADCAST_EMAIL_MIN",
     "BROADCAST_EMAIL_DAYS",
-    "BROADCAST_SENDER_EMAIL_NAME"
+    "BROADCAST_SENDER_EMAIL_NAME",
   ]);
 
   console.log(req.body.email_time);
@@ -165,7 +151,7 @@ export const emailConfigBroadcastSetting = (req, res) => {
   envFileContent += "";
   envFileContent += `${"SEND_NEW_LISTING_EMAIL_EVERYTIME"}=0\n`;
   envFileContent += `${"BROADCAST_SENDER_EMAIL_NAME"}=${decryptedName}\n`;
-  
+
   envFileContent += `${"BROADCAST_SENDER_EMAIL"}=${decryptedEmail}\n`;
   envFileContent += `${"BROADCAST_EMAIL_SUBJECT"}=${decryptedSubject}\n`;
   envFileContent += `${"BROADCAST_EMAIL_HR"}=${req.body.email_hr}\n`;
@@ -187,15 +173,6 @@ function removeExistingBroadEntries(envFileContent, keys) {
   return envFileContent;
 }
 
-
-
-
-
-
-
-
-
-
 export const sendEmailPermissions = (req, res) => {
   const envFilePath = ".env";
   let envFileContent = fs.readFileSync(envFilePath, "utf8");
@@ -212,7 +189,6 @@ export const sendEmailPermissions = (req, res) => {
   return res.status(200).json("done");
 };
 
-
 function removeExistingBroadPer(envFileContent, keys) {
   keys.forEach((key) => {
     const existingKeyRegex = new RegExp(`^${key}=.*$`, "gm");
@@ -222,11 +198,43 @@ function removeExistingBroadPer(envFileContent, keys) {
   return envFileContent;
 }
 
-
 export const fetchSubscriberList = (req, res) => {
   const q = "SELECT * FROM mail_subscriber";
-  db.query(q , (err, data) => {
+  db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
+
+export const emailGloablSetting = (req, res) => {
+  const cdfgd = process.env.EMAIL_CONFIG_KEY_1;
+
+  console.log(req.body);
+
+  const decryptnName =
+    '"' + decryptAES(req.body.email_sender_name, cdfgd) + '"';
+  const decryptSenderId =
+    '"' + decryptAES(req.body.email_sender_id, cdfgd) + '"';
+  const decryptRecieverId =
+    '"' + decryptAES(req.body.email_reciever_id, cdfgd) + '"';
+
+  const envFilePath = ".env";
+  let envFileContent = fs.readFileSync(envFilePath, "utf8");
+
+  envFileContent = removeExistingEntries(envFileContent, [
+    "GLOBAL_EMAIL_SENDER_NAME",
+    "GLOBAL_EMAIL_SENDER_ID",
+    "GLOBAL_EMAIL_RECIEVER_ID",
+  ]);
+
+  envFileContent += "";
+  envFileContent += `${"GLOBAL_EMAIL_SENDER_NAME"}=${decryptnName}\n`;
+  envFileContent += `${"GLOBAL_EMAIL_SENDER_ID"}=${decryptSenderId}\n`;
+  envFileContent += `${"GLOBAL_EMAIL_RECIEVER_ID"}=${decryptRecieverId}\n`;
+  envFileContent += "";
+
+  fs.writeFileSync(envFilePath, envFileContent, "utf8");
+
+  return res.status(200).json("done");
+};
+

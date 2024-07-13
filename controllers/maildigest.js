@@ -531,3 +531,14 @@ async function sendEmailsInBatches(recipients, batchSize, delay) {
 //         console.log(`Email sent to ${recipient}: ${info.response}`);
 //     });
 // });
+
+
+export const deleteSub = (req, res) => {
+    const q =
+      "DELETE mail_subscriber from mail_subscriber WHERE sub_id = ?";
+    db.query(q, [req.params.subId], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json("DELETED");
+    });
+  };
+  
