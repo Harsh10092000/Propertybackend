@@ -215,8 +215,8 @@ export const emailGloablSetting = (req, res) => {
     '"' + decryptAES(req.body.email_sender_name, cdfgd) + '"';
   const decryptSenderId =
     '"' + decryptAES(req.body.email_sender_id, cdfgd) + '"';
-  const decryptRecieverId =
-    '"' + decryptAES(req.body.email_reciever_id, cdfgd) + '"';
+  // const decryptRecieverId =
+  //   '"' + decryptAES(req.body.email_reciever_id, cdfgd) + '"';
 
   const envFilePath = ".env";
   let envFileContent = fs.readFileSync(envFilePath, "utf8");
@@ -230,7 +230,7 @@ export const emailGloablSetting = (req, res) => {
   envFileContent += "";
   envFileContent += `${"GLOBAL_EMAIL_SENDER_NAME"}=${decryptnName}\n`;
   envFileContent += `${"GLOBAL_EMAIL_SENDER_ID"}=${decryptSenderId}\n`;
-  envFileContent += `${"GLOBAL_EMAIL_RECIEVER_ID"}=${decryptRecieverId}\n`;
+  envFileContent += `${"GLOBAL_EMAIL_RECIEVER_ID"}=${req.body.email_reciever_id}\n`;
   envFileContent += "";
 
   fs.writeFileSync(envFilePath, envFileContent, "utf8");
