@@ -104,6 +104,11 @@ export const addProperty = (req, res) => {
             emailData = item.emails
         }))
 
+        let emails_list = emailData.split(',')
+
+      
+        
+
       let info = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
         //to: data[0].login_email,
@@ -210,8 +215,8 @@ export const addProperty = (req, res) => {
       let info2 = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
        
-        to: "harshgupta.calinfo@gmail.com",
-        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        //to: "harshgupta.calinfo@gmail.com",
+        to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //to: req.body.pro_user_email,
         subject: `Property Id: ${5000 + parseInt(insertId)} ${
           req.body.pro_user_email
@@ -740,7 +745,7 @@ export const addProperty = (req, res) => {
   `,
       };
 
-      //return res.status(200).json(insertId);
+     
       transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
         transporter.sendMail(info2, (err, data) => {
@@ -759,7 +764,7 @@ export const addProperty = (req, res) => {
             //     return res.status(200).json(insertId);
             // });
             //const emailsList = ["harshgupta.calinfo@gmail.com","harshgarg1009@gmail.com"]
-            sendMultipleEmails(emailData, req.body, insertId);
+            sendMultipleEmails(emails_list, req.body, insertId);
             return res.status(200).json(insertId);
             } else {
               console.log("3rd block skipped")
