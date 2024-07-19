@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import "dotenv/config";
 
+
 // const jsonData1 = fs.readFileSync("test.json", "utf8");
 // const myObject = JSON.parse(jsonData1);
 // console.log(myObject, myObject.intents);
@@ -112,8 +113,8 @@ export const addProperty = (req, res) => {
       let info = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
         //to: data[0].login_email,
-        //to: "harshgupta.calinfo@gmail.com",
-        to: req.body.pro_user_email,
+        to: "harshgupta.calinfo@gmail.com",
+        //to: req.body.pro_user_email,
         subject: `Thanks for your time and trust!`, // Subject line
         html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -215,8 +216,8 @@ export const addProperty = (req, res) => {
       let info2 = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
        
-        //to: "harshgupta.calinfo@gmail.com",
-        to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        to: "harshgupta.calinfo@gmail.com",
+        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //to: req.body.pro_user_email,
         subject: `Property Id: ${5000 + parseInt(insertId)} ${
           req.body.pro_user_email
@@ -764,7 +765,7 @@ export const addProperty = (req, res) => {
             //     return res.status(200).json(insertId);
             // });
             //const emailsList = ["harshgupta.calinfo@gmail.com","harshgarg1009@gmail.com"]
-            sendMultipleEmails(emails_list, req.body, insertId);
+            //sendMultipleEmails(emails_list, req.body, insertId);
             return res.status(200).json(insertId);
             } else {
               console.log("3rd block skipped")
@@ -1337,6 +1338,7 @@ export const addOrigin = (req, res) => {
 
 export const fetchPropertyData = (req, res) => {
 
+ 
 
   const q = `SELECT DISTINCT property_module_images.* , property_module.* , agent_data.agent_type as user_type, agent_data.agent_name FROM property_module left join property_module_images on 
     property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) as agent_data on 
@@ -1400,6 +1402,7 @@ export const fetchPropertyData = (req, res) => {
 
 
 export const fetchPropertyDataById = (req, res) => {
+  
   const q = "SELECT * from property_module where pro_id = ? ";
   db.query(q, [req.params.proId], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -1749,6 +1752,8 @@ export const fetchLatestPropertyByCat1 = (req, res) => {
 // };
 
 export const fetchPropertyDataById1 = (req, res) => {
+  
+  
   const q = "SELECT * from property_module where pro_id = ? ";
   db.query(q, [req.params.proId], (err, data) => {
     if (err) return res.status(500).json(err);
