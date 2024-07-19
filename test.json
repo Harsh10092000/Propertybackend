@@ -1,0 +1,28 @@
+{
+    "intents": [
+        {
+            "tag": "properties detail",
+            "patterns": [
+                "tell me about all properties"
+            ],
+            "responses": [
+                "Property is inkkr of price 3000 867989769"
+            ],
+            "context": [
+                ""
+            ]
+        },
+        {
+            "tag": "listing",
+            "patterns": [
+                "property 1 , property 1"
+            ],
+            "responses": [
+                "newresponse"
+            ],
+            "context": [
+                ""
+            ]
+        }
+    ]
+}
