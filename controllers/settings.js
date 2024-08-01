@@ -206,6 +206,23 @@ export const fetchSubscriberList = (req, res) => {
   });
 };
 
+
+export const fetchSubscriberDataById = (req, res) => {
+  
+  const q = "SELECT * FROM mail_subscriber where sub_email = ?";
+  db.query(q, [req.params.subEmail], (err, data) => {
+    if (err) return res.status(500).json(err);
+   
+    if(data.length > 0) {
+      return res.status(200).json(true);
+    } else {
+      return res.status(200).json(false);
+    }
+    
+  });
+};
+
+
 export const emailGloablSetting = (req, res) => {
   const cdfgd = process.env.EMAIL_CONFIG_KEY_1;
 
