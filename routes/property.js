@@ -41,6 +41,7 @@ import {
   updateViews,
   updateContacted,
   updateProListingStatus,
+  updateProListingMultipleStatus,
   fetchPropertiesAddInLast30Days,
   checkPropertyExists,
   salePropertyTotal,
@@ -187,6 +188,7 @@ router.get("/fetchPropertyDataById1/:proId", fetchPropertyDataById1);
 router.put("/updateViews", updateViews);
 router.put("/updateContacted", updateContacted);
 router.put("/updateProListingStatus", updateProListingStatus);
+router.put("/updateProListingMultipleStatus", updateProListingMultipleStatus);
 router.get("/fetchPropertiesAddInLast30Days/:userId", fetchPropertiesAddInLast30Days);
 
 

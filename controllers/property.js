@@ -113,8 +113,8 @@ export const addProperty = (req, res) => {
       let info = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
         //to: data[0].login_email,
-        to: "harshgupta.calinfo@gmail.com",
-        //to: req.body.pro_user_email,
+        //to: "harshgupta.calinfo@gmail.com",
+        to: req.body.pro_user_email,
         subject: `Thanks for your time and trust!`, // Subject line
         html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -216,8 +216,8 @@ export const addProperty = (req, res) => {
       let info2 = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
        
-        to: "harshgupta.calinfo@gmail.com",
-        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        //to: "harshgupta.calinfo@gmail.com",
+        to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //to: req.body.pro_user_email,
         subject: `Property Id: ${5000 + parseInt(insertId)} ${
           req.body.pro_user_email
@@ -765,7 +765,7 @@ export const addProperty = (req, res) => {
             //     return res.status(200).json(insertId);
             // });
             //const emailsList = ["harshgupta.calinfo@gmail.com","harshgarg1009@gmail.com"]
-            //sendMultipleEmails(emails_list, req.body, insertId);
+            sendMultipleEmails(emails_list, req.body, insertId);
             return res.status(200).json(insertId);
             } else {
               console.log("3rd block skipped")
@@ -1804,6 +1804,29 @@ export const updateProListingStatus = (req, res) => {
     console.log(values);
     if (err) return res.status(500).json(err);
     return res.status(200).json("Updated Successfully");
+  });
+};
+
+
+export const updateProListingMultipleStatus = (req, res) => {
+  const { pro_listed, listingids } = req.body;  // Destructure pro_listed and pro_ids from request body
+
+  // Validate input
+  if (!Array.isArray(listingids) || listingids.length === 0) {
+    return res.status(400).json({ error: 'Invalid property IDs' });
+  }
+
+  // Create a placeholder for SQL IN clause
+  const placeholders = listingids.map(() => '?').join(',');
+  const q = `UPDATE property_module SET pro_listed = ? WHERE pro_id IN (${placeholders})`;
+  const values = [pro_listed, ...listingids];
+
+  db.query(q, values, (err, data) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).json(err);
+    }
+    return res.status(200).json('Updated Successfully');
   });
 };
 

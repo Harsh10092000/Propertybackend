@@ -42,6 +42,8 @@ export const fetchUsers = (req, res) => {
 //   });
 // };
 
+
+//list_plan_transactions ON list_plan_transactions.user_id = property_module.pro_user_id 
 export const fetchUsers1 = (req, res) => {
   const q = `SELECT 
   login.*, 
@@ -83,7 +85,8 @@ LEFT JOIN
      pro_user_id
   ) AS pro_count ON login.login_id = pro_count.pro_user_id
 LEFT JOIN 
-  list_plan_transactions ON list_plan_transactions.user_id = property_module.pro_user_id 
+  
+  list_plan_transactions ON list_plan_transactions.user_id = login.login_id
                          AND (list_plan_transactions.plan_status = 1 OR list_plan_transactions.plan_status = 2 ) group by login.login_id
 ORDER BY 
   login.login_id DESC;`;
