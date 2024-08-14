@@ -1562,7 +1562,13 @@ export const fetchPropertyDataByUserId1 = (req, res) => {
 
 export const fetchShortListProperty = (req, res) => {
   const q =
-    "SELECT shortlist_module.* , property_module.* FROM shortlist_module left join property_module on shortlist_module.shortlist_pro_id = property_module.pro_id where shortlist_cnct_id = ? ";
+    `SELECT shortlist_module.*, 
+       property_module.*
+FROM shortlist_module
+LEFT JOIN property_module
+ON shortlist_module.shortlist_pro_id = property_module.pro_id
+WHERE shortlist_cnct_id = ?
+  AND property_module.pro_id IS NOT NULL;`;
   db.query(q, [req.params.userId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -1829,6 +1835,41 @@ export const updateProListingMultipleStatus = (req, res) => {
     return res.status(200).json('Updated Successfully');
   });
 };
+
+
+
+export const updateSaleStatus = (req, res) => {
+  const q = "UPDATE property_module SET pro_sale_status = ?, pro_listed = ? WHERE pro_id = ?";
+  const values = [req.body.sale_status, 0, req.body.pro_id];
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Updated Successfully");
+  });
+};
+
+
+export const updateMultipleSaleStatus = (req, res) => {
+  const { sale_status, listingids } = req.body; 
+
+  // Validate input
+  if (!Array.isArray(listingids) || listingids.length === 0) {
+    return res.status(400).json({ error: 'Invalid property IDs' });
+  }
+
+  // Create a placeholder for SQL IN clause
+  const placeholders = listingids.map(() => '?').join(',');
+  const q = `UPDATE property_module SET pro_sale_status = ?, pro_listed = ? WHERE pro_id IN (${placeholders})`;
+  const values = [sale_status, 0, ...listingids];
+
+  db.query(q, values, (err, data) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).json(err);
+    }
+    return res.status(200).json('Updated Successfully');
+  });
+};
+
 
 const updateProPlanStatus = (res) => {
   const updateData =
