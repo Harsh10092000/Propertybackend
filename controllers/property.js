@@ -1858,8 +1858,8 @@ export const updateMultipleSaleStatus = (req, res) => {
 
   // Create a placeholder for SQL IN clause
   const placeholders = listingids.map(() => '?').join(',');
-  const q = `UPDATE property_module SET pro_sale_status = ?, pro_listed = ? WHERE pro_id IN (${placeholders})`;
-  const values = [sale_status, 0, ...listingids];
+  const q = `UPDATE property_module SET pro_sale_status = ?, pro_listed = ? WHERE pro_id IN (${placeholders}) and pro_sale_status = (${!sale_status})`;
+  const values = [sale_status, 0, ...listingids, !sale_status];
 
   db.query(q, values, (err, data) => {
     if (err) {
