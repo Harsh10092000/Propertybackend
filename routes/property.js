@@ -48,7 +48,13 @@ import {
   checkPropertyExists,
   salePropertyTotal,
   moreProperties,
-  fetchLatestProperty1
+  fetchLatestProperty1,
+  // fetchViews,
+  // fetchResponses,
+  fetchLast30DaysListings,
+  fetchResponsesByProId,
+  fetchRespondentByUser,
+  fetchRespondentByPro
   
 } from "../controllers/property.js";
 
@@ -164,6 +170,15 @@ router.get("/fetchPropertySubCatNo", fetchPropertySubCatNo);
 router.get("/fetchPropertyDataBySubCat/:proSubType", fetchPropertyDataBySubCat);
 router.get("/fetchPropertyDataByUserId/:userId", fetchPropertyDataByUserId);
 router.get("/fetchPropertyDataByUserId1/:userId", verifyJwt, fetchPropertyDataByUserId1);
+
+// router.get("/fetchViews/:userId", verifyJwt, fetchViews);
+// router.get("/fetchResponses/:userId", verifyJwt, fetchResponses);
+router.get("/fetchLast30DaysListings/:userId", verifyJwt, fetchLast30DaysListings);
+router.get("/fetchResponsesByProId/:proId", verifyJwt, fetchResponsesByProId);
+router.get("/fetchRespondentByUser/:userId", verifyJwt, fetchRespondentByUser);
+router.get("/fetchRespondentByPro/:proId", verifyJwt, fetchRespondentByPro);
+
+
 
 router.get("/fetchShortListProperty/:userId", verifyJwt, fetchShortListProperty);
 router.get("/fetchImagesWithId/:imgId", fetchImagesWithId);

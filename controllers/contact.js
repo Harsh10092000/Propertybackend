@@ -312,21 +312,28 @@ export const freeEnquiry2 = (req, res) => {
      </div>
   </div>`,
     };
-    transporter.sendMail(info, (err, data) => {
-      if (err) return res.status(500).json(err);
-      transporter.sendMail(info2, (err, data) => {
-        if (err) return res.status(500).json(err);
+   //  transporter.sendMail(info, (err, data) => {
+   //    if (err) return res.status(500).json(err);
+   //    transporter.sendMail(info2, (err, data) => {
+   //      if (err) return res.status(500).json(err);
         const q =
           "UPDATE property_module SET pro_contacted = ? WHERE pro_id = ?";
         const values = [pro_contacted, pro_id];
         console.log("values : " , values);
         db.query(q, values, (err, data) => {
           if (err) return res.status(500).json(err);
+          const q =
+          
+     "INSERT INTO property_interest (interest_property_id, interested_name, interested_email, interested_phone) VALUES(?)";
+   const values = [pro_id, name, email, phone];
+   db.query(q, [values], (err, data) => {
+     if (err) return res.status(500).json(err);
           return res.status(200).json("Updated Successfully");
         });
       });
-    });
-  });
+      });
+//     });
+//   });
 };
 
 export const contactAgent = (req, res) => {

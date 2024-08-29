@@ -331,9 +331,10 @@ export const addProperty = (req, res) => {
       let info3 = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
         //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-         to: emailData,
+        // to: emailData,
+        //to: "harshgupta.calinfo@gmail.com",
         //bcc: emailData,
-        //bcc: ["harshgupta.calinfo@gmail.com,harshwork1009@gmail.com"],
+        bcc: ["harshgupta.calinfo@gmail.com,harshwork1009@gmail.com"],
         subject: `New Property Listed`, // Subject line
         
         html: `
@@ -1549,16 +1550,189 @@ export const fetchPropertyDataByUserId = (req, res) => {
   });
 };
 
+// export const fetchPropertyDataByUserId1 = (req, res) => {
+//   //await verifyJwt(req,res);
+//   const q =
+//     "SELECT * FROM property_module where pro_user_id = ? ORDER BY pro_id DESC";
+//   db.query(q, [req.params.userId], (err, data) => {
+//     if (err) return res.status(500).json(err);
+
+//     return res.status(200).json(data);
+//   });
+// };
+
+
 export const fetchPropertyDataByUserId1 = (req, res) => {
   //await verifyJwt(req,res);
   const q =
-    "SELECT * FROM property_module where pro_user_id = ? ORDER BY pro_id DESC";
+    `
+    SELECT 
+    property_module.*, 
+    COUNT(property_interest.interest_property_id) AS pro_responses ,
+    COALESCE(property_module.pro_views, 0) AS pro_views1 
+FROM 
+    property_module
+LEFT JOIN 
+    property_interest 
+ON 
+    property_module.pro_id = property_interest.interest_property_id
+WHERE 
+    property_module.pro_user_id = ?
+GROUP BY 
+    property_module.pro_id
+ORDER BY 
+    property_module.pro_id DESC;
+    `;
   db.query(q, [req.params.userId], (err, data) => {
     if (err) return res.status(500).json(err);
 
     return res.status(200).json(data);
   });
 };
+
+
+
+
+// export const fetchViews = (req, res) => {
+//   //await verifyJwt(req,res);
+//   const q =
+//     "SELECT sum(pro_views) as pro_views FROM property_module where pro_user_id = ?";
+//   db.query(q, [req.params.userId], (err, data) => {
+//     if (err) return res.status(500).json(err);
+
+//     return res.status(200).json(data);
+//   });
+// };
+
+
+export const fetchRespondentByUser = (req, res) => {
+  const q =
+    `SELECT 
+    property_module.*,
+    property_module.pro_id,
+    property_module.pro_ad_type,
+    property_module.pro_amt,
+	  property_module.pro_amt_unit,
+    property_module.pro_sale_status,
+    property_module.pro_listed,
+    property_module.pro_creation_date,
+    count(property_interest.interest_property_id) AS pro_responses,
+    property_interest.interest_property_id AS pro_response_id ,
+    property_interest.interest_person_id,
+    COALESCE(property_module.pro_views, 0) AS pro_views, 
+    property_interest.interested_name,
+    property_interest.interested_email,
+    property_interest.interested_phone
+FROM 
+    property_module
+right JOIN 
+    property_interest 
+ON 
+    property_module.pro_id = property_interest.interest_property_id
+    
+
+WHERE 
+    property_module.pro_user_id = ?
+GROUP BY 
+    property_module.pro_id
+ORDER BY 
+    property_module.pro_id DESC;`;
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+
+    return res.status(200).json(data);
+  });
+};
+
+
+export const fetchRespondentByPro = (req, res) => {
+  //await verifyJwt(req,res);
+  const q =
+  `SELECT * FROM u747016719_propertyease.property_interest where interest_property_id = ?`;
+  db.query(q, [req.params.proId], (err, data) => {
+    if (err) return res.status(500).json(err);
+
+    return res.status(200).json(data);
+  });
+};
+
+// export const fetchResponses = (req, res) => {
+//   //await verifyJwt(req,res);
+//   const q =
+//     "SELECT count(property_interest.interest_property_id) as pro_responses FROM property_interest left join property_module on property_module.pro_id = property_interest.interest_property_id  where property_module.pro_user_id = ?";
+//   db.query(q, [req.params.userId], (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json(data);
+//   });
+// };
+
+export const fetchResponsesByProId = (req, res) => {
+  //await verifyJwt(req,res);
+  const q =
+    "SELECT count(interest_property_id) as interest_property_id  FROM u747016719_propertyease.property_interest where interest_property_id = ? group by interest_person_id";
+  db.query(q, [req.params.proId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
+
+
+export const fetchLast30DaysListings = (req, res) => {
+  //await verifyJwt(req,res);
+  const q =
+   `SELECT 
+  pro_count.pro_count, 
+  pro_count.pro_creation_date, 
+  DATEDIFF(CONVERT_TZ(pro_count.pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS Days, 
+  COALESCE(list_plan_transactions.pro_plan_added_slots, 0) AS pro_plan_added_slots,
+  COALESCE(list_plan_transactions.plan_status, 0) AS plan_status,
+  COALESCE(list_plan_transactions.list_plan_starts_on, 0) AS list_plan_starts_on,
+  COALESCE(list_plan_transactions.tran_id, 0) AS tran_id
+FROM 
+  login_module AS login 
+
+LEFT JOIN 
+  property_module ON login.login_id = property_module.pro_user_id
+LEFT JOIN 
+  (SELECT 
+     pro_user_id,
+     COUNT(pro_id) AS count_of_properties 
+   FROM 
+     property_module 
+   GROUP BY 
+     pro_user_id
+  ) AS property_count ON login.login_id = property_count.pro_user_id 
+LEFT JOIN 
+  (SELECT 
+     pro_user_id,
+     COUNT(pro_id) AS pro_count, 
+     pro_creation_date
+   FROM 
+     property_module 
+   WHERE 
+     DATEDIFF(pro_creation_date, CONVERT_TZ(NOW(), '+00:00', '+05:30')) > -30 
+   GROUP BY 
+     pro_user_id
+  ) AS pro_count ON login.login_id = pro_count.pro_user_id
+LEFT JOIN 
+  list_plan_transactions ON list_plan_transactions.user_id = login.login_id
+                         AND (list_plan_transactions.plan_status = 1 OR list_plan_transactions.plan_status = 2 ) where login.login_id = ? group by login.login_id 
+ORDER BY 
+  login.login_id DESC;`
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+
+    return res.status(200).json(data);
+  });
+};
+
+
+
+
+
+
 
 export const fetchShortListProperty = (req, res) => {
   const q =
