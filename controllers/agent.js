@@ -313,7 +313,7 @@ export const fetchAgentDataById = (req, res) => {
 
 
 export const fetchAgentNameById = (req, res) => {
-  const q = "SELECT agent_name FROM agent_module where user_cnct_id = ?";
+  const q = "SELECT agent_name ,agent_sub_district, agent_city, agent_state FROM agent_module where user_cnct_id = ?";
   db.query(q, [req.params.userId], (err, data) => {
     if (err) return res.status(500).json(err);
     

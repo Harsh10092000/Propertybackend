@@ -21,11 +21,14 @@ import "dotenv/config"
 import cookieParser from 'cookie-parser';
 import path from "path";
 import authSettings from "./routes/settings.js"
-
 import { maildigest } from "./controllers/maildigest.js";
-import dotenv from 'dotenv';
-dotenv.config({ debug: true });
 
+// import authCodeGen from "./routes/codeGeneration.js";
+import authInvite from "./routes/invite.js";
+
+import dotenv from 'dotenv';
+
+dotenv.config({ debug: true });
 
 const app = express();
 app.use(express.static("./public"));
@@ -35,10 +38,10 @@ app.use(cookieParser());
 // const batchSize = 50; // Number of emails to send in each batch
 // const delay = 2000; // Delay between batches in milliseconds (e.g., 2 seconds)
 
-cron.schedule(`${process.env.BROADCAST_EMAIL_MIN} ${process.env.BROADCAST_EMAIL_HR} */${process.env.BROADCAST_EMAIL_DAYS} * *`, () => {
-  maildigest();
-  console.log("mail sent");
-});
+// cron.schedule(`${process.env.BROADCAST_EMAIL_MIN} ${process.env.BROADCAST_EMAIL_HR} */${process.env.BROADCAST_EMAIL_DAYS} * *`, () => {
+//   maildigest();
+//   console.log("mail sent");
+// });
 
 
 //cron.schedule(`5 * * * * *`, () => {
@@ -91,6 +94,9 @@ app.use("/api/cityMap", authMap);
 app.use("/api/pay", authPay);
 app.use("/api/setting", authSettings);
 app.use("/api/maildigest", authMailDigest);
+// app.use("/api/gencode", authCodeGen);
+app.use("/api/invite", authInvite);
+
 app.listen(8010, () => {
   console.log("App is running ");
 });

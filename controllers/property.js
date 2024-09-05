@@ -4,7 +4,6 @@ import fs from "fs";
 import path from "path";
 import "dotenv/config";
 
-
 // const jsonData1 = fs.readFileSync("test.json", "utf8");
 // const myObject = JSON.parse(jsonData1);
 // console.log(myObject, myObject.intents);
@@ -15,8 +14,6 @@ import "dotenv/config";
 //   responses: ["Property is inkkr of price 3000 867989769"],
 //   context: [""],
 // };
-
-
 
 export const addProperty = (req, res) => {
   const q =
@@ -96,27 +93,31 @@ export const addProperty = (req, res) => {
     db.query(q, updateValues, (err, data) => {
       console.log(updateValues);
       if (err) return res.status(500).json(err);
-      const subData = "SELECT GROUP_CONCAT( sub_email ) as emails FROM mail_subscriber";
+      const subData =
+        "SELECT GROUP_CONCAT( sub_email ) as emails FROM mail_subscriber";
       let emailData = "";
 
       db.query(subData, (err, subscriberData) => {
         if (err) return res.status(500).json(err);
-        subscriberData.map((item => {
-            emailData = item.emails
-        }))
+        subscriberData.map((item) => {
+          emailData = item.emails;
+        });
 
-        let emails_list = emailData.split(',')
+        // const imgData =
+        //   "SELECT * FROM property_module_images where img_cnct_id = ? limit 1;";
 
-      
-        
+        // db.query(imgData, [insertId], (err, imglink) => {
+        //   if (err) return res.status(500).json(err);
 
-      let info = {
-        from: '"Propertyease " <noreply@propertyease.in>', // sender address
-        //to: data[0].login_email,
-        //to: "harshgupta.calinfo@gmail.com",
-        to: req.body.pro_user_email,
-        subject: `Thanks for your time and trust!`, // Subject line
-        html: `<div style="margin:0px;padding:0px;">
+          let emails_list = emailData.split(",");
+
+          let info = {
+            from: '"Propertyease " <noreply@propertyease.in>', // sender address
+            //to: data[0].login_email,
+            //to: "harshgupta.calinfo@gmail.com",
+            to: req.body.pro_user_email,
+            subject: `Thanks for your time and trust!`, // Subject line
+            html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
         <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
            <tbody>
@@ -152,34 +153,40 @@ export const addProperty = (req, res) => {
                                           .replaceAll(".", "") +
                                         "-"
                                       }${
-          req.body.pro_type
-            ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${req.body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${req.body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}">https://propertyease.in/${
-          req.body.pro_area_size.toLowerCase() +
-          "-" +
-          req.body.pro_area_size_unit
-            .toLowerCase()
-            .replaceAll(" ", "-")
-            .replaceAll(".", "") +
-          "-"
-        }${
-          req.body.pro_type
-            ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${req.body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${req.body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}</a></p>
+              req.body.pro_type
+                ? req.body.pro_type
+                    .split(",")[0]
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                : ""
+            }-for-${
+              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
+            }-in-${req.body.pro_locality
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${req.body.pro_city
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${insertId}">https://propertyease.in/${
+              req.body.pro_area_size.toLowerCase() +
+              "-" +
+              req.body.pro_area_size_unit
+                .toLowerCase()
+                .replaceAll(" ", "-")
+                .replaceAll(".", "") +
+              "-"
+            }${
+              req.body.pro_type
+                ? req.body.pro_type
+                    .split(",")[0]
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                : ""
+            }-for-${
+              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
+            }-in-${req.body.pro_locality
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${req.body.pro_city
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${insertId}</a></p>
                                       <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at <a href="https://wa.me/919996716787">+91-99967-16787</a> anytime for any information related to this enquiry.</p>
                                       
                                       </td>
@@ -212,17 +219,17 @@ export const addProperty = (req, res) => {
         </table>
      </div>
   </div>`,
-      };
-      let info2 = {
-        from: '"Propertyease " <noreply@propertyease.in>', // sender address
-       
-        //to: "harshgupta.calinfo@gmail.com",
-        to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-        //to: req.body.pro_user_email,
-        subject: `Property Id: ${5000 + parseInt(insertId)} ${
-          req.body.pro_user_email
-        } listed new Property`, // Subject line
-        html: `<div style="margin:0px;padding:0px;">
+          };
+          let info2 = {
+            from: '"Propertyease " <noreply@propertyease.in>', // sender address
+
+            //to: "harshgupta.calinfo@gmail.com",
+            to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+            //to: req.body.pro_user_email,
+            subject: `Property Id: ${5000 + parseInt(insertId)} ${
+              req.body.pro_user_email
+            } listed new Property`, // Subject line
+            html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
         <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
            <tbody>
@@ -251,8 +258,8 @@ export const addProperty = (req, res) => {
                                       <p style="margin-bottom: 10px; font-size: 16px;">${
                                         req.body.pro_user_email
                                       } has list following Property, Property Id: ${
-          5000 + parseInt(insertId)
-        } .</p>
+              5000 + parseInt(insertId)
+            } .</p>
                                       <p style="margin-bottom: 10px; font-size: 16px;">Check out the property: <a href="https://propertyease.in/${
                                         req.body.pro_area_size.toLowerCase() +
                                         "-" +
@@ -262,39 +269,45 @@ export const addProperty = (req, res) => {
                                           .replaceAll(".", "") +
                                         "-"
                                       }${
-          req.body.pro_type
-            ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${req.body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${req.body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}">https://propertyease.in/${
-          req.body.pro_area_size.toLowerCase() +
-          "-" +
-          req.body.pro_area_size_unit
-            .toLowerCase()
-            .replaceAll(" ", "-")
-            .replaceAll(".", "") +
-          "-"
-        }${
-          req.body.pro_type
-            ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${req.body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${req.body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}</a></p>
+              req.body.pro_type
+                ? req.body.pro_type
+                    .split(",")[0]
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                : ""
+            }-for-${
+              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
+            }-in-${req.body.pro_locality
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${req.body.pro_city
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${insertId}">https://propertyease.in/${
+              req.body.pro_area_size.toLowerCase() +
+              "-" +
+              req.body.pro_area_size_unit
+                .toLowerCase()
+                .replaceAll(" ", "-")
+                .replaceAll(".", "") +
+              "-"
+            }${
+              req.body.pro_type
+                ? req.body.pro_type
+                    .split(",")[0]
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                : ""
+            }-for-${
+              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
+            }-in-${req.body.pro_locality
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${req.body.pro_city
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${insertId}</a></p>
                                       <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on <a href="https://wa.me/${
                                         "91" + req.body.pro_login_number
                                       }">+91-${
-          req.body.pro_login_number
-        }</a>.</p>
+              req.body.pro_login_number
+            }</a>.</p>
                                       
                                       </td>
                                 </tr>
@@ -326,18 +339,18 @@ export const addProperty = (req, res) => {
         </table>
      </div>
   </div>`,
-      };
+          };
 
-      let info3 = {
-        from: '"Propertyease " <noreply@propertyease.in>', // sender address
-        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-        // to: emailData,
-        //to: "harshgupta.calinfo@gmail.com",
-        //bcc: emailData,
-        bcc: ["harshgupta.calinfo@gmail.com,harshwork1009@gmail.com"],
-        subject: `New Property Listed`, // Subject line
-        
-        html: `
+          let info3 = {
+            from: '"Propertyease " <noreply@propertyease.in>', // sender address
+            //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+            // to: emailData,
+            //to: "harshgupta.calinfo@gmail.com",
+            //bcc: emailData,
+            bcc: ["harshgupta.calinfo@gmail.com,harshwork1009@gmail.com"],
+            subject: `New Property Listed`, // Subject line
+
+            html: `
   <div class="wrapper" style="width: 710px;margin: 40px auto;padding: 20px;border-radius: 10px;border: 1px solid #ede3e3;">
   <table class="es-content" cellspacing="0" cellpadding="0" align="center" role="none"
       style="border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%">
@@ -465,42 +478,60 @@ export const addProperty = (req, res) => {
                                                               <td align="left"
                                                                   style="padding:0;Margin:0;padding-top:5px;padding-bottom:5px">
                                                                   <a href="https://propertyease.in/${
-                                        req.body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        req.body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-          req.body.pro_type
-            ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${req.body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${req.body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}" style="text-decoration: none;">
+                                                                    req.body.pro_area_size.toLowerCase() +
+                                                                    "-" +
+                                                                    req.body.pro_area_size_unit
+                                                                      .toLowerCase()
+                                                                      .replaceAll(
+                                                                        " ",
+                                                                        "-"
+                                                                      )
+                                                                      .replaceAll(
+                                                                        ".",
+                                                                        ""
+                                                                      ) +
+                                                                    "-"
+                                                                  }${
+              req.body.pro_type
+                ? req.body.pro_type
+                    .split(",")[0]
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                : ""
+            }-for-${
+              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
+            }-in-${req.body.pro_locality
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${req.body.pro_city
+              .toLowerCase()
+              .replaceAll(
+                " ",
+                "-"
+              )}-${insertId}" style="text-decoration: none;">
                                                                   <h3 class="p_price"
                                                                       style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#014751">
                                                                       <strong>
   
-                                      ${req.body.pro_area_size +
-                        " " +
-                        req.body.pro_area_size_unit +
-                        " " +
-                        req.body.pro_type.split(",")[0] +
-                        " "}
-                      for ${req.body.pro_ad_type === "Rent" ? "Rent" : "Sale"} in
+                                      ${
+                                        req.body.pro_area_size +
+                                        " " +
+                                        req.body.pro_area_size_unit +
+                                        " " +
+                                        req.body.pro_type.split(",")[0] +
+                                        " "
+                                      }
+                      for ${
+                        req.body.pro_ad_type === "Rent" ? "Rent" : "Sale"
+                      } in
                       <span className="text-capitalize">
                         ${req.body.pro_locality + ", "}
                       </span>
                       
-                      ${req.body.pro_sub_district
-                        ? req.body.pro_sub_district + ", "
-                        : ""}
+                      ${
+                        req.body.pro_sub_district
+                          ? req.body.pro_sub_district + ", "
+                          : ""
+                      }
                       ${req.body.pro_city + ", "}
                       ${req.body.pro_state}</strong>
                                                                   </h3>
@@ -513,9 +544,19 @@ export const addProperty = (req, res) => {
                                                                   style="padding:0;Margin:0;padding-top:5px;padding-bottom:5px">
                                                                   <h3 class="p_price"
                                                                       style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#014751">
-                                                                      <strong> ${req.body.pro_amt
-                      ? "₹" + req.body.pro_amt + " " + req.body.pro_amt_unit
-                      : "Ask Price"}</strong>
+                                                                      <strong> ${
+                                                                        req.body
+                                                                          .pro_amt
+                                                                          ? "₹" +
+                                                                            req
+                                                                              .body
+                                                                              .pro_amt +
+                                                                            " " +
+                                                                            req
+                                                                              .body
+                                                                              .pro_amt_unit
+                                                                          : "Ask Price"
+                                                                      }</strong>
                                                                   </h3>
                                                               </td>
                                                           </tr>
@@ -535,7 +576,11 @@ export const addProperty = (req, res) => {
                                                                                           alt="New property Listed"
                                                                                           title="New property Listed"
                                                                                           align="absmiddle" width="16"
-                                                                                          style="display:inline-block !important;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;padding-right:5px;vertical-align:middle">${req.body.pro_locality},&nbsp;
+                                                                                          style="display:inline-block !important;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;padding-right:5px;vertical-align:middle">${
+                                                                                            req
+                                                                                              .body
+                                                                                              .pro_locality
+                                                                                          },&nbsp;
                     ${req.body.pro_city}</a>
                                                                               </td>
                                                                           </tr>
@@ -547,68 +592,92 @@ export const addProperty = (req, res) => {
                                                           <tr>
                                                               <td align="left"
                                                                   style="padding:0;Margin:0;padding-top:10px;padding-bottom:15px"><!--[if mso]><a href="https://propertyease.in/${
-                                        req.body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        req.body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-          req.body.pro_type
-            ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${req.body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${req.body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}" target="_blank" hidden>
+                                                                    req.body.pro_area_size.toLowerCase() +
+                                                                    "-" +
+                                                                    req.body.pro_area_size_unit
+                                                                      .toLowerCase()
+                                                                      .replaceAll(
+                                                                        " ",
+                                                                        "-"
+                                                                      )
+                                                                      .replaceAll(
+                                                                        ".",
+                                                                        ""
+                                                                      ) +
+                                                                    "-"
+                                                                  }${
+              req.body.pro_type
+                ? req.body.pro_type
+                    .split(",")[0]
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                : ""
+            }-for-${
+              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
+            }-in-${req.body.pro_locality
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${req.body.pro_city
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${insertId}" target="_blank" hidden>
      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" esdevVmlButton href="#" 
                  style="height:36px; v-text-anchor:middle; width:167px" arcsize="50%" strokecolor="#014751" strokeweight="1px" fillcolor="#f7f6f4">
          <w:anchorlock></w:anchorlock>
          <center style='color:#014751; font-family:Montserrat, helvetica, arial, sans-serif; font-size:12px; font-weight:400; line-height:12px;  mso-text-raise:1px'><a href="https://propertyease.in/${
-                                        req.body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        req.body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-          req.body.pro_type
-            ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${req.body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${req.body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}">View Listing</a></center>
+           req.body.pro_area_size.toLowerCase() +
+           "-" +
+           req.body.pro_area_size_unit
+             .toLowerCase()
+             .replaceAll(" ", "-")
+             .replaceAll(".", "") +
+           "-"
+         }${
+              req.body.pro_type
+                ? req.body.pro_type
+                    .split(",")[0]
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                : ""
+            }-for-${
+              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
+            }-in-${req.body.pro_locality
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${req.body.pro_city
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${insertId}">View Listing</a></center>
      </v:roundrect></a>
   <![endif]--><!--[if !mso]><!-- --><span class="msohide es-button-border"
                                                                       style="border-style:solid;border-color:#014751;background:#f7f6f4;border-width:1px;display:inline-block;border-radius:30px;width:auto;mso-hide:all"><a
                                                                           href="https://propertyease.in/${
-                                        req.body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        req.body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-          req.body.pro_type
-            ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${req.body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${req.body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}" class="es-button" target="_blank"
+                                                                            req.body.pro_area_size.toLowerCase() +
+                                                                            "-" +
+                                                                            req.body.pro_area_size_unit
+                                                                              .toLowerCase()
+                                                                              .replaceAll(
+                                                                                " ",
+                                                                                "-"
+                                                                              )
+                                                                              .replaceAll(
+                                                                                ".",
+                                                                                ""
+                                                                              ) +
+                                                                            "-"
+                                                                          }${
+              req.body.pro_type
+                ? req.body.pro_type
+                    .split(",")[0]
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                : ""
+            }-for-${
+              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
+            }-in-${req.body.pro_locality
+              .toLowerCase()
+              .replaceAll(" ", "-")}-${req.body.pro_city
+              .toLowerCase()
+              .replaceAll(
+                " ",
+                "-"
+              )}-${insertId}" class="es-button" target="_blank"
                                                                           style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#014751;font-size:14px;display:inline-block;background:#f7f6f4;border-radius:30px;font-family:Montserrat, helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:17px;width:auto;text-align:center;padding:10px 40px 10px 40px;mso-padding-alt:0;mso-border-alt:10px solid  #f7f6f4">View
                                                                           Listing</a></span><!--<![endif]--></td>
                                                           </tr>
@@ -745,52 +814,75 @@ export const addProperty = (req, res) => {
   
   </div>
   `,
-      };
+          };
 
-     
-      transporter.sendMail(info, (err, data) => {
-        if (err) return res.status(500).json(err);
-        transporter.sendMail(info2, (err, data) => {
-          if (err) return res.status(500).json(err);
-          
+          transporter.sendMail(info, (err, data) => {
+            if (err) return res.status(500).json(err);
+            transporter.sendMail(info2, (err, data) => {
+              if (err) return res.status(500).json(err);
+
           const updateq =
             "UPDATE list_plan_transactions SET pro_added_recently = pro_added_recently + 1 where user_id = ? order by tran_id desc limit 1";
 
           db.query(updateq, [req.body.pro_user_id], (err, data) => {
             if (err) return res.status(500).json(err);
-            console.log("process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : " , process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME , typeof(process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME))
-            if(process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
-              console.log("inside 3rd block")
-            //   digesttransporter.sendMail(info3, (err, data) => {
-            //     if (err) return res.status(500).json(err);
-            //     return res.status(200).json(insertId);
-            // });
-            //const emailsList = ["harshgupta.calinfo@gmail.com","harshgarg1009@gmail.com"]
-            sendMultipleEmails(emails_list, req.body, insertId);
-            return res.status(200).json(insertId);
+            console.log(
+              "process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : ",
+              process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME,
+              typeof process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME
+            );
+            if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
+              console.log("inside 3rd block");
+              //   digesttransporter.sendMail(info3, (err, data) => {
+              //     if (err) return res.status(500).json(err);
+              //     return res.status(200).json(insertId);
+              // });
+            
+              // const emails_list2 = [
+              //   "harshgupta.calinfo@gmail.com",
+              //   "harshgarg1009@gmail.com",
+              // ];
+              sendMultipleEmails(emails_list, req.body, insertId);
+              return res.status(200).json(insertId);
             } else {
-              console.log("3rd block skipped")
+              console.log("3rd block skipped");
               return res.status(200).json(insertId);
             }
-         });
-       });
+          });
+        });
         //return res.status(200).json(insertId);
       });
     });
   });
-});
+    // });
+
+  });
 };
 
-
-
-const sendMultipleEmails = (emailsList, body ,insertId) => {
+const sendMultipleEmails = (emailsList, body, insertId) => {
   const emailsRes = {};
 
   for (let i = 0, len = emailsList.length; i < len; i++) {
     const res = sendNewMail({
       from: '"Propertyease " <noreply@propertyease.in>',
       to: emailsList[i],
-      subject: `New Property Listed`,
+      //subject: `New Property Listed`,
+      subject: `${
+        body.pro_area_size +
+        " " +
+        body.pro_area_size_unit +
+        " " +
+        body.pro_type.split(",")[0] +
+        " "
+      }
+      for ${body.pro_ad_type === "Rent" ? "Rent" : "Sale"} in
+      
+        ${body.pro_locality + ", "}
+      
+      
+      ${body.pro_sub_district ? body.pro_sub_district + ", " : ""}
+      ${body.pro_city + ", "}
+      ${body.pro_state}`,
       body: `
   <div class="wrapper" style="width: 710px;margin: 40px auto;padding: 20px;border-radius: 10px;border: 1px solid #ede3e3;">
   <table class="es-content" cellspacing="0" cellpadding="0" align="center" role="none"
@@ -889,9 +981,10 @@ const sendMultipleEmails = (emailsList, body ,insertId) => {
                                                           <tr>
                                                               <td align="center" style="padding:0;Margin:0;font-size:0px">
                                                                   <a target="_blank" href="#"
-                                                                      style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#69686D;font-size:14px"><img
+                                                                      style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#69686D;font-size:14px">
+                                                                      <img
                                                                           class="adapt-img p_image"
-                                                                          src="https://tlr.stripocdn.email/content/guids/CABINET_384ff44f253af801835a77e6187431ba3d2f26c78de5af3c8b1c48cf857e9f17/images/pexelsbinyaminmellish186077.jpg"
+                                                                          src="https://api.propertyease.in/propertyImages/watermark/default.png"
                                                                           alt=""
                                                                           style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;border-radius:20px"
                                                                           width="270"></a>
@@ -919,42 +1012,52 @@ const sendMultipleEmails = (emailsList, body ,insertId) => {
                                                               <td align="left"
                                                                   style="padding:0;Margin:0;padding-top:5px;padding-bottom:5px">
                                                                   <a href="https://propertyease.in/${
-                                        body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-          body.pro_type
-            ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}" style="text-decoration: none;">
+                                                                    body.pro_area_size.toLowerCase() +
+                                                                    "-" +
+                                                                    body.pro_area_size_unit
+                                                                      .toLowerCase()
+                                                                      .replaceAll(
+                                                                        " ",
+                                                                        "-"
+                                                                      )
+                                                                      .replaceAll(
+                                                                        ".",
+                                                                        ""
+                                                                      ) +
+                                                                    "-"
+                                                                  }${
+        body.pro_type
+          ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+          : ""
+      }-for-${
+        body.pro_ad_type === "Rent" ? "rent" : "sale"
+      }-in-${body.pro_locality
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${body.pro_city
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${insertId}" style="text-decoration: none;">
                                                                   <h3 class="p_price"
                                                                       style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#014751">
                                                                       <strong>
   
-                                      ${body.pro_area_size +
-                        " " +
-                        body.pro_area_size_unit +
-                        " " +
-                        body.pro_type.split(",")[0] +
-                        " "}
+                                      ${
+                                        body.pro_area_size +
+                                        " " +
+                                        body.pro_area_size_unit +
+                                        " " +
+                                        body.pro_type.split(",")[0] +
+                                        " "
+                                      }
                       for ${body.pro_ad_type === "Rent" ? "Rent" : "Sale"} in
                       <span className="text-capitalize">
                         ${body.pro_locality + ", "}
                       </span>
                       
-                      ${body.pro_sub_district
-                        ? body.pro_sub_district + ", "
-                        : ""}
+                      ${
+                        body.pro_sub_district
+                          ? body.pro_sub_district + ", "
+                          : ""
+                      }
                       ${body.pro_city + ", "}
                       ${body.pro_state}</strong>
                                                                   </h3>
@@ -967,9 +1070,14 @@ const sendMultipleEmails = (emailsList, body ,insertId) => {
                                                                   style="padding:0;Margin:0;padding-top:5px;padding-bottom:5px">
                                                                   <h3 class="p_price"
                                                                       style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#014751">
-                                                                      <strong> ${body.pro_amt
-                      ? "₹" + body.pro_amt + " " + body.pro_amt_unit
-                      : "Ask Price"}</strong>
+                                                                      <strong> ${
+                                                                        body.pro_amt
+                                                                          ? "₹" +
+                                                                            body.pro_amt +
+                                                                            " " +
+                                                                            body.pro_amt_unit
+                                                                          : "Ask Price"
+                                                                      }</strong>
                                                                   </h3>
                                                               </td>
                                                           </tr>
@@ -989,7 +1097,9 @@ const sendMultipleEmails = (emailsList, body ,insertId) => {
                                                                                           alt="New property Listed"
                                                                                           title="New property Listed"
                                                                                           align="absmiddle" width="16"
-                                                                                          style="display:inline-block !important;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;padding-right:5px;vertical-align:middle">${body.pro_locality},&nbsp;
+                                                                                          style="display:inline-block !important;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;padding-right:5px;vertical-align:middle">${
+                                                                                            body.pro_locality
+                                                                                          },&nbsp;
                     ${body.pro_city}</a>
                                                                               </td>
                                                                           </tr>
@@ -1001,68 +1111,80 @@ const sendMultipleEmails = (emailsList, body ,insertId) => {
                                                           <tr>
                                                               <td align="left"
                                                                   style="padding:0;Margin:0;padding-top:10px;padding-bottom:15px"><!--[if mso]><a href="https://propertyease.in/${
-                                        body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-          body.pro_type
-            ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}" target="_blank" hidden>
+                                                                    body.pro_area_size.toLowerCase() +
+                                                                    "-" +
+                                                                    body.pro_area_size_unit
+                                                                      .toLowerCase()
+                                                                      .replaceAll(
+                                                                        " ",
+                                                                        "-"
+                                                                      )
+                                                                      .replaceAll(
+                                                                        ".",
+                                                                        ""
+                                                                      ) +
+                                                                    "-"
+                                                                  }${
+        body.pro_type
+          ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+          : ""
+      }-for-${
+        body.pro_ad_type === "Rent" ? "rent" : "sale"
+      }-in-${body.pro_locality
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${body.pro_city
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${insertId}" target="_blank" hidden>
      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" esdevVmlButton href="#" 
                  style="height:36px; v-text-anchor:middle; width:167px" arcsize="50%" strokecolor="#014751" strokeweight="1px" fillcolor="#f7f6f4">
          <w:anchorlock></w:anchorlock>
          <center style='color:#014751; font-family:Montserrat, helvetica, arial, sans-serif; font-size:12px; font-weight:400; line-height:12px;  mso-text-raise:1px'><a href="https://propertyease.in/${
-                                        body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-          body.pro_type
-            ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}">View Listing</a></center>
+           body.pro_area_size.toLowerCase() +
+           "-" +
+           body.pro_area_size_unit
+             .toLowerCase()
+             .replaceAll(" ", "-")
+             .replaceAll(".", "") +
+           "-"
+         }${
+        body.pro_type
+          ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+          : ""
+      }-for-${
+        body.pro_ad_type === "Rent" ? "rent" : "sale"
+      }-in-${body.pro_locality
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${body.pro_city
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${insertId}">View Listing</a></center>
      </v:roundrect></a>
   <![endif]--><!--[if !mso]><!-- --><span class="msohide es-button-border"
                                                                       style="border-style:solid;border-color:#014751;background:#f7f6f4;border-width:1px;display:inline-block;border-radius:30px;width:auto;mso-hide:all"><a
                                                                           href="https://propertyease.in/${
-                                        body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-          body.pro_type
-            ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-            : ""
-        }-for-${
-          body.pro_ad_type === "Rent" ? "rent" : "sale"
-        }-in-${body.pro_locality
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${body.pro_city
-          .toLowerCase()
-          .replaceAll(" ", "-")}-${insertId}" class="es-button" target="_blank"
+                                                                            body.pro_area_size.toLowerCase() +
+                                                                            "-" +
+                                                                            body.pro_area_size_unit
+                                                                              .toLowerCase()
+                                                                              .replaceAll(
+                                                                                " ",
+                                                                                "-"
+                                                                              )
+                                                                              .replaceAll(
+                                                                                ".",
+                                                                                ""
+                                                                              ) +
+                                                                            "-"
+                                                                          }${
+        body.pro_type
+          ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+          : ""
+      }-for-${
+        body.pro_ad_type === "Rent" ? "rent" : "sale"
+      }-in-${body.pro_locality
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${body.pro_city
+        .toLowerCase()
+        .replaceAll(" ", "-")}-${insertId}" class="es-button" target="_blank"
                                                                           style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#014751;font-size:14px;display:inline-block;background:#f7f6f4;border-radius:30px;font-family:Montserrat, helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:17px;width:auto;text-align:center;padding:10px 40px 10px 40px;mso-padding-alt:0;mso-border-alt:10px solid  #f7f6f4">View
                                                                           Listing</a></span><!--<![endif]--></td>
                                                           </tr>
@@ -1215,10 +1337,10 @@ const sendNewMail = (data) => {
       html: body,
     });
     //return { success: true, message: "Email sent successfully!" };
-    console.log("mail sent : " , to);
+    console.log("mail sent : ", to);
   } catch (error) {
     console.error(error);
-    console.log("failed : " , to);
+    console.log("failed : ", to);
     //return { success: false, message: "Email not sent !" };
   }
 };
@@ -1338,11 +1460,8 @@ export const addOrigin = (req, res) => {
 // });
 
 export const fetchPropertyData = (req, res) => {
-
- 
-
-  const q = `SELECT DISTINCT property_module_images.* , property_module.* , agent_data.agent_type as user_type, agent_data.agent_name FROM property_module left join property_module_images on 
-    property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) as agent_data on 
+  const q = `SELECT DISTINCT property_module_images.* , property_module.* , agent_data.agent_type as user_type, agent_data.agent_name , agent_data.agent_sub_district, agent_data.agent_city, agent_data.agent_state FROM property_module left join property_module_images on 
+    property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name ,agent_sub_district, agent_city, agent_state FROM agent_module) as agent_data on 
     property_module.pro_user_id = agent_data.user_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC`;
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
@@ -1353,9 +1472,7 @@ export const fetchPropertyData = (req, res) => {
   });
 };
 
-
 // export const fetchPropertyData = (req, res) => {
-
 
 //   const filePath = path.resolve(process.cwd(), './build', 'index.html');
 
@@ -1389,21 +1506,14 @@ export const fetchPropertyData = (req, res) => {
 //       // For example, you may want to process or format the data before sending it
 
 //       // Send the modified index.html or other response as needed
-//       // Example: 
+//       // Example:
 //       res.status(200).send(dbData);
 //       //res.status(200).json(dbData); // Sending JSON response for demonstration
 //     });
 //   });
 // };
 
-
-
-
-
-
-
 export const fetchPropertyDataById = (req, res) => {
-  
   const q = "SELECT * from property_module where pro_id = ? ";
   db.query(q, [req.params.proId], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -1468,9 +1578,9 @@ export const fetchLatestPropertyByCity = (req, res) => {
 
 export const fetchPropertyDataByCat = (req, res) => {
   const para = "%" + req.params.proType + "%";
-  const q = `SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link, agent_data.agent_type as user_type, agent_data.agent_name FROM 
+  const q = `SELECT DISTINCT property_module.*,property_module_images.img_cnct_id  , property_module_images.img_link, agent_data.agent_type as user_type, agent_data.agent_name, agent_data.agent_sub_district, agent_data.agent_city, agent_data.agent_state  FROM 
     property_module LEFT join property_module_images on property_module.pro_id = property_module_images.img_cnct_id 
-    left join (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) as agent_data on property_module.
+    left join (SELECT agent_type,user_cnct_id,agent_name, agent_sub_district, agent_city, agent_state FROM agent_module) as agent_data on property_module.
     pro_user_id = agent_data.user_cnct_id WHERE pro_type like ? and pro_listed = 1 group by pro_id ORDER BY pro_id DESC; `;
   db.query(q, [para], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -1504,8 +1614,8 @@ export const fetchPropertyDataByCatAndCity = (req, res) => {
 
 export const moreProperties = (req, res) => {
   console.log("req.params", req.params.proAd);
-  const q = `SELECT property_module.*, agent_data.agent_type as user_type, agent_data.agent_name FROM property_module left join 
-    (SELECT agent_type,user_cnct_id,agent_name FROM agent_module) as agent_data on property_module.pro_user_id = 
+  const q = `SELECT property_module.*, agent_data.agent_type as user_type, agent_data.agent_name,agent_data.agent_sub_district, agent_data.agent_city, agent_data.agent_state FROM property_module left join 
+    (SELECT agent_type,user_cnct_id,agent_name, agent_sub_district, agent_city, agent_state FROM agent_module) as agent_data on property_module.pro_user_id = 
     agent_data.user_cnct_id where pro_ad_type = "Rent" and pro_listed = 1 order by pro_id desc limit 5;`;
   db.query(q, [req.params.proAd], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -1561,11 +1671,9 @@ export const fetchPropertyDataByUserId = (req, res) => {
 //   });
 // };
 
-
 export const fetchPropertyDataByUserId1 = (req, res) => {
   //await verifyJwt(req,res);
-  const q =
-    `
+  const q = `
     SELECT 
     property_module.*, 
     COUNT(property_interest.interest_property_id) AS pro_responses ,
@@ -1590,9 +1698,6 @@ ORDER BY
   });
 };
 
-
-
-
 // export const fetchViews = (req, res) => {
 //   //await verifyJwt(req,res);
 //   const q =
@@ -1604,10 +1709,8 @@ ORDER BY
 //   });
 // };
 
-
 export const fetchRespondentByUser = (req, res) => {
-  const q =
-    `SELECT 
+  const q = `SELECT 
     property_module.*,
     property_module.pro_id,
     property_module.pro_ad_type,
@@ -1644,11 +1747,9 @@ ORDER BY
   });
 };
 
-
 export const fetchRespondentByPro = (req, res) => {
   //await verifyJwt(req,res);
-  const q =
-  `SELECT * FROM u747016719_propertyease.property_interest where interest_property_id = ?`;
+  const q = `SELECT * FROM u747016719_propertyease.property_interest where interest_property_id = ?`;
   db.query(q, [req.params.proId], (err, data) => {
     if (err) return res.status(500).json(err);
 
@@ -1676,13 +1777,9 @@ export const fetchResponsesByProId = (req, res) => {
   });
 };
 
-
-
-
 export const fetchLast30DaysListings = (req, res) => {
   //await verifyJwt(req,res);
-  const q =
-   `SELECT 
+  const q = `SELECT 
   pro_count.pro_count, 
   pro_count.pro_creation_date, 
   DATEDIFF(CONVERT_TZ(pro_count.pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS Days, 
@@ -1720,7 +1817,7 @@ LEFT JOIN
   list_plan_transactions ON list_plan_transactions.user_id = login.login_id
                          AND (list_plan_transactions.plan_status = 1 OR list_plan_transactions.plan_status = 2 ) where login.login_id = ? group by login.login_id 
 ORDER BY 
-  login.login_id DESC;`
+  login.login_id DESC;`;
   db.query(q, [req.params.userId], (err, data) => {
     if (err) return res.status(500).json(err);
 
@@ -1728,15 +1825,8 @@ ORDER BY
   });
 };
 
-
-
-
-
-
-
 export const fetchShortListProperty = (req, res) => {
-  const q =
-    `SELECT shortlist_module.*, 
+  const q = `SELECT shortlist_module.*, 
        property_module.*
 FROM shortlist_module
 LEFT JOIN property_module
@@ -1932,8 +2022,6 @@ export const fetchLatestPropertyByCat1 = (req, res) => {
 // };
 
 export const fetchPropertyDataById1 = (req, res) => {
-  
-  
   const q = "SELECT * from property_module where pro_id = ? ";
   db.query(q, [req.params.proId], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -1987,33 +2075,31 @@ export const updateProListingStatus = (req, res) => {
   });
 };
 
-
 export const updateProListingMultipleStatus = (req, res) => {
-  const { pro_listed, listingids } = req.body;  // Destructure pro_listed and pro_ids from request body
+  const { pro_listed, listingids } = req.body; // Destructure pro_listed and pro_ids from request body
 
   // Validate input
   if (!Array.isArray(listingids) || listingids.length === 0) {
-    return res.status(400).json({ error: 'Invalid property IDs' });
+    return res.status(400).json({ error: "Invalid property IDs" });
   }
 
   // Create a placeholder for SQL IN clause
-  const placeholders = listingids.map(() => '?').join(',');
+  const placeholders = listingids.map(() => "?").join(",");
   const q = `UPDATE property_module SET pro_listed = ? WHERE pro_id IN (${placeholders})`;
   const values = [pro_listed, ...listingids];
 
   db.query(q, values, (err, data) => {
     if (err) {
-      console.error('Database query error:', err);
+      console.error("Database query error:", err);
       return res.status(500).json(err);
     }
-    return res.status(200).json('Updated Successfully');
+    return res.status(200).json("Updated Successfully");
   });
 };
 
-
-
 export const updateSaleStatus = (req, res) => {
-  const q = "UPDATE property_module SET pro_sale_status = ?, pro_listed = ? WHERE pro_id = ?";
+  const q =
+    "UPDATE property_module SET pro_sale_status = ?, pro_listed = ? WHERE pro_id = ?";
   const values = [req.body.sale_status, 0, req.body.pro_id];
   db.query(q, values, (err, data) => {
     if (err) return res.status(500).json(err);
@@ -2021,29 +2107,27 @@ export const updateSaleStatus = (req, res) => {
   });
 };
 
-
 export const updateMultipleSaleStatus = (req, res) => {
-  const { sale_status, listingids } = req.body; 
+  const { sale_status, listingids } = req.body;
 
   // Validate input
   if (!Array.isArray(listingids) || listingids.length === 0) {
-    return res.status(400).json({ error: 'Invalid property IDs' });
+    return res.status(400).json({ error: "Invalid property IDs" });
   }
 
   // Create a placeholder for SQL IN clause
-  const placeholders = listingids.map(() => '?').join(',');
+  const placeholders = listingids.map(() => "?").join(",");
   const q = `UPDATE property_module SET pro_sale_status = ?, pro_listed = ? WHERE pro_id IN (${placeholders}) and pro_sale_status = (${!sale_status})`;
   const values = [sale_status, 0, ...listingids, !sale_status];
 
   db.query(q, values, (err, data) => {
     if (err) {
-      console.error('Database query error:', err);
+      console.error("Database query error:", err);
       return res.status(500).json(err);
     }
-    return res.status(200).json('Updated Successfully');
+    return res.status(200).json("Updated Successfully");
   });
 };
-
 
 const updateProPlanStatus = (res) => {
   const updateData =
