@@ -1,5 +1,7 @@
 import { transporter } from "../nodemailer.js";
 import { db } from "../connect.js";
+import "dotenv/config"
+import axios from "axios";
 
 export const updateContacted = (req, res) => {
   const q = "UPDATE property_module SET pro_contacted = ? WHERE pro_id = ?";
@@ -312,6 +314,9 @@ export const freeEnquiry2 = (req, res) => {
      </div>
   </div>`,
     };
+    let mobile_number = data[0].login_number ;
+
+    console.log(mobile_number);
    //  transporter.sendMail(info, (err, data) => {
    //    if (err) return res.status(500).json(err);
    //    transporter.sendMail(info2, (err, data) => {
@@ -326,15 +331,45 @@ export const freeEnquiry2 = (req, res) => {
           
      "INSERT INTO property_interest (interest_property_id, interested_name, interested_email, interested_phone) VALUES(?)";
    const values = [pro_id, name, email, phone];
-   db.query(q, [values], (err, data) => {
+   db.query(q, [values], async (err, data) => {
      if (err) return res.status(500).json(err);
-          return res.status(200).json("Updated Successfully");
+     const smsResponse = await sendContactedAlertOnMobile(mobile_number, name, phone);
+        if (smsResponse.success) {
+          return res.status(200).json("Messaage Sent");
+        } else {
+           return res.status(smsResponse.status || 500).json({ message: "Failed to send messaage", error: smsResponse.message });
+        }
+     
+          //return res.status(200).json("Updated Successfully");
         });
       });
       });
 //     });
 //   });
 };
+
+
+
+
+const sendContactedAlertOnMobile = async (mobile_number, name, phone) => { 
+   console.log("mobile_number, name, phone : " , mobile_number, name, phone);
+   const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Hi, ${name} +91-${phone} expressed interest in your property on propertyease.in`);
+   
+   try {
+      const response = await axios.get(url);
+      console.log("response : " , response);
+      if (response.status === 200) {
+         return { success: true };
+      } else {
+         return { success: false, status: response.status };
+      }
+   } catch (error) {
+      console.error("Error sending message:", error);
+      return { success: false, message: error.message };
+   }
+};
+
+
 
 export const contactAgent = (req, res) => {
   const {
