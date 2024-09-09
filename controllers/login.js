@@ -86,7 +86,7 @@ export const sendOtp = (req, res) => {
       transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
         const mobile_number = "917404302678";
-        sendOtpOnMobile2(mobile_number, otp);
+        //sendOtpOnMobile2(mobile_number, otp);
         return res.status(200).json("Otp Sent");
       });
     } else {
@@ -241,17 +241,17 @@ export const checkAdmin = (req, res) => {
 
 
 
-// export const sendOtpOnMobile = (req, res) => { 
-//    var url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
-//    axios
-//    .get(url)
-//    .then(function (response) {
-//       return response.status(200).json("done");
-//    })
-//    .catch(function (error) {
-//       if (error) return response.status(500).json(error);
-//    });
-// }
+export const sendOtpOnMobile = (req, res) => { 
+   var url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
+   axios
+   .get(url)
+   .then(function (response) {
+      return response.status(200).json("done");
+   })
+   .catch(function (error) {
+      if (error) return response.status(500).json(error);
+   });
+}
 
 
 const sendOtpOnMobile2 = (mobile_number, otp, res) => { 

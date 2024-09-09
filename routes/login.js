@@ -7,6 +7,7 @@ import {
   verifyEmail,
   verifyNumber,
   checkAdmin,
+  sendOtpOnMobile,
 } from "../controllers/login.js";
 const router = express.Router();
 
@@ -17,4 +18,6 @@ router.post("/checkLogin", checkLogin);
 router.get("/verifyEmail/:loginEmail", verifyEmail);
 router.get("/verifyNumber/:loginNumber", verifyNumber);
 router.post("/checkAdmin", checkAdmin);
+router.post("/send-sms", sendOtpOnMobile);
+
 export default router;
