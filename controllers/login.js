@@ -6,7 +6,7 @@ import "dotenv/config"
 
 
 const updateOtp = (otp, email, res) => {
-   var otp = Math.floor(100000 + Math.random() * 900000);
+   
   const q = "update login_module set login_otp = ? where login_email = ?";
   db.query(q, [otp, email], (err, data) => {
     if (err) return res.status(500).json(err);
