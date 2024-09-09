@@ -241,19 +241,38 @@ export const checkAdmin = (req, res) => {
 
 
 
-export const sendOtpOnMobile = (req, res) => { 
-   const mobile_number = "917404302678";
+// export const sendOtpOnMobile = (req, res) => { 
+//    const mobile_number = "917404302678";
+//    const otp = "123456";
+//    var url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
+//    axios
+//    .get(url)
+//    .then(function (res) {
+//       return res.status(200).json("done");
+//    })
+//    .catch(function (error) {
+//       if (error) return res.status(500).json(error);
+//    });
+// }
+
+
+export const sendOtpOnMobile = async (req, res) => { 
+   const mobile_number = "91756782678";
    const otp = "123456";
-   var url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
-   axios
-   .get(url)
-   .then(function (res) {
-      return res.status(200).json("done");
-   })
-   .catch(function (error) {
-      if (error) return res.status(500).json(error);
-   });
-}
+   const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
+   
+   try {
+      const response = await axios.get(url);
+      if (response.status === 200) {
+         return res.status(200).json("done");
+      } else {
+         return res.status(response.status).json("Failed to send OTP");
+      }
+   } catch (error) {
+      console.error("Error sending OTP:", error); // Log the error for debugging
+      return res.status(500).json({ message: "Failed to send OTP", error: error.message });
+   }
+};
 
 
 const sendOtpOnMobile2 = (mobile_number, otp, res) => { 
