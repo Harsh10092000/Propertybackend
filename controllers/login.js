@@ -13,7 +13,7 @@ const updateOtp = (otp, email, res) => {
 };
 
 var otp = Math.floor(100000 + Math.random() * 900000);
-var mobile_number = "";
+
 export const sendOtp = (req, res) => {
 //   var otp = Math.floor(100000 + Math.random() * 900000);
   let info = {
@@ -84,7 +84,7 @@ export const sendOtp = (req, res) => {
   db.query(query1, [req.params.email], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data[0].count_login_id !== 0) {
-      var mobile_number = data[0].login_number;
+      //var mobile_number = data[0].login_number;
       updateOtp(otp, req.params.email);
       transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
@@ -251,10 +251,15 @@ export const checkAdmin = (req, res) => {
 
 
 
-export const sendOtpOnMobile = async (req, res) => { 
+export const sendOtpOnMobile =  (req, res) => { 
+   const query1 =
+    "select count(login_id) as count_login_id, login_number from login_module where login_email = ?";
+  db.query(query1, [req.params.email], async (err, data) => {
    //const mobile_number = "7404302678";
    //const otp = "123456";
-   const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
+   console.log("mobile_number : " , data[0].login_number);
+   console.log("otp : " , otp);
+   const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${data[0].login_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
    
    try {
       const response = await axios.get(url);
@@ -268,6 +273,7 @@ export const sendOtpOnMobile = async (req, res) => {
       console.error("Error sending OTP:", error); // Log the error for debugging
       return res.status(500).json({ message: "Failed to send OTP", error: error.message });
    }
+});
 };
 
 

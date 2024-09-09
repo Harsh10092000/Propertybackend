@@ -18,6 +18,6 @@ router.post("/checkLogin", checkLogin);
 router.get("/verifyEmail/:loginEmail", verifyEmail);
 router.get("/verifyNumber/:loginNumber", verifyNumber);
 router.post("/checkAdmin", checkAdmin);
-router.get("/send-sms", sendOtpOnMobile);
+router.get("/send-sms/:email", sendOtpOnMobile);
 
 export default router;
