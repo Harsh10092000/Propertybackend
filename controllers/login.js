@@ -247,11 +247,11 @@ export const sendOtpOnMobile = (req, res) => {
    var url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
    axios
    .get(url)
-   .then(function (response) {
-      return response.status(200).json("done");
+   .then(function (res) {
+      return res.status(200).json("done");
    })
    .catch(function (error) {
-      if (error) return response.status(500).json(error);
+      if (error) return res.status(500).json(error);
    });
 }
 
