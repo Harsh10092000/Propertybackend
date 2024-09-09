@@ -86,8 +86,14 @@ export const sendOtp = (req, res) => {
       transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
         //const mobile_number = "7404302678";
-        sendOtpOnMobile2(data[0].login_number, otp);
-        return res.status(200).json("Otp Sent");
+        //sendOtpOnMobile2(data[0].login_number, otp);
+        //return res.status(200).json("Otp Sent");
+        const smsResponse = sendOtpOnMobile2(data[0].login_number, otp);
+        if (smsResponse.success) {
+           return res.status(200).json("Otp Sent");
+        } else {
+           return res.status(smsResponse.status || 500).json({ message: "Failed to send OTP", error: smsResponse.message });
+        }
       });
     } else {
       return res.status(409).json("Email doesn't Exist");
@@ -262,7 +268,7 @@ export const sendOtpOnMobile = async (req, res) => {
 };
 
 
-const sendOtpOnMobile2 = async (mobile_number, otp, res) => { 
+const sendOtpOnMobile3 = async (mobile_number, otp, res) => { 
    //const mobile_number = "7404302678";
    //const otp = "123456";
    const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
@@ -280,3 +286,20 @@ const sendOtpOnMobile2 = async (mobile_number, otp, res) => {
       return res.status(500).json({ message: "Failed to send OTP", error: error.message });
    }
 }
+
+
+const sendOtpOnMobile2 = async (mobile_number, otp) => { 
+   const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
+   
+   try {
+      const response = await axios.get(url);
+      if (response.status === 200) {
+         return { success: true };
+      } else {
+         return { success: false, status: response.status };
+      }
+   } catch (error) {
+      console.error("Error sending OTP:", error); // Log the error for debugging
+      return { success: false, message: error.message };
+   }
+};
