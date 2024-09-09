@@ -85,8 +85,8 @@ export const sendOtp = (req, res) => {
       updateOtp(otp, req.params.email);
       transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
-        //const mobile_number = "917404302678";
-        //sendOtpOnMobile2(mobile_number, otp);
+        const mobile_number = "917404302678";
+        sendOtpOnMobile2(mobile_number, otp);
         return res.status(200).json("Otp Sent");
       });
     } else {
