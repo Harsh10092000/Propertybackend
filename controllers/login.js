@@ -257,13 +257,14 @@ export const checkAdmin = (req, res) => {
 
 
 export const sendOtpOnMobile = async (req, res) => { 
-   const mobile_number = "91756782678";
+   const mobile_number = "917404302678";
    const otp = "123456";
    const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
    
    try {
       const response = await axios.get(url);
       if (response.status === 200) {
+         
          return res.status(200).json("done");
       } else {
          return res.status(response.status).json("Failed to send OTP");
