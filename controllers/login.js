@@ -6,16 +6,17 @@ import "dotenv/config"
 
 
 const updateOtp = (otp, email, res) => {
+   var otp = Math.floor(100000 + Math.random() * 900000);
   const q = "update login_module set login_otp = ? where login_email = ?";
   db.query(q, [otp, email], (err, data) => {
     if (err) return res.status(500).json(err);
   });
 };
 
-var otp = Math.floor(100000 + Math.random() * 900000);
+//var otp = Math.floor(100000 + Math.random() * 900000);
 
 export const sendOtp = (req, res) => {
-//   var otp = Math.floor(100000 + Math.random() * 900000);
+   var otp = Math.floor(100000 + Math.random() * 900000);
   let info = {
     from: '"Propertyease " <noreply@propertyease.in>', // sender address
     to: req.params.email, // list of receivers
@@ -84,19 +85,19 @@ export const sendOtp = (req, res) => {
   db.query(query1, [req.params.email], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data[0].count_login_id !== 0) {
-      //var mobile_number = data[0].login_number;
+      var mobile_number = data[0].login_number;
       updateOtp(otp, req.params.email);
-      transporter.sendMail(info, (err, data) => {
+      transporter.sendMail(info, async (err, data) => {
         if (err) return res.status(500).json(err);
         //const mobile_number = "7404302678";
         //sendOtpOnMobile2(data[0].login_number, otp);
         //return res.status(200).json("Otp Sent");
-      //   const smsResponse = sendOtpOnMobile2(data[0].login_number, otp);
-      //   if (smsResponse.success) {
-           return res.status(200).json("Otp Sent");
-      //   } else {
-      //      return res.status(smsResponse.status || 500).json({ message: "Failed to send OTP", error: smsResponse.message });
-      //   }
+        const smsResponse = await sendOtpOnMobile2(mobile_number, otp);
+        if (smsResponse.success) {
+          return res.status(200).json("Otp Sent");
+        } else {
+           return res.status(smsResponse.status || 500).json({ message: "Failed to send OTP", error: smsResponse.message });
+        }
       });
     } else {
       return res.status(409).json("Email doesn't Exist");
