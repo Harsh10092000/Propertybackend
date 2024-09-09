@@ -78,15 +78,15 @@ export const sendOtp = (req, res) => {
   };
 
   const query1 =
-    "select count(login_id) as count_login_id from login_module where login_email = ?";
+    "select count(login_id) as count_login_id, login_number from login_module where login_email = ?";
   db.query(query1, [req.params.email], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data[0].count_login_id !== 0) {
       updateOtp(otp, req.params.email);
       transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
-        const mobile_number = "917404302678";
-        //sendOtpOnMobile2(mobile_number, otp);
+        //const mobile_number = "7404302678";
+        sendOtpOnMobile2(data[0].login_number, otp);
         return res.status(200).json("Otp Sent");
       });
     } else {
@@ -241,20 +241,6 @@ export const checkAdmin = (req, res) => {
 
 
 
-// export const sendOtpOnMobile = (req, res) => { 
-//    const mobile_number = "917404302678";
-//    const otp = "123456";
-//    var url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
-//    axios
-//    .get(url)
-//    .then(function (res) {
-//       return res.status(200).json("done");
-//    })
-//    .catch(function (error) {
-//       if (error) return res.status(500).json(error);
-//    });
-// }
-
 
 export const sendOtpOnMobile = async (req, res) => { 
    const mobile_number = "7404302678";
@@ -276,14 +262,21 @@ export const sendOtpOnMobile = async (req, res) => {
 };
 
 
-const sendOtpOnMobile2 = (mobile_number, otp, res) => { 
-   var url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
-   axios
-   .get(url)
-   .then(function (response) {
-      return response.status(200).json("done");
-   })
-   .catch(function (error) {
-      if (error) return response.status(500).json(error);
-   });
+const sendOtpOnMobile2 = async (mobile_number, otp, res) => { 
+   //const mobile_number = "7404302678";
+   //const otp = "123456";
+   const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
+   
+   try {
+      const response = await axios.get(url);
+      if (response.status === 200) {
+         
+         return res.status(200).json("done");
+      } else {
+         return res.status(response.status).json("Failed to send OTP");
+      }
+   } catch (error) {
+      console.error("Error sending OTP:", error); // Log the error for debugging
+      return res.status(500).json({ message: "Failed to send OTP", error: error.message });
+   }
 }
