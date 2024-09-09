@@ -12,8 +12,10 @@ const updateOtp = (otp, email, res) => {
   });
 };
 
+var otp = Math.floor(100000 + Math.random() * 900000);
+var mobile_number = "";
 export const sendOtp = (req, res) => {
-  var otp = Math.floor(100000 + Math.random() * 900000);
+//   var otp = Math.floor(100000 + Math.random() * 900000);
   let info = {
     from: '"Propertyease " <noreply@propertyease.in>', // sender address
     to: req.params.email, // list of receivers
@@ -83,17 +85,18 @@ export const sendOtp = (req, res) => {
     if (err) return res.status(500).json(err);
     if (data[0].count_login_id !== 0) {
       updateOtp(otp, req.params.email);
+      var mobile_number = data[0].login_number;
       transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
         //const mobile_number = "7404302678";
         //sendOtpOnMobile2(data[0].login_number, otp);
-        //return res.status(200).json("Otp Sent");
-        const smsResponse = sendOtpOnMobile2(data[0].login_number, otp);
-        if (smsResponse.success) {
-           return res.status(200).json("Otp Sent");
-        } else {
-           return res.status(smsResponse.status || 500).json({ message: "Failed to send OTP", error: smsResponse.message });
-        }
+        return res.status(200).json("Otp Sent");
+      //   const smsResponse =  sendOtpOnMobile2(data[0].login_number, otp);
+      //   if (smsResponse.success) {
+      //      return res.status(200).json("Otp Sent");
+      //   } else {
+      //      return res.status(smsResponse.status || 500).json({ message: "Failed to send OTP", error: smsResponse.message });
+      //   }
       });
     } else {
       return res.status(409).json("Email doesn't Exist");
@@ -249,8 +252,9 @@ export const checkAdmin = (req, res) => {
 
 
 export const sendOtpOnMobile = async (req, res) => { 
-   const mobile_number = "7404302678";
-   const otp = "123456";
+   //const mobile_number = "7404302678";
+   //const otp = "123456";
+   console.log(mobile_number);
    const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Propertyease.in: ${otp} is your code for login. Your code expires in 10 minutes. Don't share your code.`);
    
    try {
