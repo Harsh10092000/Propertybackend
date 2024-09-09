@@ -321,6 +321,8 @@ export const freeEnquiry2 = (req, res) => {
    //    if (err) return res.status(500).json(err);
    //    transporter.sendMail(info2, (err, data) => {
    //      if (err) return res.status(500).json(err);
+
+
         const q =
           "UPDATE property_module SET pro_contacted = ? WHERE pro_id = ?";
         const values = [pro_contacted, pro_id];
@@ -343,7 +345,7 @@ export const freeEnquiry2 = (req, res) => {
           //return res.status(200).json("Updated Successfully");
         });
       });
-      });
+     });
 //     });
 //   });
 };
@@ -353,11 +355,11 @@ export const freeEnquiry2 = (req, res) => {
 
 const sendContactedAlertOnMobile = async (mobile_number, name, phone) => { 
    console.log("mobile_number, name, phone : " , mobile_number, name, phone);
-   const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Hi, ${name} +91-${phone} expressed interest in your property on propertyease.in`);
+   const url = `https://api.textlocal.in/send/?apikey=${process.env.SMS_API}&numbers=91${mobile_number}&sender=PROPEZ&message=` + encodeURIComponent(`Hi, ${name} +91- ${phone} expressed interest in your property on propertyease.in`);
    
    try {
       const response = await axios.get(url);
-      console.log("response : " , response);
+      console.log("response : " , response.data);
       if (response.status === 200) {
          return { success: true };
       } else {
