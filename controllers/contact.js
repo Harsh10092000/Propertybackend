@@ -388,7 +388,7 @@ export const contactAgent = (req, res) => {
     from: '"Propertyease " <noreply@propertyease.in>', // sender address
     //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
     to: "harshgupta.calinfo@gmail.com",
-    subject: `${name} Contacted Agent`, // Subject line
+    subject: `${name} Contacted Broker`, // Subject line
     html: `<div style="margin:0px;padding:0px;">
        <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
           <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
@@ -414,11 +414,11 @@ export const contactAgent = (req, res) => {
                                   <tr>
                                      <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
                                         <p style="color:#404040; margin-bottom: 10px;"> Dear Admin,</b>
-                                        <p style="margin-bottom: 10px; font-size: 16px;">${name} has reached out to following agent expressing interest in ${queryType} property.</b></p>
-                                        <p style="margin-bottom: 10px; font-size: 16px;">Agent Name : ${agentname}</p>
-                                        <p style="margin-bottom: 10px; font-size: 16px;">Agent Email : ${agentemail}</p>
-                                        <p style="margin-bottom: 10px; font-size: 16px;">Agent Id : ${agentid}</p>
-                                        <p style="margin-bottom: 10px; font-size: 16px;">Agent Phone Number : ${agentphone}</p>
+                                        <p style="margin-bottom: 10px; font-size: 16px;">${name} has reached out to following broker expressing interest in ${queryType} property.</b></p>
+                                        <p style="margin-bottom: 10px; font-size: 16px;">Broker Name : ${agentname}</p>
+                                        <p style="margin-bottom: 10px; font-size: 16px;">Broker Email : ${agentemail}</p>
+                                        <p style="margin-bottom: 10px; font-size: 16px;">Broker Id : ${agentid}</p>
+                                        <p style="margin-bottom: 10px; font-size: 16px;">Broker Phone Number : ${agentphone}</p>
                                         <p style="margin-bottom: 10px; font-size: 16px;">User Email : ${email}</p>
                                         <p style="margin-bottom: 10px; font-size: 16px;">User Phone Number : ${phone}</p>
                                         

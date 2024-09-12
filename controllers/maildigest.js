@@ -1,5 +1,5 @@
 import { db } from "../connect.js";
-import { digesttransporter, transporter } from "../nodemailer.js";
+import { transporter } from "../nodemailer.js";
 
 export const addSubscriberData = (req, res) => {
   const q =
@@ -467,7 +467,7 @@ export const maildigest = (req, res) => {
 </div>
 `,
       };
-      digesttransporter.sendMail(info, (err, data) => {
+      transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
         return res.status(200).json("Sent");
       });
@@ -487,7 +487,7 @@ async function sendBatch(batch) {
       subject: "Your Subject Here",
       text: "Hello, this is a test email sent using Nodemailer!",
     };
-    return digesttransporter
+    return transporter
       .sendMail(mailOptions)
       .then((info) =>
         console.log(`Email sent to ${recipient}: ${info.response}`)
