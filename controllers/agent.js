@@ -2,7 +2,7 @@ import { db } from "../connect.js";
 
 export const addAgentData = (req, res) => {
   console.log("req.body : ", req.body);
-  if (req.body.user_type === "Agent") {
+  if (req.body.user_type === "Broker") {
     const stateq =
       "INSERT INTO agent_work_state ( `work_state`, `agent_cnct_id`) Values ?";
     //const userWorkState = JSON.parse(req.body.user_work_state);
@@ -206,7 +206,7 @@ LEFT JOIN (
 ) AS workState ON agent_module.agent_id = workState.agent_cnct_id
 
 WHERE 
-    agent_type = 'Agent'
+    agent_type = 'Broker'
 ORDER BY 
     agent_id DESC;`;
   db.query(q, (err, data) => {

@@ -1,5 +1,5 @@
 import { db } from "../connect.js";
-import { transporter, digesttransporter } from "../nodemailer.js";
+import { transporter } from "../nodemailer.js";
 import fs from "fs";
 import path from "path";
 import "dotenv/config";
@@ -1330,7 +1330,7 @@ const sendMultipleEmails = (emailsList, body, insertId) => {
 const sendNewMail = (data) => {
   const { from, to, subject, body } = data;
   try {
-    digesttransporter.sendMail({
+    transporter.sendMail({
       from,
       to,
       subject: subject || "no subject",
