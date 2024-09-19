@@ -6,6 +6,7 @@ import { db } from "../connect.js";
 import sizeOf from "image-size";
 import {
   addProperty,
+  quickListing,
   fetchPropertyDataById,
   fetchPropertyData,
   updateProperty,
@@ -152,6 +153,8 @@ router.post("/addPropertyimages", upload.any("files"), (req, res) => {
 });
 
 router.post("/addProperty", addProperty);
+router.post("/quickListing", quickListing);
+
 router.put("/updateProperty", updateProperty);
 router.post("/addOrigin", addOrigin);
 router.get("/fetchPropertyData", fetchPropertyData);
