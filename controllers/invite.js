@@ -2,13 +2,30 @@ import { transporter } from "../nodemailer.js";
 import { db } from "../connect.js";
 
 export const adminInvite = (req, res) => {
-  console.log(req.body.email_reciever_id);
-  sendMultipleEmails(
+  const emailsResult = sendMultipleEmails(
     req.body.email_reciever_id,
     req.body.email_sub,
     req.body.email_cont
   );
-  return res.status(200).json("done");
+  //console.log("emailsResult : " , emailsResult);
+ 
+  const q = "insert into mail_content (mail_content) Values (?)";
+  db.query(q, [req.body.email_cont], (err, data) => {
+    //console.log(req.body.email_cont);
+    if (err) return res.status(500).json(err);
+    const insertId = data.insertId;
+    const values2 = Object.values(emailsResult).map(({ to, success }) => [
+      insertId,
+      to,
+      success,
+    ]);
+    const q = "insert into mail_sent_data (content_id, email_id, status) Values ?";
+  db.query(q, [values2], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(emailsResult);
+  });
+  });
+  //return res.status(200).json(emailsResult);
 };
 
 const sendMultipleEmails = (emailsList, sub, content) => {
@@ -36,15 +53,41 @@ const sendNewMail = (data) => {
       to,
       subject: subject || "no subject",
       html: body,
-    });
-    //return { success: true, message: "Email sent successfully!" };
+    }
+  );
     console.log("mail sent : ", to);
+    return { success: true, message: "Email sent successfully!", to: to };
   } catch (error) {
     console.error(error);
     console.log("failed : ", to);
-    //return { success: false, message: "Email not sent !" };
+    return { success: false, message: "Email not sent !", to: to };
   }
 };
+
+// const sendNewMail = (data) => {
+//   const { from, to, subject, body } = data;
+
+//   try {
+//     transporter.sendMail({
+//       from,
+//       to,
+//       subject: subject || "no subject",
+//       html: body,
+//     }, (err, info) => {
+//       if (err) {
+//         console.log("Error sending mail:", err);
+//         return { success: false, message: "Email not sent!", to: to };
+//       }
+//       console.log("Mail sent to:", to);
+//       return { success: true, message: "Email sent successfully!", to: to };
+//     });
+//   } catch (error) {
+//     console.error("Caught error:", error);
+//     console.log("Failed to send mail to:", to);
+//     return { success: false, message: "Email not sent!", to: to };
+//   }
+// };
+
 
 export const getMailContactList = (req, res) => {
   const q = `
@@ -91,7 +134,7 @@ export const deleteMailContact = (req, res) => {
 
 export const userInvite = (req, res) => {
   
-  sendMultipleEmailToUser(
+  const res1 = sendMultipleEmailToUser(
     req.body.email_reciever_id,
     req.body.email_sender_name
   );
@@ -181,4 +224,14 @@ const sendMultipleEmailToUser = (emailsList, name) => {
     emailsRes[emailsList[i]] = res;
   }
   return emailsRes;
+};
+
+
+export const getMailContent = (req, res) => {
+  const q = `
+   SELECT * FROM mail_content;`;
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
 };

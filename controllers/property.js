@@ -63,30 +63,62 @@ export const addProperty = (req, res) => {
     req.body.pro_date,
   ];
 
-  //const newPropety="Property is in "+req.body.pro_city+"of price"+req.body.pro_amt;
+ 
 
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
     const insertId = data.insertId;
+
+
+    const sanitize = (input) => input.toLowerCase().replace(/[\s.,]+/g, "-");
+    const areaSize = sanitize(req.body.pro_area_size);
+    const areaSizeUnit = sanitize(req.body.pro_area_size_unit);
+    const propertyType = req.body.pro_type
+      ? sanitize(req.body.pro_type.split(",")[0])
+      : "";
+    const adType = req.body.pro_ad_type === "Rent" ? "rent" : "sale";
+    const locality = sanitize(req.body.pro_locality);
+    const city = req.body.pro_city
+      ? sanitize(req.body.pro_city)
+      : sanitize(req.body.pro_state.replaceAll("(", "").replaceAll(")", ""));
+
+    const propertyLink = `${areaSize}-${areaSizeUnit}-${propertyType}-for-${adType}-in-${locality}-${city}-${insertId}`;
+
     const url =
-      req.body.pro_area_size +
+      areaSize +
       "-" +
-      req.body.pro_area_size_unit
-        .toLowerCase()
-        .replaceAll(" ", "-")
-        .replaceAll(".", "") +
+      areaSizeUnit +
       "-" +
-      (req.body.pro_type
-        ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-        : "") +
+      propertyType +
       "-for-" +
-      (req.body.pro_ad_type === "Rent" ? "rent" : "sale") +
+      adType +
       "-in-" +
-      req.body.pro_locality.trim().toLowerCase().replaceAll(" ", "-") +
+      locality +
       "-" +
-      req.body.pro_city.toLowerCase().replaceAll(" ", "-") +
-      "-" +
+      city + "-" +
       insertId;
+
+
+    // const url2 =
+    //   req.body.pro_area_size +
+    //   "-" +
+    //   req.body.pro_area_size_unit
+    //     .toLowerCase()
+    //     .replaceAll(" ", "-")
+    //     .replaceAll(".", "") +
+    //   "-" +
+    //   (req.body.pro_type
+    //     ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
+    //     : "") +
+    //   "-for-" +
+    //   (req.body.pro_ad_type === "Rent" ? "rent" : "sale") +
+    //   "-in-" +
+    //   req.body.pro_locality.trim().toLowerCase().replaceAll(" ", "-") +
+    //   "-" +
+    //   (req.body.pro_city
+    //     ? req.body.pro_city.toLowerCase().replaceAll(" ", "-") + "-"
+    //     : req.body.pro_state.toLowerCase().replaceAll(" ", "-") + "-") +
+    //   insertId;
 
     const q = "UPDATE property_module SET pro_url = ? where pro_id = ?";
     const updateValues = [url, insertId];
@@ -109,15 +141,15 @@ export const addProperty = (req, res) => {
         // db.query(imgData, [insertId], (err, imglink) => {
         //   if (err) return res.status(500).json(err);
 
-          let emails_list = emailData.split(",");
+        let emails_list = emailData.split(",");
 
-          let info = {
-            from: '"Propertyease " <noreply@propertyease.in>', // sender address
-            //to: data[0].login_email,
-            //to: "harshgupta.calinfo@gmail.com",
-            to: req.body.pro_user_email,
-            subject: `Thanks for your time and trust!`, // Subject line
-            html: `<div style="margin:0px;padding:0px;">
+        let info = {
+          from: '"Propertyease " <noreply@propertyease.in>', // sender address
+          //to: data[0].login_email,
+          to: "harshgupta.calinfo@gmail.com",
+          //to: req.body.pro_user_email,
+          subject: `Thanks for your time and trust!`, // Subject line
+          html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
         <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
            <tbody>
@@ -145,48 +177,8 @@ export const addProperty = (req, res) => {
                                       
                                       <p style="margin-bottom: 10px; font-size: 16px;">Thank you for listing your property on our platform. We look forward to assisting you throughout the process.</p>
                                       <p style="margin-bottom: 10px; font-size: 16px;">Check out your property: <a href="https://propertyease.in/${
-                                        req.body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        req.body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-              req.body.pro_type
-                ? req.body.pro_type
-                    .split(",")[0]
-                    .toLowerCase()
-                    .replaceAll(" ", "-")
-                : ""
-            }-for-${
-              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-            }-in-${req.body.pro_locality
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${req.body.pro_city
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${insertId}">https://propertyease.in/${
-              req.body.pro_area_size.toLowerCase() +
-              "-" +
-              req.body.pro_area_size_unit
-                .toLowerCase()
-                .replaceAll(" ", "-")
-                .replaceAll(".", "") +
-              "-"
-            }${
-              req.body.pro_type
-                ? req.body.pro_type
-                    .split(",")[0]
-                    .toLowerCase()
-                    .replaceAll(" ", "-")
-                : ""
-            }-for-${
-              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-            }-in-${req.body.pro_locality
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${req.body.pro_city
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${insertId}</a></p>
+                                      propertyLink}">https://propertyease.in/${
+                                        propertyLink}</a></p>
                                       <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at <a href="https://wa.me/919996716787">+91-99967-16787</a> anytime for any information related to this enquiry.</p>
                                       
                                       </td>
@@ -219,17 +211,17 @@ export const addProperty = (req, res) => {
         </table>
      </div>
   </div>`,
-          };
-          let info2 = {
-            from: '"Propertyease " <noreply@propertyease.in>', // sender address
+        };
+        let info2 = {
+          from: '"Propertyease " <noreply@propertyease.in>', // sender address
 
-            //to: "harshgupta.calinfo@gmail.com",
-            to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-            //to: req.body.pro_user_email,
-            subject: `Property Id: ${5000 + parseInt(insertId)} ${
-              req.body.pro_user_email
-            } listed new Property`, // Subject line
-            html: `<div style="margin:0px;padding:0px;">
+          //to: "harshgupta.calinfo@gmail.com",
+          //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+          to: req.body.pro_user_email,
+          subject: `Property Id: ${5000 + parseInt(insertId)} ${
+            req.body.pro_user_email
+          } listed new Property`, // Subject line
+          html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
         <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
            <tbody>
@@ -258,56 +250,16 @@ export const addProperty = (req, res) => {
                                       <p style="margin-bottom: 10px; font-size: 16px;">${
                                         req.body.pro_user_email
                                       } has list following Property, Property Id: ${
-              5000 + parseInt(insertId)
-            } .</p>
+            5000 + parseInt(insertId)
+          } .</p>
                                       <p style="margin-bottom: 10px; font-size: 16px;">Check out the property: <a href="https://propertyease.in/${
-                                        req.body.pro_area_size.toLowerCase() +
-                                        "-" +
-                                        req.body.pro_area_size_unit
-                                          .toLowerCase()
-                                          .replaceAll(" ", "-")
-                                          .replaceAll(".", "") +
-                                        "-"
-                                      }${
-              req.body.pro_type
-                ? req.body.pro_type
-                    .split(",")[0]
-                    .toLowerCase()
-                    .replaceAll(" ", "-")
-                : ""
-            }-for-${
-              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-            }-in-${req.body.pro_locality
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${req.body.pro_city
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${insertId}">https://propertyease.in/${
-              req.body.pro_area_size.toLowerCase() +
-              "-" +
-              req.body.pro_area_size_unit
-                .toLowerCase()
-                .replaceAll(" ", "-")
-                .replaceAll(".", "") +
-              "-"
-            }${
-              req.body.pro_type
-                ? req.body.pro_type
-                    .split(",")[0]
-                    .toLowerCase()
-                    .replaceAll(" ", "-")
-                : ""
-            }-for-${
-              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-            }-in-${req.body.pro_locality
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${req.body.pro_city
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${insertId}</a></p>
+                                        propertyLink}">https://propertyease.in/${
+                                          propertyLink}</a></p>
                                       <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on <a href="https://wa.me/${
                                         "91" + req.body.pro_login_number
                                       }">+91-${
-              req.body.pro_login_number
-            }</a>.</p>
+            req.body.pro_login_number
+          }</a>.</p>
                                       
                                       </td>
                                 </tr>
@@ -339,487 +291,330 @@ export const addProperty = (req, res) => {
         </table>
      </div>
   </div>`,
-          };
+        };
 
-          let info3 = {
-            from: '"Propertyease " <noreply@propertyease.in>', // sender address
-            //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-            // to: emailData,
-            //to: "harshgupta.calinfo@gmail.com",
-            //bcc: emailData,
-            bcc: ["harshgupta.calinfo@gmail.com,harshwork1009@gmail.com"],
-            subject: `New Property Listed`, // Subject line
-
-            html: `
-  <div class="wrapper" style="width: 710px;margin: 40px auto;padding: 20px;border-radius: 10px;border: 1px solid #ede3e3;">
-  <table class="es-content" cellspacing="0" cellpadding="0" align="center" role="none"
-      style="border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%">
-      <tbody>
-          <tr>
-              <td align="center" style="padding:0;Margin:0">
-                  <table class="es-content-body"
-                      style="border-collapse:collapse;border-spacing:0px;background-color:#ffffff;width:710px"
-                      cellspacing="0" cellpadding="0" bgcolor="#ffffff" align="center" role="none">
-                      <tbody>
-                          <tr>
-                              <td align="left"
-                                  style="Margin:0;padding-left:20px;padding-right:20px;padding-top:30px;padding-bottom:30px">
-                                  <table cellpadding="0" cellspacing="0" width="100%" role="none"
-                                      style="border-collapse:collapse;border-spacing:0px">
-                                      <tbody>
-                                          <tr>
-                                              <td align="left" style="padding:0;Margin:0;width:560px">
-                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation"
-                                                      style="border-collapse:collapse;border-spacing:0px">
-                                                      <tbody>
-                                                          <tr>
-                                                              <td align="center"
-                                                                  style="padding:10px;Margin:0;font-size:0px"><a
-                                                                      target="_blank" href="#"
-                                                                      style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#69686D;font-size:14px"><img
-                                                                          src="https://www.propertyease.in/images/logo.png"
-                                                                          alt="Real Estate Welcome"
-                                                                          style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic"
-                                                                          title="Real Estate Welcome" height="60"></a>
-                                                              </td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td align="center"
-                                                                  style="padding:0;Margin:0;padding-top:20px;padding-bottom:20px">
-                                                                  <h1
-                                                                      style="Margin:0;line-height:36px;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;font-size:30px;font-style:normal;font-weight:normal;color:#014751">
-                                                                      New listing alert</h1>
-                                                                  
-                                                              </td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td align="center" class="es-m-txt-l es-m-p0r es-m-p0l"
-                                                                  style="padding:0;Margin:0;padding-top:10px;padding-left:40px;padding-right:40px">
-                                                                  <p
-                                                                      style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;line-height:21px;color:#69686D;font-size:14px">
-                                                                      Dear Valued User,</p>
-                                                                  <p
-                                                                      style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;line-height:21px;color:#69686D;font-size:14px">
-                                                                      <br>
-                                                                  </p>
-                                                                  <p
-                                                                      style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;line-height:21px;color:#69686D;font-size:14px">
-                                                                      We are excited to share with you our latest property
-                                                                      listing! Please feel free to contact us at <a href="https://wa.me/919996716787">+91-99967-16787</a>. We are here to assist you and provide further information as needed.
-                                                                  </p>
-                                                              </td>
-                                                          </tr>
-                                                      </tbody>
-                                                  </table>
-                                              </td>
-                                          </tr>
-                                      </tbody>
-                                  </table>
-                              </td>
-                          </tr>
-                      </tbody>
-                  </table>
-              </td>
-          </tr>
-      </tbody>
-  </table>
-  <table cellpadding="0" cellspacing="0" class="es-content" align="center" role="none"
-      style="border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%">
-      <tbody>
-     
-          <tr style="padding-top: 15px">
-              <td align="center" style="padding:0;Margin:0">
-                  <table bgcolor="#ffffff" class="es-content-body" align="center" cellpadding="0" cellspacing="0"
-                      role="none"
-                      style="border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:710px">
-                      <tbody>
-                          <tr>
-                              <td align="left" bgcolor="#F7F6F4"
-                                  style="padding:20px;Margin:0;background-color:#f7f6f4;border-radius:30px">
-                                  <!--[if mso]><table style="width:560px" cellpadding="0" cellspacing="0"><tr><td style="width:270px" valign="top"><![endif]-->
-                                  <table cellpadding="0" cellspacing="0" class="es-left" align="left" role="none"
-                                      style="border-collapse:collapse;border-spacing:0px;float:left">
-                                      <tbody>
-                                          <tr>
-                                              <td class="es-m-p20b" align="left" style="padding:0;Margin:0;width:270px">
-                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation"
-                                                      style="border-collapse:collapse;border-spacing:0px">
-                                                      <tbody>
-                                                          <tr>
-                                                              <td align="center" style="padding:0;Margin:0;font-size:0px">
-                                                                  <a target="_blank" href="#"
-                                                                      style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#69686D;font-size:14px"><img
-                                                                          class="adapt-img p_image"
-                                                                          src="https://tlr.stripocdn.email/content/guids/CABINET_384ff44f253af801835a77e6187431ba3d2f26c78de5af3c8b1c48cf857e9f17/images/pexelsbinyaminmellish186077.jpg"
-                                                                          alt=""
-                                                                          style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;border-radius:20px"
-                                                                          width="270"></a>
-                                                              </td>
-                                                          </tr>
-                                                      </tbody>
-                                                  </table>
-                                              </td>
-                                          </tr>
-                                      </tbody>
-                                  </table>
-                                  <!--[if mso]></td><td style="width:20px"></td><td style="width:270px" valign="top"><![endif]-->
-                                  <table cellpadding="0" cellspacing="0" class="es-right" align="right" role="none"
-                                      style="border-collapse:collapse;border-spacing:0px;float:right">
-                                      <tbody>
-  
-                                      
-                                          <tr>
-                                              <td align="left" style="padding:0;Margin:0;width:365px">
-                                                  <table cellpadding="0" cellspacing="0" width="100%"
-                                                      style="border-collapse:separate;border-spacing:0px;border-radius:30px;background-color:#f7f6f4"
-                                                      bgcolor="#F7F6F4" role="presentation">
-                                                      <tbody>
-                                                          <tr>
-                                                              <td align="left"
-                                                                  style="padding:0;Margin:0;padding-top:5px;padding-bottom:5px">
-                                                                  <a href="https://propertyease.in/${
-                                                                    req.body.pro_area_size.toLowerCase() +
-                                                                    "-" +
-                                                                    req.body.pro_area_size_unit
-                                                                      .toLowerCase()
-                                                                      .replaceAll(
-                                                                        " ",
-                                                                        "-"
-                                                                      )
-                                                                      .replaceAll(
-                                                                        ".",
-                                                                        ""
-                                                                      ) +
-                                                                    "-"
-                                                                  }${
-              req.body.pro_type
-                ? req.body.pro_type
-                    .split(",")[0]
-                    .toLowerCase()
-                    .replaceAll(" ", "-")
-                : ""
-            }-for-${
-              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-            }-in-${req.body.pro_locality
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${req.body.pro_city
-              .toLowerCase()
-              .replaceAll(
-                " ",
-                "-"
-              )}-${insertId}" style="text-decoration: none;">
-                                                                  <h3 class="p_price"
-                                                                      style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#014751">
-                                                                      <strong>
-  
-                                      ${
-                                        req.body.pro_area_size +
-                                        " " +
-                                        req.body.pro_area_size_unit +
-                                        " " +
-                                        req.body.pro_type.split(",")[0] +
-                                        " "
-                                      }
-                      for ${
-                        req.body.pro_ad_type === "Rent" ? "Rent" : "Sale"
-                      } in
-                      <span className="text-capitalize">
-                        ${req.body.pro_locality + ", "}
-                      </span>
-                      
-                      ${
-                        req.body.pro_sub_district
-                          ? req.body.pro_sub_district + ", "
-                          : ""
-                      }
-                      ${req.body.pro_city + ", "}
-                      ${req.body.pro_state}</strong>
-                                                                  </h3>
-  </a>
-                                                              </td>
-                                                          </tr>
-  
-                                                          <tr>
-                                                              <td align="left"
-                                                                  style="padding:0;Margin:0;padding-top:5px;padding-bottom:5px">
-                                                                  <h3 class="p_price"
-                                                                      style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#014751">
-                                                                      <strong> ${
-                                                                        req.body
-                                                                          .pro_amt
-                                                                          ? "₹" +
-                                                                            req
-                                                                              .body
-                                                                              .pro_amt +
-                                                                            " " +
-                                                                            req
-                                                                              .body
-                                                                              .pro_amt_unit
-                                                                          : "Ask Price"
-                                                                      }</strong>
-                                                                  </h3>
-                                                              </td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td style="padding:0;Margin:0">
-                                                                  <table cellpadding="0" cellspacing="0" width="100%"
-                                                                      class="es-menu" role="presentation"
-                                                                      style="border-collapse:collapse;border-spacing:0px">
-                                                                      <tbody>
-                                                                          <tr class="links-images-left">
-                                                                              <td align="left" valign="top" width="100%"
-                                                                                  class="p_description"
-                                                                                  style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px;padding-right:15px;border:0">
-                                                                                  <a target="_blank" href="#"
-                                                                                      style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;display:block;font-family:Montserrat, helvetica, arial, sans-serif;color:#69686D;font-size:14px"><img
-                                                                                          src="https://tlr.stripocdn.email/content/guids/CABINET_d4268b164551da89e57ab4ef989bf64a3c37acea80029fd0e3ad24c59f443754/images/group.png"
-                                                                                          alt="New property Listed"
-                                                                                          title="New property Listed"
-                                                                                          align="absmiddle" width="16"
-                                                                                          style="display:inline-block !important;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;padding-right:5px;vertical-align:middle">${
-                                                                                            req
-                                                                                              .body
-                                                                                              .pro_locality
-                                                                                          },&nbsp;
-                    ${req.body.pro_city}</a>
-                                                                              </td>
-                                                                          </tr>
-                                                                      </tbody>
-                                                                  </table>
-                                                              </td>
-                                                          </tr>
-  
-                                                          <tr>
-                                                              <td align="left"
-                                                                  style="padding:0;Margin:0;padding-top:10px;padding-bottom:15px"><!--[if mso]><a href="https://propertyease.in/${
-                                                                    req.body.pro_area_size.toLowerCase() +
-                                                                    "-" +
-                                                                    req.body.pro_area_size_unit
-                                                                      .toLowerCase()
-                                                                      .replaceAll(
-                                                                        " ",
-                                                                        "-"
-                                                                      )
-                                                                      .replaceAll(
-                                                                        ".",
-                                                                        ""
-                                                                      ) +
-                                                                    "-"
-                                                                  }${
-              req.body.pro_type
-                ? req.body.pro_type
-                    .split(",")[0]
-                    .toLowerCase()
-                    .replaceAll(" ", "-")
-                : ""
-            }-for-${
-              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-            }-in-${req.body.pro_locality
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${req.body.pro_city
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${insertId}" target="_blank" hidden>
-     <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" esdevVmlButton href="#" 
-                 style="height:36px; v-text-anchor:middle; width:167px" arcsize="50%" strokecolor="#014751" strokeweight="1px" fillcolor="#f7f6f4">
-         <w:anchorlock></w:anchorlock>
-         <center style='color:#014751; font-family:Montserrat, helvetica, arial, sans-serif; font-size:12px; font-weight:400; line-height:12px;  mso-text-raise:1px'><a href="https://propertyease.in/${
-           req.body.pro_area_size.toLowerCase() +
-           "-" +
-           req.body.pro_area_size_unit
-             .toLowerCase()
-             .replaceAll(" ", "-")
-             .replaceAll(".", "") +
-           "-"
-         }${
-              req.body.pro_type
-                ? req.body.pro_type
-                    .split(",")[0]
-                    .toLowerCase()
-                    .replaceAll(" ", "-")
-                : ""
-            }-for-${
-              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-            }-in-${req.body.pro_locality
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${req.body.pro_city
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${insertId}">View Listing</a></center>
-     </v:roundrect></a>
-  <![endif]--><!--[if !mso]><!-- --><span class="msohide es-button-border"
-                                                                      style="border-style:solid;border-color:#014751;background:#f7f6f4;border-width:1px;display:inline-block;border-radius:30px;width:auto;mso-hide:all"><a
-                                                                          href="https://propertyease.in/${
-                                                                            req.body.pro_area_size.toLowerCase() +
-                                                                            "-" +
-                                                                            req.body.pro_area_size_unit
-                                                                              .toLowerCase()
-                                                                              .replaceAll(
-                                                                                " ",
-                                                                                "-"
-                                                                              )
-                                                                              .replaceAll(
-                                                                                ".",
-                                                                                ""
-                                                                              ) +
-                                                                            "-"
-                                                                          }${
-              req.body.pro_type
-                ? req.body.pro_type
-                    .split(",")[0]
-                    .toLowerCase()
-                    .replaceAll(" ", "-")
-                : ""
-            }-for-${
-              req.body.pro_ad_type === "Rent" ? "rent" : "sale"
-            }-in-${req.body.pro_locality
-              .toLowerCase()
-              .replaceAll(" ", "-")}-${req.body.pro_city
-              .toLowerCase()
-              .replaceAll(
-                " ",
-                "-"
-              )}-${insertId}" class="es-button" target="_blank"
-                                                                          style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#014751;font-size:14px;display:inline-block;background:#f7f6f4;border-radius:30px;font-family:Montserrat, helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:17px;width:auto;text-align:center;padding:10px 40px 10px 40px;mso-padding-alt:0;mso-border-alt:10px solid  #f7f6f4">View
-                                                                          Listing</a></span><!--<![endif]--></td>
-                                                          </tr>
-                                                      </tbody>
-                                                  </table>
-                                              </td>
-                                          </tr>
-                                      </tbody>
-                                  </table><!--[if mso]></td></tr></table><![endif]-->
-                              </td>
-                          </tr>
-                          
-                      </tbody>
-                  </table>
-              </td>
-          </tr>
-          <tr>
-                              <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px">
-                                  <table cellpadding="0" cellspacing="0" width="100%" role="none"
-                                      style="border-collapse:collapse;border-spacing:0px">
-                                      <tbody>
-                                          <tr>
-                                              <td align="center" valign="top" style="padding:0;Margin:0;width:560px">
-                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation"
-                                                      style="border-collapse:collapse;border-spacing:0px">
-                                                      <tbody>
-                                                          <tr>
-                                                              <td align="center" height="25" style="padding:0;Margin:0">
-                                                              </td>
-                                                          </tr>
-                                                      </tbody>
-                                                  </table>
-                                              </td>
-                                          </tr>
-                                      </tbody>
-                                  </table>
-                              </td>
-                          </tr>
-          
-      </tbody>
-  </table>
-  
-  
-  
-  <table cellpadding="0" cellspacing="0" class="es-footer" align="center" role="none"
-      style="border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:#DADFE2;background-repeat:repeat;background-position:center top">
-      <tbody>
-          <tr>
-              <td align="center" style="padding:0;Margin:0">
-                  <table bgcolor="#ffffff" class="es-footer-body" align="center" cellpadding="0" cellspacing="0"
-                      role="none"
-                      style="border-collapse:collapse;border-spacing:0px;background-color:#DADFE2;width:710px">
-                      <tbody>
-                          <tr>
-                              <td align="left"
-                                  style="padding:0;Margin:0;padding-top:20px;padding-left:20px;     padding-bottom: 18px; padding-right:20px"><!--[if mso]><table style="width:560px" cellpadding="0" 
-                         cellspacing="0"><tr><td style="width:295px" valign="top"><![endif]-->
-                                  <table cellpadding="0" cellspacing="0" class="es-left" align="left" role="none"
-                                      style="border-collapse:collapse;border-spacing:0px;float:left">
-                                      <tbody>
-                                          <tr>
-                                              <td class="es-m-p20b" align="left" style="padding:0;Margin:0;width:295px">
-                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation"
-                                                      style="border-collapse:collapse;border-spacing:0px">
-                                                      <tbody>
-                                                          <tr>
-                                                              <td align="left" class="es-m-txt-l"
-                                                                  style="padding:0;Margin:0;font-size:0px"><a
-                                                                      target="_blank" href="https://propertyease.in/"
-                                                                      style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#69686D;font-size:12px"><img
-                                                                          src="https://www.propertyease.in/images/logo.png"
-                                                                          alt="Logo"
-                                                                          style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic"
-                                                                          height="35" title="Logo"></a></td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td align="left"
-                                                                  style="padding:0;Margin:0;padding-top:15px">
-                                                                  <p
-                                                                      style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;line-height:18px;color:#69686D;font-size:12px">
-                                                                      Provides clients with quality real estate services.
-                                                                      We help you to find your perfect home.</p>
-                                                              </td>
-                                                          </tr>
-                                                      </tbody>
-                                                  </table>
-                                              </td>
-                                          </tr>
-                                      </tbody>
-                                  </table>
-                                  <!--[if mso]></td><td style="width:20px"></td><td style="width:245px" valign="top"><![endif]-->
-                                  <table cellpadding="0" cellspacing="0" class="es-right" align="right" role="none"
-                                      style="border-collapse:collapse;border-spacing:0px;float:right">
-                                      <tbody>
-                                          <tr>
-                                              <td align="left" style="padding:0;Margin:0;width:245px">
-                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation"
-                                                      style="border-collapse:collapse;border-spacing:0px">
-                                                      <tbody>
-                                                          <tr>
-                                                              <td align="right" class="es-m-txt-l"
-                                                                  style="padding:0;Margin:0">
-                                                                  <p
-                                                                      style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;line-height:18px;color:#69686D;font-size:12px">
-                                                                      <a href="https://propertyease.in/" target="_blank"
-                                                                          style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#69686D;font-size:12px">Home
-                                                                          </a><br>
-                                                                          <a
-                                                                          href="https://propertyease.in/contactus" target="_blank"
-                                                                          style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#69686D;font-size:12px">Contact
-                                                                          us</a><br><a href="https://propertyease.in/allproperties" target="_blank"
-                                                                          style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#69686D;font-size:12px">View Properties</a>
-                                                                  </p>
-                                                              </td>
-                                                          </tr>
-                                                          
-                                                      </tbody>
-                                                  </table>
-                                              </td>
-                                          </tr>
-                                      </tbody>
-                                  </table><!--[if mso]></td></tr></table><![endif]-->
-                              </td>
-                          </tr>
-  
-  
-  
-                      </tbody>
-                  </table>
-              </td>
-          </tr>
-      </tbody>
-  </table>
-  
-  </div>
-  `,
-          };
-
-          transporter.sendMail(info, (err, data) => {
+        transporter.sendMail(info, (err, data) => {
+          if (err) return res.status(500).json(err);
+          transporter.sendMail(info2, (err, data) => {
             if (err) return res.status(500).json(err);
-            transporter.sendMail(info2, (err, data) => {
+
+            const updateq =
+              "UPDATE list_plan_transactions SET pro_added_recently = pro_added_recently + 1 where user_id = ? order by tran_id desc limit 1";
+
+            db.query(updateq, [req.body.pro_user_id], (err, data) => {
               if (err) return res.status(500).json(err);
+              console.log(
+                "process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : ",
+                process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME,
+                typeof process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME
+              );
+              if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
+                console.log("inside 3rd block");
+                //   digesttransporter.sendMail(info3, (err, data) => {
+                //     if (err) return res.status(500).json(err);
+                //     return res.status(200).json(insertId);
+                // });
+
+                const emails_list2 = [
+                  "harshgupta.calinfo@gmail.com",
+                  "harshgarg1009@gmail.com",
+                ];
+                sendMultipleEmails(emails_list2, req.body, insertId, propertyLink);
+                return res.status(200).json(insertId);
+              } else {
+                console.log("3rd block skipped");
+                return res.status(200).json(insertId);
+              }
+            });
+          });
+          //return res.status(200).json(insertId);
+        });
+      });
+    });
+    // });
+  });
+};
+
+export const quickListing = (req, res) => {
+  // const q =
+  //   "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_facing, pro_area_size,  pro_amt, pro_user_id, pro_area_size_unit, pro_amt_unit ,pro_state, pro_sub_district, pro_date) Values (?)";
+  const q =
+    "INSERT INTO property_module (  pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_floor, pro_open_sides,  pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_facing, pro_area_size, pro_amt, pro_desc, pro_user_id,pro_area_size_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date) Values (?)";
+  const values1 = [
+    req.body.pro_user_type,
+    req.body.pro_ad_type,
+    req.body.pro_type,
+    req.body.pro_city,
+    req.body.pro_locality,
+    req.body.pro_facing,
+    req.body.pro_area_size,
+    req.body.pro_amt,
+    req.body.pro_user_id,
+
+    req.body.pro_area_size_unit,
+    req.body.pro_amt_unit,
+    req.body.pro_state,
+    req.body.pro_sub,
+    req.body.pro_date,
+  ];
+
+  const values = [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    req.body.pro_user_type,
+    req.body.pro_ad_type,
+    req.body.pro_type,
+    req.body.pro_city,
+    req.body.pro_locality,
+
+    req.body.pro_facing,
+    req.body.pro_area_size,
+
+    req.body.pro_amt,
+
+    null,
+    req.body.pro_user_id,
+    req.body.pro_area_size_unit,
+
+    req.body.pro_amt_unit,
+    "",
+    "",
+    req.body.pro_state,
+    req.body.pro_sub_district,
+    req.body.pro_date,
+  ];
+
+  //const newPropety="Property is in "+req.body.pro_city+"of price"+req.body.pro_amt;
+
+  db.query(q, [values], (err, data) => {
+    if (err) return res.status(500).json(err);
+    const insertId = data.insertId;
+
+    const sanitize = (input) => input.toLowerCase().replace(/[\s.,]+/g, "-");
+
+    const baseUrl = "https://propertyease.in/";
+    // const areaSize = req.body.pro_area_size.toLowerCase().replaceAll(" ", "-").replaceAll(".", "");
+    // const areaSizeUnit = req.body.pro_area_size_unit.toLowerCase().replaceAll(" ", "-");
+    // const propertyType = req.body.pro_type ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-") : "";
+    // const adType = req.body.pro_ad_type === "Rent" ? "rent" : "sale";
+    // const locality = req.body.pro_locality.toLowerCase().replaceAll(" ", "-");
+    // const city = req.body.pro_city ? req.body.pro_city.toLowerCase().replaceAll(" ", "-") : req.body.pro_state.toLowerCase().replaceAll(" ", "-").replaceAll("(", "-").replaceAll(")", "-");
+
+    // const propertyLink = `${areaSize}-${areaSizeUnit}-${propertyType}-for-${adType}-in-${locality}-${city}-${insertId}`;
+
+    const areaSize = sanitize(req.body.pro_area_size);
+    const areaSizeUnit = sanitize(req.body.pro_area_size_unit);
+    const propertyType = req.body.pro_type
+      ? sanitize(req.body.pro_type.split(",")[0])
+      : "";
+    const adType = req.body.pro_ad_type === "Rent" ? "rent" : "sale";
+    const locality = sanitize(req.body.pro_locality);
+    const city = req.body.pro_city
+      ? sanitize(req.body.pro_city)
+      : sanitize(req.body.pro_state.replaceAll("(", "").replaceAll(")", ""));
+
+    const propertyLink = `${areaSize}-${areaSizeUnit}-${propertyType}-for-${adType}-in-${locality}-${city}-${insertId}`;
+
+    const url =
+      areaSize +
+      "-" +
+      areaSizeUnit +
+      "-" +
+      propertyType +
+      "-for-" +
+      adType +
+      "-in-" +
+      locality +
+      "-" +
+      city + "-" +
+      insertId;
+
+    const q = "UPDATE property_module SET pro_url = ? where pro_id = ?";
+    const updateValues = [url, insertId];
+    db.query(q, updateValues, (err, data) => {
+      console.log(updateValues);
+      if (err) return res.status(500).json(err);
+      const subData =
+        "SELECT GROUP_CONCAT( sub_email ) as emails FROM mail_subscriber";
+      let emailData = "";
+
+      db.query(subData, (err, subscriberData) => {
+        if (err) return res.status(500).json(err);
+        subscriberData.map((item) => {
+          emailData = item.emails;
+        });
+
+        // const imgData =
+        //   "SELECT * FROM property_module_images where img_cnct_id = ? limit 1;";
+
+        // db.query(imgData, [insertId], (err, imglink) => {
+        //   if (err) return res.status(500).json(err);
+
+        let emails_list = emailData.split(",");
+
+        let info = {
+          from: '"Propertyease " <noreply@propertyease.in>', // sender address
+
+          to: "harshgupta.calinfo@gmail.com",
+          //to: req.body.pro_user_email,
+          subject: `Thanks for your time and trust!`, // Subject line
+          html: `<div style="margin:0px;padding:0px;">
+     <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
+        <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
+           <tbody>
+              <tr>
+                 <td style="width:700px;display:block;clear:both">
+                    <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style=" margin-top:30px;background-clip:padding-box;border-collapse:collapse;border-radius:5px;">
+  
+                       <tr style="height:80px; text-align:center;">
+                          <td style="padding-left:22px; padding-bottom: 10px"><img src="https://property-five.vercel.app/images/logo.png">
+                          </td>
+                       </tr>
+                 </td>
+              </tr>
+              <tr>
+                 <td>
+                    <table style="width:500px;clear:both" border="0" align="center" cellpadding="0" cellspacing="0">
+  
+                       <tr>
+                          <td>
+                             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 30px 0px 0px 0px;">
+  
+                                <tr>
+                                   <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom: 10px;"> Dear User,</b>
+                                      
+                                      <p style="margin-bottom: 10px; font-size: 16px;">Thank you for listing your property on our platform. We look forward to assisting you throughout the process.</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">
+  Check out your property: 
+  <a href="https://propertyease.in/${propertyLink}">${propertyLink}</a>
+</p>
+
+                                     
+                                    
+                                    <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at <a href="https://wa.me/919996716787">+91-99967-16787</a> anytime for any information related to this enquiry.</p>
+                                      
+                                      </td>
+                                </tr>
+                                <tr>
+                                   <td height="10px" style="font-size: 15px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom:0px;"> <b>Thanks & Regards,
+                                         </b></p>
+                                      <p style="margin-bottom:0px; font-size: 15px;">Admin Team</p>
+                                      <p style="margin-bottom: 10px; font-size: 15px;">Propertyease.in</p>
+  
+                                   </td>
+                                </tr>
+                             </table>
+                          </td>
+                       </tr>
+  
+                    </table>
+                 </td>
+              </tr>
+              <tr>
+                 <td style="font-size: 14px;text-align: center;line-height: 21px;letter-spacing: .3px; color: #155298; height: 68px;">
+  
+                    <p style="line-height:22px;margin-bottom:0px;padding: 10px;  color:#000;font-size: 12px;">
+                       &copy; Copyright ${new Date().getFullYear()} All Rights Reserved.</p>
+                 </td>
+              </tr>
+  
+           </tbody>
+        </table>
+     </div>
+  </div>`,
+        };
+        let info2 = {
+          from: '"Propertyease " <noreply@propertyease.in>', // sender address
+
+          to: "harshgupta.calinfo@gmail.com",
+          // to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+
+          subject: `Property Id: ${5000 + parseInt(insertId)} ${
+            req.body.pro_user_email
+          } listed new Property`, // Subject line
+          html: `<div style="margin:0px;padding:0px;">
+     <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
+        <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
+           <tbody>
+              <tr>
+                 <td style="width:700px;display:block;clear:both">
+                    <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style=" margin-top:30px;background-clip:padding-box;border-collapse:collapse;border-radius:5px;">
+  
+                       <tr style="height:80px; text-align:center;">
+                          <td style="padding-left:22px; padding-bottom: 10px"><img src="https://property-five.vercel.app/images/logo.png">
+                          </td>
+                       </tr>
+                 </td>
+              </tr>
+              <tr>
+                 <td>
+                    <table style="width:500px;clear:both" border="0" align="center" cellpadding="0" cellspacing="0">
+  
+                       <tr>
+                          <td>
+                             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 30px 0px 0px 0px;">
+  
+                                <tr>
+                                   <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom: 10px;"> Dear Admin,</b>
+                                      
+                                      <p style="margin-bottom: 10px; font-size: 16px;">${
+                                        req.body.pro_user_email
+                                      } has list following Property, Property Id: ${
+            5000 + parseInt(insertId)
+          } .</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">
+  Check out your property: 
+  <a href="https://propertyease.in/${propertyLink}">${propertyLink}</a>
+</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on <a href="https://wa.me/${
+                                        "91" + req.body.pro_login_number
+                                      }">+91-${
+            req.body.pro_login_number
+          }</a>.</p>
+                                      
+                                      </td>
+                                </tr>
+                                <tr>
+                                   <td height="10px" style="font-size: 15px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom:0px;"> <b>Thanks & Regards,
+                                         </b></p>
+                                      <p style="margin-bottom:0px; font-size: 15px;">Admin Team</p>
+                                      <p style="margin-bottom: 10px; font-size: 15px;">Propertyease.in</p>
+  
+                                   </td>
+                                </tr>
+                             </table>
+                          </td>
+                       </tr>
+  
+                    </table>
+                 </td>
+              </tr>
+              <tr>
+                 <td style="font-size: 14px;text-align: center;line-height: 21px;letter-spacing: .3px; color: #155298; height: 68px;">
+  
+                    <p style="line-height:22px;margin-bottom:0px;padding: 10px;  color:#000;font-size: 12px;">
+                       &copy; Copyright ${new Date().getFullYear()} All Rights Reserved.</p>
+                 </td>
+              </tr>
+  
+           </tbody>
+        </table>
+     </div>
+  </div>`,
+        };
+
+        transporter.sendMail(info, (err, data) => {
+          if (err) return res.status(500).json(err);
+          // transporter.sendMail(info2, (err, data) => {
+          //  if (err) return res.status(500).json(err);
 
           const updateq =
             "UPDATE list_plan_transactions SET pro_added_recently = pro_added_recently + 1 where user_id = ? order by tran_id desc limit 1";
@@ -837,29 +632,28 @@ export const addProperty = (req, res) => {
               //     if (err) return res.status(500).json(err);
               //     return res.status(200).json(insertId);
               // });
-            
-              // const emails_list2 = [
-              //   "harshgupta.calinfo@gmail.com",
-              //   "harshgarg1009@gmail.com",
-              // ];
-              sendMultipleEmails(emails_list, req.body, insertId);
+
+              const emails_list = [
+                "harshgupta.calinfo@gmail.com",
+                "harshgarg1009@gmail.com",
+              ];
+              //sendMultipleEmails(emails_list, req.body, insertId, propertyLink);
               return res.status(200).json(insertId);
             } else {
               console.log("3rd block skipped");
               return res.status(200).json(insertId);
             }
           });
+          //});
+          //return res.status(200).json(insertId);
         });
-        //return res.status(200).json(insertId);
       });
     });
-  });
     // });
-
   });
 };
 
-const sendMultipleEmails = (emailsList, body, insertId) => {
+const sendMultipleEmails = (emailsList, body, insertId, propertyLink) => {
   const emailsRes = {};
 
   for (let i = 0, len = emailsList.length; i < len; i++) {
@@ -1011,31 +805,7 @@ const sendMultipleEmails = (emailsList, body, insertId) => {
                                                           <tr>
                                                               <td align="left"
                                                                   style="padding:0;Margin:0;padding-top:5px;padding-bottom:5px">
-                                                                  <a href="https://propertyease.in/${
-                                                                    body.pro_area_size.toLowerCase() +
-                                                                    "-" +
-                                                                    body.pro_area_size_unit
-                                                                      .toLowerCase()
-                                                                      .replaceAll(
-                                                                        " ",
-                                                                        "-"
-                                                                      )
-                                                                      .replaceAll(
-                                                                        ".",
-                                                                        ""
-                                                                      ) +
-                                                                    "-"
-                                                                  }${
-        body.pro_type
-          ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-          : ""
-      }-for-${
-        body.pro_ad_type === "Rent" ? "rent" : "sale"
-      }-in-${body.pro_locality
-        .toLowerCase()
-        .replaceAll(" ", "-")}-${body.pro_city
-        .toLowerCase()
-        .replaceAll(" ", "-")}-${insertId}" style="text-decoration: none;">
+                                                                  <a href="https://propertyease.in/${propertyLink}" style="text-decoration: none;">
                                                                   <h3 class="p_price"
                                                                       style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Montserrat, helvetica, arial, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#014751">
                                                                       <strong>
@@ -1110,81 +880,15 @@ const sendMultipleEmails = (emailsList, body, insertId) => {
   
                                                           <tr>
                                                               <td align="left"
-                                                                  style="padding:0;Margin:0;padding-top:10px;padding-bottom:15px"><!--[if mso]><a href="https://propertyease.in/${
-                                                                    body.pro_area_size.toLowerCase() +
-                                                                    "-" +
-                                                                    body.pro_area_size_unit
-                                                                      .toLowerCase()
-                                                                      .replaceAll(
-                                                                        " ",
-                                                                        "-"
-                                                                      )
-                                                                      .replaceAll(
-                                                                        ".",
-                                                                        ""
-                                                                      ) +
-                                                                    "-"
-                                                                  }${
-        body.pro_type
-          ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-          : ""
-      }-for-${
-        body.pro_ad_type === "Rent" ? "rent" : "sale"
-      }-in-${body.pro_locality
-        .toLowerCase()
-        .replaceAll(" ", "-")}-${body.pro_city
-        .toLowerCase()
-        .replaceAll(" ", "-")}-${insertId}" target="_blank" hidden>
+                                                                  style="padding:0;Margin:0;padding-top:10px;padding-bottom:15px"><!--[if mso]><a href="https://propertyease.in/${propertyLink}" target="_blank" hidden>
      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" esdevVmlButton href="#" 
                  style="height:36px; v-text-anchor:middle; width:167px" arcsize="50%" strokecolor="#014751" strokeweight="1px" fillcolor="#f7f6f4">
          <w:anchorlock></w:anchorlock>
-         <center style='color:#014751; font-family:Montserrat, helvetica, arial, sans-serif; font-size:12px; font-weight:400; line-height:12px;  mso-text-raise:1px'><a href="https://propertyease.in/${
-           body.pro_area_size.toLowerCase() +
-           "-" +
-           body.pro_area_size_unit
-             .toLowerCase()
-             .replaceAll(" ", "-")
-             .replaceAll(".", "") +
-           "-"
-         }${
-        body.pro_type
-          ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-          : ""
-      }-for-${
-        body.pro_ad_type === "Rent" ? "rent" : "sale"
-      }-in-${body.pro_locality
-        .toLowerCase()
-        .replaceAll(" ", "-")}-${body.pro_city
-        .toLowerCase()
-        .replaceAll(" ", "-")}-${insertId}">View Listing</a></center>
+         <center style='color:#014751; font-family:Montserrat, helvetica, arial, sans-serif; font-size:12px; font-weight:400; line-height:12px;  mso-text-raise:1px'><a href="https://propertyease.in/${propertyLink}">View Listing</a></center>
      </v:roundrect></a>
   <![endif]--><!--[if !mso]><!-- --><span class="msohide es-button-border"
                                                                       style="border-style:solid;border-color:#014751;background:#f7f6f4;border-width:1px;display:inline-block;border-radius:30px;width:auto;mso-hide:all"><a
-                                                                          href="https://propertyease.in/${
-                                                                            body.pro_area_size.toLowerCase() +
-                                                                            "-" +
-                                                                            body.pro_area_size_unit
-                                                                              .toLowerCase()
-                                                                              .replaceAll(
-                                                                                " ",
-                                                                                "-"
-                                                                              )
-                                                                              .replaceAll(
-                                                                                ".",
-                                                                                ""
-                                                                              ) +
-                                                                            "-"
-                                                                          }${
-        body.pro_type
-          ? body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-")
-          : ""
-      }-for-${
-        body.pro_ad_type === "Rent" ? "rent" : "sale"
-      }-in-${body.pro_locality
-        .toLowerCase()
-        .replaceAll(" ", "-")}-${body.pro_city
-        .toLowerCase()
-        .replaceAll(" ", "-")}-${insertId}" class="es-button" target="_blank"
+                                                                          href="https://propertyease.in/${propertyLink}" class="es-button" target="_blank"
                                                                           style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#014751;font-size:14px;display:inline-block;background:#f7f6f4;border-radius:30px;font-family:Montserrat, helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:17px;width:auto;text-align:center;padding:10px 40px 10px 40px;mso-padding-alt:0;mso-border-alt:10px solid  #f7f6f4">View
                                                                           Listing</a></span><!--<![endif]--></td>
                                                           </tr>
@@ -1346,7 +1050,38 @@ const sendNewMail = (data) => {
 };
 
 export const updateProperty = (req, res) => {
-  const url =
+
+
+
+  const sanitize = (input) => input.toLowerCase().replace(/[\s.,]+/g, "-");
+    const areaSize = sanitize(req.body.pro_area_size);
+    const areaSizeUnit = sanitize(req.body.pro_area_size_unit);
+    const propertyType = req.body.pro_type
+      ? sanitize(req.body.pro_type.split(",")[0])
+      : "";
+    const adType = req.body.pro_ad_type === "Rent" ? "rent" : "sale";
+    const locality = sanitize(req.body.pro_locality);
+    const city = req.body.pro_city
+      ? sanitize(req.body.pro_city)
+      : sanitize(req.body.pro_state.replaceAll("(", "").replaceAll(")", ""));
+
+   // const propertyLink = `${areaSize}-${areaSizeUnit}-${propertyType}-for-${adType}-in-${locality}-${city}-${req.body.pro_id}`;
+
+    const url =
+      areaSize +
+      "-" +
+      areaSizeUnit +
+      "-" +
+      propertyType +
+      "-for-" +
+      adType +
+      "-in-" +
+      locality +
+      "-" +
+      city + "-" +
+      req.body.pro_id;
+
+  const url2 =
     req.body.pro_area_size +
     "-" +
     req.body.pro_area_size_unit
@@ -1362,8 +1097,9 @@ export const updateProperty = (req, res) => {
     "-in-" +
     req.body.pro_locality.trim().toLowerCase().replaceAll(" ", "-") +
     "-" +
-    req.body.pro_city.toLowerCase().replaceAll(" ", "-") +
-    "-" +
+    (req.body.pro_city
+      ? req.body.pro_city.toLowerCase().replaceAll(" ", "-") + "-"
+      : "") +
     req.body.pro_id;
   const q =
     "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_negotiable = ? , pro_state = ? , pro_sub_district = ?, pro_url = ? WHERE pro_id = ?";
