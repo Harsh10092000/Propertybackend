@@ -109,14 +109,30 @@ WHERE login_module.login_email IS NULL;`;
   });
 };
 
+// export const addSingleMail = (req, res) => {
+//   const { email } = req.body;
+//   console.log(email);
+//   const q = "insert into email_contacts (email) Values (?)";
+//   db.query(q, [email], (err, data) => {
+//     console.log(email);
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json("Updated Successfully");
+//   });
+// };
+
+
 export const addSingleMail = (req, res) => {
-  const { email } = req.body;
-  console.log(email);
-  const q = "insert into email_contacts (email) Values (?)";
-  db.query(q, [email], (err, data) => {
-    console.log(email);
+  //const { email } = req.body;
+  console.log(" req.body : " ,  req.body)
+  const values2 = req.body.map((item) => [
+    item,
+  ]);
+  console.log(values2);
+  const q = "insert into email_contacts (email) Values ?";
+  db.query(q, [values2], (err, data) => {
+    //console.log(email);
     if (err) return res.status(500).json(err);
-    return res.status(200).json("Updated Successfully");
+    return res.status(200).json("Added Successfully");
   });
 };
 
