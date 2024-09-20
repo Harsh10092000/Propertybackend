@@ -336,27 +336,8 @@ export const addProperty = (req, res) => {
 };
 
 export const quickListing = (req, res) => {
-  // const q =
-  //   "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_facing, pro_area_size,  pro_amt, pro_user_id, pro_area_size_unit, pro_amt_unit ,pro_state, pro_sub_district, pro_date) Values (?)";
-  const q =
+ 
     "INSERT INTO property_module (  pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_floor, pro_open_sides,  pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_facing, pro_area_size, pro_amt, pro_desc, pro_user_id,pro_area_size_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date) Values (?)";
-  const values1 = [
-    req.body.pro_user_type,
-    req.body.pro_ad_type,
-    req.body.pro_type,
-    req.body.pro_city,
-    req.body.pro_locality,
-    req.body.pro_facing,
-    req.body.pro_area_size,
-    req.body.pro_amt,
-    req.body.pro_user_id,
-
-    req.body.pro_area_size_unit,
-    req.body.pro_amt_unit,
-    req.body.pro_state,
-    req.body.pro_sub,
-    req.body.pro_date,
-  ];
 
   const values = [
     "0",
@@ -376,7 +357,7 @@ export const quickListing = (req, res) => {
 
     req.body.pro_amt,
 
-    null,
+    req.body.pro_desc,
     req.body.pro_user_id,
     req.body.pro_area_size_unit,
 
@@ -395,16 +376,6 @@ export const quickListing = (req, res) => {
     const insertId = data.insertId;
 
     const sanitize = (input) => input.toLowerCase().replace(/[\s.,]+/g, "-");
-
-    const baseUrl = "https://propertyease.in/";
-    // const areaSize = req.body.pro_area_size.toLowerCase().replaceAll(" ", "-").replaceAll(".", "");
-    // const areaSizeUnit = req.body.pro_area_size_unit.toLowerCase().replaceAll(" ", "-");
-    // const propertyType = req.body.pro_type ? req.body.pro_type.split(",")[0].toLowerCase().replaceAll(" ", "-") : "";
-    // const adType = req.body.pro_ad_type === "Rent" ? "rent" : "sale";
-    // const locality = req.body.pro_locality.toLowerCase().replaceAll(" ", "-");
-    // const city = req.body.pro_city ? req.body.pro_city.toLowerCase().replaceAll(" ", "-") : req.body.pro_state.toLowerCase().replaceAll(" ", "-").replaceAll("(", "-").replaceAll(")", "-");
-
-    // const propertyLink = `${areaSize}-${areaSizeUnit}-${propertyType}-for-${adType}-in-${locality}-${city}-${insertId}`;
 
     const areaSize = sanitize(req.body.pro_area_size);
     const areaSizeUnit = sanitize(req.body.pro_area_size_unit);
@@ -459,8 +430,8 @@ export const quickListing = (req, res) => {
         let info = {
           from: '"Propertyease " <noreply@propertyease.in>', // sender address
 
-          to: "harshgupta.calinfo@gmail.com",
-          //to: req.body.pro_user_email,
+          //to: "harshgupta.calinfo@gmail.com",
+          to: req.body.pro_user_email,
           subject: `Thanks for your time and trust!`, // Subject line
           html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -532,8 +503,8 @@ export const quickListing = (req, res) => {
         let info2 = {
           from: '"Propertyease " <noreply@propertyease.in>', // sender address
 
-          to: "harshgupta.calinfo@gmail.com",
-          // to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+          //to: "harshgupta.calinfo@gmail.com",
+           to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
 
           subject: `Property Id: ${5000 + parseInt(insertId)} ${
             req.body.pro_user_email
@@ -613,8 +584,8 @@ export const quickListing = (req, res) => {
 
         transporter.sendMail(info, (err, data) => {
           if (err) return res.status(500).json(err);
-          // transporter.sendMail(info2, (err, data) => {
-          //  if (err) return res.status(500).json(err);
+           transporter.sendMail(info2, (err, data) => {
+            if (err) return res.status(500).json(err);
 
           const updateq =
             "UPDATE list_plan_transactions SET pro_added_recently = pro_added_recently + 1 where user_id = ? order by tran_id desc limit 1";
@@ -633,11 +604,11 @@ export const quickListing = (req, res) => {
               //     return res.status(200).json(insertId);
               // });
 
-              const emails_list = [
-                "harshgupta.calinfo@gmail.com",
-                "harshgarg1009@gmail.com",
-              ];
-              //sendMultipleEmails(emails_list, req.body, insertId, propertyLink);
+              // const emails_list = [
+              //   "harshgupta.calinfo@gmail.com",
+              //   "harshgarg1009@gmail.com",
+              // ];
+              sendMultipleEmails(emails_list, req.body, insertId, propertyLink);
               return res.status(200).json(insertId);
             } else {
               console.log("3rd block skipped");
@@ -649,7 +620,7 @@ export const quickListing = (req, res) => {
         });
       });
     });
-    // });
+     });
   });
 };
 
