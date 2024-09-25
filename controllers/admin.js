@@ -19,9 +19,11 @@ export const deleteProperty = (req, res) => {
   });
 };
 export const fetchInterested = (req, res) => {
-  const q =
-    "SELECT  property_interest.*, property_module.*, login_module.* FROM property_interest LEFT JOIN login_module ON property_interest.interest_person_id = login_module.login_id left join property_module on property_interest.interest_property_id = property_module.pro_id ORDER BY pro_id DESC";
-  db.query(q, (err, data) => {
+  // const q =
+  //   "SELECT  property_interest.*, property_module.*, login_module.* FROM property_interest LEFT JOIN login_module ON property_interest.interest_person_id = login_module.login_id left join property_module on property_interest.interest_property_id = property_module.pro_id ORDER BY pro_id DESC";
+  const q = "SELECT  property_interest.*, property_module.*FROM property_interest left join property_module on property_interest.interest_property_id = property_module.pro_id ORDER BY pro_id DESC;"
+ 
+    db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
@@ -50,6 +52,7 @@ export const fetchUsers1 = (req, res) => {
   agent.agent_type, 
   property_count.count_of_properties,
   property_module.pro_user_id,
+  property_module.pro_auto_inactive,
   pro_count.pro_count, 
   pro_count.pro_creation_date, 
   DATEDIFF(CONVERT_TZ(pro_count.pro_creation_date, '+00:00', '+05:30'), CONVERT_TZ(NOW(), '+00:00', '+05:30')) AS Days, 
@@ -229,3 +232,16 @@ export const fetchCouponCode = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
+
+
+export const fetchDefaultInactiveDuration = (req, res) => {
+  const q = "SELECT * FROM u747016719_propertyease.default_pro_inactive;";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
+

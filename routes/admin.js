@@ -13,7 +13,8 @@ import {
   updateCouponStatus,
   deleteCoupon,
   updateProListingCoupon,
-  fetchCouponCode
+  fetchCouponCode,
+  fetchDefaultInactiveDuration
 } from "../controllers/admin.js";
 import { deleteProperty } from "../controllers/admin.js";
 import { checkCouponStatus } from "../middleware/checkcouponvalidity.js";
@@ -37,6 +38,8 @@ router.put("/updateCouponStatus", updateCouponStatus);
 router.put("/updateProListingCoupon", updateProListingCoupon);
 router.get("/fetchCouponCode/:couponCode", fetchCouponCode);
 router.delete("/deleteCoupon/:couponId", deleteCoupon);
+router.get("/fetchDefaultInactiveDuration", fetchDefaultInactiveDuration);
+
 
 
 export default router;
