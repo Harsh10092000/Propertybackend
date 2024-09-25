@@ -146,8 +146,8 @@ export const addProperty = (req, res) => {
         let info = {
           from: '"Propertyease " <noreply@propertyease.in>', // sender address
           //to: data[0].login_email,
-          to: "harshgupta.calinfo@gmail.com",
-          //to: req.body.pro_user_email,
+          //to: "harshgupta.calinfo@gmail.com",
+          to: req.body.pro_user_email,
           subject: `Thanks for your time and trust!`, // Subject line
           html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -216,8 +216,8 @@ export const addProperty = (req, res) => {
           from: '"Propertyease " <noreply@propertyease.in>', // sender address
 
           //to: "harshgupta.calinfo@gmail.com",
-          //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-          to: req.body.pro_user_email,
+          to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+          //to: req.body.pro_user_email,
           subject: `Property Id: ${5000 + parseInt(insertId)} ${
             req.body.pro_user_email
           } listed new Property`, // Subject line
@@ -315,11 +315,11 @@ export const addProperty = (req, res) => {
                 //     return res.status(200).json(insertId);
                 // });
 
-                const emails_list2 = [
-                  "harshgupta.calinfo@gmail.com",
-                  "harshgarg1009@gmail.com",
-                ];
-                sendMultipleEmails(emails_list2, req.body, insertId, propertyLink);
+                // const emails_list2 = [
+                //   "harshgupta.calinfo@gmail.com",
+                //   "harshgarg1009@gmail.com",
+                // ];
+                sendMultipleEmails(emails_list, req.body, insertId, propertyLink);
                 return res.status(200).json(insertId);
               } else {
                 console.log("3rd block skipped");
@@ -336,7 +336,7 @@ export const addProperty = (req, res) => {
 };
 
 export const quickListing = (req, res) => {
- 
+ const q =
     "INSERT INTO property_module (  pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_floor, pro_open_sides,  pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_facing, pro_area_size, pro_amt, pro_desc, pro_user_id,pro_area_size_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date) Values (?)";
 
   const values = [
