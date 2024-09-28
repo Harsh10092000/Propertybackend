@@ -1,7 +1,19 @@
 import { transporter } from "../nodemailer.js";
 import { db } from "../connect.js";
 
-export const adminInvite = (req, res) => {
+
+export const verifyServer = (req, res) => {
+  transporter.verify((error, success) => {
+    if (error) {
+      return res.status(500).json('Server not reachable');
+    } else {
+      return res.status(200).json('Server is reachable');
+    }
+  });
+};
+
+
+export const adminInvite =  (req, res) => {
   const emailsResult = sendMultipleEmails(
     req.body.email_reciever_id,
     req.body.email_sub,
@@ -9,8 +21,8 @@ export const adminInvite = (req, res) => {
   );
   //console.log("emailsResult : " , emailsResult);
  
-  const q = "insert into mail_content (mail_content) Values (?)";
-  db.query(q, [req.body.email_cont], (err, data) => {
+  const q = "insert into mail_content (mail_content, mail_subject) Values (?,?)";
+  db.query(q, [req.body.email_cont, req.body.email_sub], (err, data) => {
     //console.log(req.body.email_cont);
     if (err) return res.status(500).json(err);
     const insertId = data.insertId;
@@ -28,10 +40,10 @@ export const adminInvite = (req, res) => {
   //return res.status(200).json(emailsResult);
 };
 
-const sendMultipleEmails = (emailsList, sub, content) => {
+const sendMultipleEmails =  (emailsList, sub, content) => {
   const emailsRes = {};
   for (let i = 0, len = emailsList.length; i < len; i++) {
-    const res = sendNewMail({
+    const res =  sendNewMail({
       from: '"Propertyease " <noreply@propertyease.in>',
       to: emailsList[i],
       subject: sub,
@@ -45,10 +57,10 @@ const sendMultipleEmails = (emailsList, sub, content) => {
 
 
 
-const sendNewMail = (data) => {
+ const sendNewMail =  (data) => {
   const { from, to, subject, body } = data;
   try {
-    transporter.sendMail({
+     transporter.sendMail({
       from,
       to,
       subject: subject || "no subject",
@@ -85,6 +97,72 @@ const sendNewMail = (data) => {
 //     console.error("Caught error:", error);
 //     console.log("Failed to send mail to:", to);
 //     return { success: false, message: "Email not sent!", to: to };
+//   }
+// };
+
+
+
+// export const adminInvite = async (req, res) => {
+//   try {
+//     const emailsResult = await sendMultipleEmails(
+//       req.body.email_reciever_id,
+//       req.body.email_sub,
+//       req.body.email_cont
+//     );
+
+//     console.log("emailsResult : ", emailsResult);
+
+//     const q = "INSERT INTO mail_content (mail_content) VALUES (?)";
+//     const [contentResult] = await db.query(q, [req.body.email_cont]);
+//     const insertId = contentResult.insertId;
+
+//     const values2 = Object.values(emailsResult).map(({ to, success }) => [
+//       insertId,
+//       to,
+//       success,
+//     ]);
+
+//     const q2 = "INSERT INTO mail_sent_data (content_id, email_id, status) VALUES ?";
+//     await db.query(q2, [values2]);
+
+//     return res.status(200).json(emailsResult);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json(err);
+//   }
+// };
+
+
+
+
+// const sendMultipleEmails = async (emailsList, sub, content) => {
+//   const emailPromises = emailsList.map(email => 
+//     sendNewMail({
+//       from: '"Propertyease " <noreply@propertyease.in>',
+//       to: email,
+//       subject: sub,
+//       body: content,
+//     })
+//   );
+
+//   return Promise.all(emailPromises);
+// };
+
+// const sendNewMail = async (data) => {
+//   const { from, to, subject, body } = data;
+//   try {
+//     await transporter.sendMail({
+//       from,
+//       to,
+//       subject: subject || "no subject",
+//       html: body,
+//     });
+//     console.log("mail sent : ", to);
+//     return { success: true, message: "Email sent successfully!", to };
+//   } catch (error) {
+//     console.error(error);
+//     console.log("failed : ", to);
+//     return { success: false, message: "Email not sent!", to };
 //   }
 // };
 
@@ -246,6 +324,16 @@ const sendMultipleEmailToUser = (emailsList, name) => {
 export const getMailContent = (req, res) => {
   const q = `
    SELECT * FROM mail_content;`;
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
+export const getMailData = (req, res) => {
+  const q = `
+   SELECT * FROM mail_sent_data  order by id desc;`;
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);

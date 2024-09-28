@@ -20,7 +20,17 @@ export const transporter = nodemailer.createTransport({
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
   },
+  debug: true
 });
+
+
+// transporter.verify((error, success) => {
+//   if (error) {
+//       console.error('Server not reachable:', error);
+//   } else {
+//       console.log('Server is ready to take messages');
+//   }
+// });
 
 
 export const digesttransporter = nodemailer.createTransport({
