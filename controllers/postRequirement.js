@@ -34,7 +34,7 @@ export const postRequirement = (req, res) => {
       let info = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
         to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-        //   to: "akshit.calinfo07@gmail.com",
+       
         // to: "harshgupta.calinfo@gmail.com",
         subject: `Query ID - ${1000 + parseInt(id)} Property Requirement from ${
           req.body.data_name
@@ -155,7 +155,7 @@ export const postRequirement = (req, res) => {
                                         <p style="margin-bottom: 10px; font-size: 16px;">Thank you for posting your requirement. Your Query Id is ${
                                           1000 + parseInt(id)
                                         }  We will be in touch with you soon.</p>
-                                        <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support +91-99967-16787 anytime for any information related to this enquiry.</p>
+                                        <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support +91-89500-40151 anytime for any information related to this enquiry.</p>
                                      </td>
                                   </tr>
                                   <tr>
