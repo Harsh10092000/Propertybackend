@@ -241,8 +241,8 @@ export const freeEnquiry2 = (req, res) => {
   db.query(q, [pro_user_id], (err, data) => {
     let info = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
-      to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
-      //to: "harshgupta.calinfo@gmail.com",
+      to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com",
+      //to: "harshgupta.calinfo@gmail.com",/ list of receivers
       subject: `${name} Showed Interest in a Property (ID: ${pro_id})`,
       html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -344,9 +344,17 @@ export const freeEnquiry2 = (req, res) => {
                                    <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
                                       <p style="color:#404040; margin-bottom: 10px;"> Dear User,</b>
                                       <p style="margin-bottom: 10px; font-size: 16px;">${name}, ${email} has shown interest in your property. You can Contact him/her on <a href="https://wa.me/91${phone}">+91-${phone}</a>.  </b></p>
+                                     
+                                       <p style="color:#404040; margin-bottom: 10px; font-size: 16px;"><strong>Property Details : </strong></b>
+                                      
+                                      <a href='https://www.propertyease.in/${propertySlug}' style="margin-bottom: 10px; font-size: 16px;">${propertySlug}</a></p>
+
                                       <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support  <a href="https://wa.me/918950040151">+91-89500-40151</a> anytime for any information related to this enquiry.</p>
                                    </td>
                                 </tr>
+                                
+                               
+                                
                                 <tr>
                                    <td height="10px" style="font-size: 15px;line-height: 24px;letter-spacing:.3px;">
                                       <p style="color:#404040; margin-bottom:0px;"> <b>Thanks & Regards,
