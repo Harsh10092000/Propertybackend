@@ -33,7 +33,7 @@ export const postRequirement = (req, res) => {
       if (err) return res.status(500).json(err);
       let info = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
-        to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
        
         // to: "harshgupta.calinfo@gmail.com",
         subject: `Query ID - ${1000 + parseInt(id)} Property Requirement from ${
@@ -120,7 +120,7 @@ export const postRequirement = (req, res) => {
         if (err) return res.status(500).json(err);
         let info2 = {
           from: '"Propertyease " <noreply@propertyease.in>', // sender address
-          // to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+          // to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
           // to: "akshit.calinfo07@gmail.com",
            to: req.body.data_email,
           subject: ` Thank you for posting your requirement`, // Subject line

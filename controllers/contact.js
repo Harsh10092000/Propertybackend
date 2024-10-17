@@ -24,7 +24,7 @@ export const askquestion = (req, res) => {
     db.query(q, [pro_user_id], (err, data) => {
       let info = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
-        to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //   to: "akshit.calinfo07@gmail.com",
         // to: "harshgupta.calinfo@gmail.com",
         subject: `${userId} Showed Interest in a Property`, // Subject line
@@ -105,7 +105,7 @@ export const freeEnquiry = (req, res) => {
 
   let info = {
     from: '"Propertyease " <noreply@propertyease.in>', // sender address
-    to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+    to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
     //to: "harshgupta.calinfo@gmail.com",
     subject: `Free Enquiry Request by ${name}`, // Subject line
     html: `<div style="margin:0px;padding:0px;">
@@ -241,7 +241,7 @@ export const freeEnquiry2 = (req, res) => {
   db.query(q, [pro_user_id], (err, data) => {
     let info = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
-      to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com",
+      to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com",
       //to: "harshgupta.calinfo@gmail.com",/ list of receivers
       subject: `${name} Showed Interest in a Property (ID: ${pro_id})`,
       html: `<div style="margin:0px;padding:0px;">
@@ -456,7 +456,7 @@ export const contactAgent = (req, res) => {
   } = req.body;
   let info = {
     from: '"Propertyease " <noreply@propertyease.in>', // sender address
-    to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+    to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
     //to: "harshgupta.calinfo@gmail.com",
     subject: `${name} Contacted Broker`, // Subject line
     html: `<div style="margin:0px;padding:0px;">
@@ -675,7 +675,7 @@ export const interestShowedInAgent = (req, res) => {
   db.query(q, [pro_user_id], (err, data) => {
     let info = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
-      //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+      //to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
       //to: data[0].login_email,
       to: "harshgupta.calinfo@gmail.com",
       subject: `Someone Showed Interest in your Property`, // Subject line
@@ -760,7 +760,7 @@ export const contactUsData = (req, res) => {
     //return res.status(200).json(insertId);
     let info = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
-      to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+      to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
       //   to: "akshit.calinfo07@gmail.com",
        //to: "harshgupta.calinfo@gmail.com",
       subject: `New message from ${req.body.name} `, // Subject line
@@ -834,7 +834,7 @@ export const contactUsData = (req, res) => {
     };
     let userinfo = {
       from: '"Propertyease " <noreply@propertyease.in>', // sender address
-      //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+      //to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
       to: req.body.email,
       //to: "harshgupta.calinfo@gmail.com",
       subject: `Thank you for contacting us`, // Subject line
@@ -918,7 +918,7 @@ export const contactUsData = (req, res) => {
 //      db.query(q, [pro_user_id], (err, data) => {
 //        let info = {
 //          from: '"Propertyease " <noreply@propertyease.in>', // sender address
-//          to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+//          to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
 //          //   to: "akshit.calinfo07@gmail.com",
 //          // to: "harshgupta.calinfo@gmail.com",
 //          subject: `${userId} Showed Interest in a Property`, // Subject line

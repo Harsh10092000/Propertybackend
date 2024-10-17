@@ -101,7 +101,7 @@ export const maildigest = (req, res) => {
         //from: '"Propertyease " <noreply@propertyease.in>', // sender address
         // from: process.env.BROADCAST_SENDER_EMAIL,
         from: `"${process.env.BROADCAST_SENDER_EMAIL_NAME} " <${process.env.BROADCAST_SENDER_EMAIL}>`,
-        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        //to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         to: emailData,
         //bcc: emailData,
         //bcc: ["harshgupta.calinfo@gmail.com,harshwork1009@gmail.com"],
