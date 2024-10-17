@@ -95,7 +95,7 @@ router.post("/paymentVerification", async (req, res) => {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
         //to: data[0].login_email,
         to: "harshgupta.calinfo@gmail.com",
-        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        //to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //to: req.body.pro_user_email,
         subject: `Thank You for Subscribing!`, // Subject line
         html: `<div style="margin:0px;padding:0px;">
@@ -163,7 +163,7 @@ router.post("/paymentVerification", async (req, res) => {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
         //to: data[0].login_email,
         to: "harshgupta.calinfo@gmail.com",
-        //to: "propertyease.in@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+        //to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
         //to: req.body.pro_user_email,
         subject: `Subscription Sold`, // Subject line
         html: `<div style="margin:0px;padding:0px;">
