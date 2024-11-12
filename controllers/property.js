@@ -1075,7 +1075,7 @@ export const updateProperty = (req, res) => {
       : "") +
     req.body.pro_id;
   const q =
-    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_negotiable = ? , pro_state = ? , pro_sub_district = ?, pro_url = ?, pro_other_rooms = ?, pro_near_by_facilities = ? WHERE pro_id = ?";
+    "UPDATE property_module SET pro_user_type = ?, pro_ad_type = ?, pro_type  = ?, pro_city = ?, pro_locality = ?, pro_plot_no = ?, pro_street = ?, pro_age = ?, pro_floor = ?, pro_bedroom = ?, pro_washrooms = ?, pro_balcony = ?, pro_parking = ?, pro_facing = ?, pro_area_size = ?, pro_width = ?, pro_length = ?, pro_facing_road_width = ?, pro_open_sides = ?, pro_furnishing = ?, pro_ownership_type = ?, pro_approval = ?, pro_amt = ?, pro_rental_status = ?, pro_desc = ?, pro_possession = ?, pro_area_size_unit = ? , pro_facing_road_unit = ? , pro_amt_unit = ?, pro_pincode = ? , pro_negotiable = ? , pro_state = ? , pro_sub_district = ?, pro_other_rooms = ?, pro_near_by_facilities = ?, pro_url = ? WHERE pro_id = ?";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -1116,12 +1116,11 @@ export const updateProperty = (req, res) => {
 
     req.body.pro_state,
     req.body.pro_sub_district,
+    req.body.pro_other_rooms,
+    req.body.pro_near_by_facilities,
     url,
     req.body.pro_id,
-    //req.body.pro_other_rooms,
-    //req.body.pro_near_by_facilities,
-    'Other Rooms,Store Room,Puja Room',
-    'Hospitals'
+
   ];
   db.query(q, values, (err, data) => {
     console.log("values : " , values);
