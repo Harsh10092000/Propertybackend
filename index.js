@@ -288,7 +288,7 @@ app.use(cookieParser());
 
 // app.use(express.static(path.resolve(process.cwd(), "./build")));
 
-var whitelist = ["https://www.propertyease.in", "https://propertyease.in" , "http://localhost:8010" , "http://localhost:5173", "https://box-and-move.vercel.app" ];
+var whitelist = ["https://www.propertyease.in", "https://propertyease.in" , "http://localhost:8010" , "http://localhost:3000" , "http://localhost:5173", "https://box-and-move.vercel.app" ];
 //var whitelist = ["https://www.propertyease.in", "https://propertyease.in" ];
 var corsOptions = {
   origin: function (origin, callback) {
