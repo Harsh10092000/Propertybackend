@@ -88,16 +88,23 @@ export const sendOtp = (req, res) => {
       var mobile_number = data[0].login_number;
       updateOtp(otp, req.params.email);
       transporter.sendMail(info, async (err, data) => {
-        if (err) return res.status(500).json(err);
+        if (err) 
+        {
+        
+         return res.status(500).json(err);
+        }
         //const mobile_number = "7404302678";
         //sendOtpOnMobile2(data[0].login_number, otp);
         //return res.status(200).json("Otp Sent");
+
+        // send otp on mobile
         const smsResponse = await sendOtpOnMobile2(mobile_number, otp);
         if (smsResponse.success) {
           return res.status(200).json("Otp Sent");
         } else {
            return res.status(smsResponse.status || 500).json({ message: "Failed to send OTP", error: smsResponse.message });
         }
+      return res.status(200).json("Otp Sent");
       });
     } else {
       return res.status(409).json("Email doesn't Exist");
@@ -224,6 +231,80 @@ export const addUser = (req, res) => {
  </div>`, // html body
   };
 
+  let info2 = {
+   from: '"Propertyease " <noreply@propertyease.in>', // sender address
+
+   //to: "harshgupta.calinfo@gmail.com",
+   to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+   //to: req.body.pro_user_email,
+   subject: `${req.body.email} has registered on Propertyease`, // Subject line
+   html: `<div style="margin:0px;padding:0px;">
+<div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
+ <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
+    <tbody>
+       <tr>
+          <td style="width:700px;display:block;clear:both">
+             <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style=" margin-top:30px;background-clip:padding-box;border-collapse:collapse;border-radius:5px;">
+
+                <tr style="height:80px; text-align:center;">
+                   <td style="padding-left:22px; padding-bottom: 10px"><img src="https://property-five.vercel.app/images/logo.png">
+                   </td>
+                </tr>
+          </td>
+       </tr>
+       <tr>
+          <td>
+             <table style="width:500px;clear:both" border="0" align="center" cellpadding="0" cellspacing="0">
+
+                <tr>
+                   <td>
+                      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 30px 0px 0px 0px;">
+
+                         <tr>
+                            <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
+                               <p style="color:#404040; margin-bottom: 10px;"> Dear Admin,</b>
+                               
+                               <p style="margin-bottom: 10px; font-size: 16px;">A new user has registered on Propertyease. Below are the details of the new user : </p>
+                         
+                               <p style="margin-bottom: 10px; font-size: 16px;">User Email: ${req.body.email}</p>
+                               <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on <a href="https://wa.me/${
+                                 "91" + req.body.phone
+                               }">+91-${
+     req.body.phone
+   }</a>.</p>
+                               
+                               </td>
+                         </tr>
+                         <tr>
+                            <td height="10px" style="font-size: 15px;line-height: 24px;letter-spacing:.3px;">
+                               <p style="color:#404040; margin-bottom:0px;"> <b>Thanks & Regards,
+                                  </b></p>
+                               <p style="margin-bottom:0px; font-size: 15px;">Admin Team</p>
+                               <p style="margin-bottom: 10px; font-size: 15px;">Propertyease.in</p>
+
+                            </td>
+                         </tr>
+                      </table>
+                   </td>
+                </tr>
+
+             </table>
+          </td>
+       </tr>
+       <tr>
+          <td style="font-size: 14px;text-align: center;line-height: 21px;letter-spacing: .3px; color: #155298; height: 68px;">
+
+             <p style="line-height:22px;margin-bottom:0px;padding: 10px;  color:#000;font-size: 12px;">
+                &copy; Copyright ${new Date().getFullYear()} All Rights Reserved.</p>
+          </td>
+       </tr>
+
+    </tbody>
+ </table>
+</div>
+</div>`,
+ };
+
   const query1 =
     "INSERT INTO login_module (login_email, login_number, login_otp) Values (?)";
   const values = [req.body.email, req.body.phone, otp];
@@ -232,8 +313,11 @@ export const addUser = (req, res) => {
     if (err) return res.status(500).json(err);
     transporter.sendMail(info, (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json(otp);
+      transporter.sendMail(info2, (err, data) => {
+         if (err) return res.status(500).json(err);
+         return res.status(200).json(otp);
     });
+   });
   });
 };
 
