@@ -644,10 +644,7 @@ const sendMultipleEmails = (emailsList, body, insertId, propertyLink) => {
         " "
       }
       for ${body.pro_ad_type === "Rent" ? "Rent" : "Sale"} in
-      
-        ${body.pro_locality + ", "}
-      
-      
+      ${body.pro_locality + ", "}
       ${body.pro_sub_district ? body.pro_sub_district + ", " : ""}
       ${body.pro_city + ", "}
       ${body.pro_state}`,
