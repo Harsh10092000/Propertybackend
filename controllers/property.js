@@ -65,8 +65,31 @@ export const addProperty = (req, res) => {
     req.body.pro_near_by_facilities,
     req.body.pro_corner,
   ];
-
  
+  let formatted_price= "";
+
+  if (req.body.pro_amt) {
+    if (req.body.pro_amt < 100000) {
+      formatted_price = Intl.NumberFormat().format(req.body.pro_amt);
+    } else if (req.body.pro_amt > 99999 && req.body.pro_amt < 10000000) {
+      const lakh_number = req.body.pro_amt / 100000;
+      formatted_price = (
+        lakh_number.toLocaleString(undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        }) + " Lac"
+      );
+    } else {
+      const crore_number = req.body.pro_amt / 10000000;
+      formatted_price = (
+          crore_number.toLocaleString(undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        }) + " Crore"
+      );
+    }
+  }
+  
 
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -312,7 +335,7 @@ export const addProperty = (req, res) => {
                 typeof process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME
               );
               if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
-                console.log("inside 3rd block");
+
                 //   digesttransporter.sendMail(info3, (err, data) => {
                 //     if (err) return res.status(500).json(err);
                 //     return res.status(200).json(insertId);
@@ -322,7 +345,7 @@ export const addProperty = (req, res) => {
                 //   "harshgupta.calinfo@gmail.com",
                 //   "harshgarg1009@gmail.com",
                 // ];
-                sendMultipleEmails(emails_list, req.body, insertId, propertyLink);
+                sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
                 return res.status(200).json(insertId);
               } else {
                 console.log("3rd block skipped");
@@ -371,6 +394,30 @@ export const quickListing = (req, res) => {
     req.body.pro_sub_district,
     req.body.pro_date,
   ];
+
+  let formatted_price= "";
+
+  if (req.body.pro_amt) {
+    if (req.body.pro_amt < 100000) {
+      formatted_price = Intl.NumberFormat().format(req.body.pro_amt);
+    } else if (req.body.pro_amt > 99999 && req.body.pro_amt < 10000000) {
+      const lakh_number = req.body.pro_amt / 100000;
+      formatted_price = (
+        lakh_number.toLocaleString(undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        }) + " Lac"
+      );
+    } else {
+      const crore_number = req.body.pro_amt / 10000000;
+      formatted_price = (
+          crore_number.toLocaleString(undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        }) + " Crore"
+      );
+    }
+  }
 
   //const newPropety="Property is in "+req.body.pro_city+"of price"+req.body.pro_amt;
 
@@ -595,26 +642,26 @@ export const quickListing = (req, res) => {
 
           db.query(updateq, [req.body.pro_user_id], (err, data) => {
             if (err) return res.status(500).json(err);
-            console.log(
-              "process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : ",
-              process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME,
-              typeof process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME
-            );
+            // console.log(
+            //   "process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : ",
+            //   process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME,
+            //   typeof process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME
+            // );
             if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
-              console.log("inside 3rd block");
+              //console.log("inside 3rd block");
               //   digesttransporter.sendMail(info3, (err, data) => {
               //     if (err) return res.status(500).json(err);
               //     return res.status(200).json(insertId);
               // });
 
-              // const emails_list = [
+              // const emails_list2 = [
               //   "harshgupta.calinfo@gmail.com",
               //   "harshgarg1009@gmail.com",
               // ];
-              sendMultipleEmails(emails_list, req.body, insertId, propertyLink);
+              sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
               return res.status(200).json(insertId);
             } else {
-              console.log("3rd block skipped");
+              //console.log("3rd block skipped");
               return res.status(200).json(insertId);
             }
           });
@@ -627,7 +674,7 @@ export const quickListing = (req, res) => {
   });
 };
 
-const sendMultipleEmails = (emailsList, body, insertId, propertyLink) => {
+const sendMultipleEmails = (emailsList, body, insertId, propertyLink, formatted_price) => {
   const emailsRes = {};
 
   for (let i = 0, len = emailsList.length; i < len; i++) {
@@ -814,9 +861,7 @@ const sendMultipleEmails = (emailsList, body, insertId, propertyLink) => {
                                                                       <strong> ${
                                                                         body.pro_amt
                                                                           ? "₹" +
-                                                                            body.pro_amt +
-                                                                            " " +
-                                                                            body.pro_amt_unit
+                                                                          formatted_price
                                                                           : "Ask Price"
                                                                       }</strong>
                                                                   </h3>
