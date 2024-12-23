@@ -554,7 +554,7 @@ export const quickListing = (req, res) => {
           from: '"Propertyease " <noreply@propertyease.in>', // sender address
 
           //to: "harshgupta.calinfo@gmail.com",
-           to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+          to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
 
           subject: `Property Id: ${5000 + parseInt(insertId)} ${
             req.body.pro_user_email
@@ -689,12 +689,7 @@ const sendMultipleEmails = (emailsList, body, insertId, propertyLink, formatted_
         " " +
         body.pro_type.split(",")[0] +
         " "
-      }
-      for ${body.pro_ad_type === "Rent" ? "Rent" : "Sale"} in
-      ${body.pro_locality + ", "}
-      ${body.pro_sub_district ? body.pro_sub_district + ", " : ""}
-      ${body.pro_city + ", "}
-      ${body.pro_state}`,
+      } for ${body.pro_ad_type === "Rent" ? "Rent" : "Sale"} in ${body.pro_locality + ", "} ${body.pro_sub_district ? body.pro_sub_district + ", " : ""} ${body.pro_city + ", "} ${body.pro_state}`,
       body: `
   <div class="wrapper" style="width: 710px;margin: 40px auto;padding: 20px;border-radius: 10px;border: 1px solid #ede3e3;">
   <table class="es-content" cellspacing="0" cellpadding="0" align="center" role="none"
