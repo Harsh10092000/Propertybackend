@@ -1223,6 +1223,10 @@ export const fetchPropertyData = (req, res) => {
   });
 };
 
+
+
+
+
 // export const fetchPropertyData = (req, res) => {
 
 //   const filePath = path.resolve(process.cwd(), './build', 'index.html');
@@ -1448,6 +1452,118 @@ ORDER BY
     return res.status(200).json(data);
   });
 };
+
+
+
+export const fetchExpiredPropertyData = (req, res) => {
+  const q = `SELECT 
+    property_module.*, 
+    COUNT(property_interest.interest_property_id) AS pro_responses ,
+    COALESCE(property_module.pro_views, 0) AS pro_views1 
+FROM 
+    property_module
+LEFT JOIN 
+    property_interest 
+ON 
+    property_module.pro_id = property_interest.interest_property_id
+WHERE 
+    property_module.pro_user_id = ? and pro_listed = 0 and DATEDIFF(pro_renew_date, DATE(CONVERT_TZ(NOW(), '+00:00', '+05:30'))) < 1
+GROUP BY 
+    property_module.pro_id
+ORDER BY 
+    property_module.pro_id DESC;`;
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    // const updatedJsonData = JSON.stringify(myObject, null, 4);
+    // fs.writeFileSync("test.json", updatedJsonData, "utf8");
+    // console.log("Data has been appended to test.json");
+    return res.status(200).json(data);
+  });
+};
+
+
+export const fetchListedPropertyDataById = (req, res) => {
+  const q = `SELECT 
+    property_module.*, 
+    COUNT(property_interest.interest_property_id) AS pro_responses ,
+    COALESCE(property_module.pro_views, 0) AS pro_views1 
+FROM 
+    property_module
+LEFT JOIN 
+    property_interest 
+ON 
+    property_module.pro_id = property_interest.interest_property_id
+WHERE 
+    property_module.pro_user_id = ? and pro_listed = 1 and pro_sale_status = 0 
+GROUP BY 
+    property_module.pro_id
+ORDER BY 
+    property_module.pro_id DESC;`;
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    // const updatedJsonData = JSON.stringify(myObject, null, 4);
+    // fs.writeFileSync("test.json", updatedJsonData, "utf8");
+    // console.log("Data has been appended to test.json");
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchDeListedPropertyDataById = (req, res) => {
+  const q = `SELECT 
+    property_module.*, 
+    COUNT(property_interest.interest_property_id) AS pro_responses ,
+    COALESCE(property_module.pro_views, 0) AS pro_views1 
+FROM 
+    property_module
+LEFT JOIN 
+    property_interest 
+ON 
+    property_module.pro_id = property_interest.interest_property_id
+WHERE 
+    property_module.pro_user_id = ? and pro_listed = 0 and pro_sale_status = 0 and DATEDIFF(pro_renew_date, DATE(CONVERT_TZ(NOW(), '+00:00', '+05:30'))) > 0
+GROUP BY 
+    property_module.pro_id
+ORDER BY 
+    property_module.pro_id DESC;`;
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    // const updatedJsonData = JSON.stringify(myObject, null, 4);
+    // fs.writeFileSync("test.json", updatedJsonData, "utf8");
+    // console.log("Data has been appended to test.json");
+    return res.status(200).json(data);
+  });
+};
+
+
+
+export const fetchSoldOutPropertyDataById = (req, res) => {
+  const q = `SELECT 
+    property_module.*, 
+    COUNT(property_interest.interest_property_id) AS pro_responses ,
+    COALESCE(property_module.pro_views, 0) AS pro_views1 
+FROM 
+    property_module
+LEFT JOIN 
+    property_interest 
+ON 
+    property_module.pro_id = property_interest.interest_property_id
+WHERE 
+    property_module.pro_user_id = ? and pro_listed = 0 and pro_sale_status = 1
+GROUP BY 
+    property_module.pro_id
+ORDER BY 
+    property_module.pro_id DESC;`;
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    // const updatedJsonData = JSON.stringify(myObject, null, 4);
+    // fs.writeFileSync("test.json", updatedJsonData, "utf8");
+    // console.log("Data has been appended to test.json");
+    return res.status(200).json(data);
+  });
+};
+
+
+
 
 // export const fetchViews = (req, res) => {
 //   //await verifyJwt(req,res);
@@ -1826,8 +1942,127 @@ export const updateProListingStatus = (req, res) => {
   });
 };
 
+export const extendPropertyRenewDate = (req, res) => {
+  const q1 = "SELECT no_days FROM auroRemoveProperty";
+  
+  let info = {
+    from: '"Propertyease " <noreply@propertyease.in>',
+    //to: "harshgupta.calinfo@gmail.com",
+    to: req.body.login_email,
+    //to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com",
+    //to: req.body.pro_user_email,
+    subject: `Your Property Listing Has Been Successfully Renewed!`,
+    html: `<div style="margin:0px;padding:0px;">
+<div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
+   <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
+      <tbody>
+         <tr>
+            <td style="width:700px;display:block;clear:both">
+               <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style=" margin-top:30px;background-clip:padding-box;border-collapse:collapse;border-radius:5px;">
+
+                  <tr style="height:80px; text-align:center;">
+                     <td style="padding-left:22px; padding-bottom: 10px"><img src="https://property-five.vercel.app/images/logo.png">
+                     </td>
+                  </tr>
+            </td>
+         </tr>
+         <tr>
+            <td>
+               <table style="width:500px;clear:both" border="0" align="center" cellpadding="0" cellspacing="0">
+
+                  <tr>
+                     <td>
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 30px 0px 0px 0px;">
+
+                           <tr>
+                              <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
+                                 <p style="color:#404040; margin-bottom: 10px;"> Dear User,</b>
+                                 <p style="margin-bottom: 10px; font-size: 16px;">We're happy to inform you that your property listing has been successfully renewed! Your property is now active and visible on our platform again, allowing potential buyers or renters to view and inquire about it.</b></p>
+                                 <a href='https://www.propertyease.in/${
+                                  req.body.pro_url
+                                 }' style="margin-bottom: 10px; font-size: 16px;">${
+                                  req.body.pro_url
+    }</a>
+    <p style="margin-bottom: 10px; font-size: 16px;">You can continue to manage and update your listing through your dashboard. If you have any questions or need further assistance, our support team is always here to help.</b></p>
+                                 <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at <a href="https://wa.me/918950040151">+91-89500-40151</a> anytime for any information related to this enquiry.</p>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td height="10px" style="font-size: 15px;line-height: 24px;letter-spacing:.3px;">
+                                 <p style="color:#404040; margin-bottom:0px;"> <b>Thanks & Regards,
+                                    </b></p>
+                                 <p style="margin-bottom:0px; font-size: 15px;">Admin Team</p>
+                                 <p style="margin-bottom: 10px; font-size: 15px;">Propertyease.in</p>
+
+                              </td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+
+               </table>
+            </td>
+         </tr>
+         <tr>
+            <td style="font-size: 14px;text-align: center;line-height: 21px;letter-spacing: .3px; color: #155298; height: 68px;">
+
+               <p style="line-height:22px;margin-bottom:0px;padding: 10px;  color:#000;font-size: 12px;">
+                  &copy; Copyright ${new Date().getFullYear()} All Rights Reserved.</p>
+            </td>
+         </tr>
+
+      </tbody>
+   </table>
+</div>
+</div>`,
+  };
+  
+  db.query(q1, (err, renewData) => {
+    if (err) return res.status(500).json(err);
+    const today = new Date();
+    const proRenewDate = new Date(req.body.pro_renew_date);
+    if (proRenewDate < today) {
+
+      const q = "UPDATE property_module SET pro_listed = 1, pro_renew_date = DATE_ADD(NOW(), INTERVAL ? DAY) WHERE pro_id = ?";
+      const values = [renewData[0].no_days , req.body.pro_id];
+       
+        db.query(q, values, (err, data) => {
+       // console.log("renewData : " , renewData);
+       if (err) return res.status(500).json(err);
+        //return res.status(200).json("Updated Successfully");
+        transporter.sendMail(info, (err, data) => {
+          if (err) return res.status(500).json(err);
+          return res.status(200).json("mail sent");
+        });
+      });
+
+    
+    // console.log("if block");
+    // console.log("proRenewDate < today : ", proRenewDate < today);
+    // console.log(proRenewDate , today);
+    } else {
+      const q = "UPDATE property_module SET pro_listed = 1, pro_renew_date = DATE_ADD(?, INTERVAL ? DAY) WHERE pro_id = ?";
+    const values = [req.body.pro_renew_date, renewData[0].no_days , req.body.pro_id];
+     
+      db.query(q, values, (err, data) => {
+     // console.log("renewData : " , renewData);
+     if (err) return res.status(500).json(err);
+      //return res.status(200).json("Updated Successfully");
+      transporter.sendMail(info, (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("mail sent");
+      });
+    });
+      // console.log("else block");
+      // console.log("proRenewDate < today : ", proRenewDate < today);
+      // console.log(proRenewDate , today);
+    }
+   
+});
+};
+
 export const updateProListingMultipleStatus = (req, res) => {
-  const { pro_listed, listingids } = req.body; // Destructure pro_listed and pro_ids from request body
+  const { pro_listed, listingids } = req.body; 
 
   // Validate input
   if (!Array.isArray(listingids) || listingids.length === 0) {

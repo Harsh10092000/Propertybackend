@@ -9,6 +9,7 @@ import {
   quickListing,
   fetchPropertyDataById,
   fetchPropertyData,
+  fetchExpiredPropertyData,
   updateProperty,
   fetchLatestProperty,
   fetchPropertyDataByCat,
@@ -39,6 +40,11 @@ import {
   fetchLatestPropertyByCity,
   fetchLatestPropertyByCat1,
   fetchPropertyDataById1,
+
+  fetchListedPropertyDataById,
+  fetchDeListedPropertyDataById,
+  fetchSoldOutPropertyDataById,
+  
   updateViews,
   updateContacted,
   updateProListingStatus,
@@ -55,7 +61,8 @@ import {
   fetchLast30DaysListings,
   fetchResponsesByProId,
   fetchRespondentByUser,
-  fetchRespondentByPro
+  fetchRespondentByPro,
+  extendPropertyRenewDate
   
 } from "../controllers/property.js";
 
@@ -79,6 +86,25 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
 });
+
+
+const imageResizer = async (inputPath, outputPath) => {
+  console.log(inputPath)
+  try {
+    await sharp(inputPath)
+      .resize({ width: 300 })
+      .toFormat('webp')
+      .composite([
+        {
+          input: "public/propertyImages/logo_2.png",
+          gravity: "southeast",
+        },
+      ])
+      .toFile(outputPath);
+  } catch (err) {
+    console.error("Error adding watermark:", err);
+  }
+};
 
 const setWatermark = async (inputPath, outputPath) => {
   console.log(inputPath)
@@ -124,6 +150,7 @@ router.post("/addPropertyimages", upload.any("files"), (req, res) => {
   console.log("yha h");
   console.log(fileArr);
   fileArr.forEach(async (singleFile) => {
+    
     const name = singleFile;
     console.log(name);
     const inputPath = `public/propertyImages//${name}`;
@@ -158,6 +185,8 @@ router.post("/quickListing", quickListing);
 router.put("/updateProperty", updateProperty);
 router.post("/addOrigin", addOrigin);
 router.get("/fetchPropertyData", fetchPropertyData);
+
+
 router.get("/fetchPropertyDataById/:proId", fetchPropertyDataById);
 router.get("/checkPropertyExists/:proId", checkPropertyExists);
 
@@ -172,7 +201,12 @@ router.get("/moreProperties/:proAd", moreProperties);
 router.get("/fetchPropertySubCatNo", fetchPropertySubCatNo);
 router.get("/fetchPropertyDataBySubCat/:proSubType", fetchPropertyDataBySubCat);
 router.get("/fetchPropertyDataByUserId/:userId", fetchPropertyDataByUserId);
+
 router.get("/fetchPropertyDataByUserId1/:userId", verifyJwt, fetchPropertyDataByUserId1);
+router.get("/fetchExpiredPropertyData/:userId", fetchExpiredPropertyData);
+router.get("/fetchListedPropertyDataById/:userId", fetchListedPropertyDataById);
+router.get("/fetchDeListedPropertyDataById/:userId", fetchDeListedPropertyDataById);
+router.get("/fetchSoldOutPropertyDataById/:userId", fetchSoldOutPropertyDataById);
 
 // router.get("/fetchViews/:userId", verifyJwt, fetchViews);
 // router.get("/fetchResponses/:userId", verifyJwt, fetchResponses);
@@ -207,7 +241,10 @@ router.get("/fetchLatestPropertyByCity/:city", fetchLatestPropertyByCity);
 router.get("/fetchPropertyDataById1/:proId", fetchPropertyDataById1);
 router.put("/updateViews", updateViews);
 router.put("/updateContacted", updateContacted);
+
 router.put("/updateProListingStatus", updateProListingStatus);
+router.put("/extendPropertyRenewDate", extendPropertyRenewDate);
+
 router.put("/updateProListingMultipleStatus", updateProListingMultipleStatus);
 
 router.put("/updateSaleStatus", updateSaleStatus);
