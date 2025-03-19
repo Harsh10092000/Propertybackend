@@ -16,8 +16,25 @@ import "dotenv/config";
 // };
 
 export const addProperty = (req, res) => {
+
+  const removeDays = "SELECT no_days FROM auroRemoveProperty;"
+  db.query(removeDays, (err, data) => {
+    if (err) return res.status(500).json(err);
+    //return res.status(200).json(data);
+    const noDays = data[0]?.no_days || 0;
+ 
+    const currentDate = new Date(); 
+    currentDate.setDate(currentDate.getDate() + parseInt(noDays));
+        
+    const formattedDate = currentDate.getFullYear() + '-' +
+      String(currentDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(currentDate.getDate()).padStart(2, '0') + ' ' +
+      String(currentDate.getHours()).padStart(2, '0') + ':' +
+      String(currentDate.getMinutes()).padStart(2, '0') + ':' +
+      String(currentDate.getSeconds()).padStart(2, '0');
+
   const q =
-    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date, pro_other_rooms, pro_near_by_facilities, pro_corner) Values (?)";
+    "INSERT INTO property_module (pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_plot_no, pro_street, pro_age, pro_floor, pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_facing, pro_area_size, pro_width, pro_length, pro_facing_road_width, pro_open_sides, pro_furnishing, pro_ownership_type, pro_approval, pro_amt, pro_rental_status, pro_desc, pro_possession, pro_sub_cat, pro_user_id,pro_area_size_unit,pro_facing_road_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date, pro_other_rooms, pro_near_by_facilities, pro_corner, pro_renew_date) Values (?)";
   const values = [
     req.body.pro_user_type,
     req.body.pro_ad_type,
@@ -64,6 +81,7 @@ export const addProperty = (req, res) => {
     req.body.pro_other_rooms,
     req.body.pro_near_by_facilities,
     req.body.pro_corner,
+    formattedDate
   ];
  
   let formatted_price= "";
@@ -171,9 +189,9 @@ export const addProperty = (req, res) => {
 
         let info = {
           from: '"Propertyease " <noreply@propertyease.in>', // sender address
-          //to: data[0].login_email,
-          //to: "harshgupta.calinfo@gmail.com",
-          to: req.body.pro_user_email,
+         
+          to: "harshgupta.calinfo@gmail.com",
+          //to: req.body.pro_user_email,
           subject: `Thanks for your time and trust!`, // Subject line
           html: `<div style="margin:0px;padding:0px;">
      <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -241,8 +259,8 @@ export const addProperty = (req, res) => {
         let info2 = {
           from: '"Propertyease " <noreply@propertyease.in>', // sender address
 
-          //to: "harshgupta.calinfo@gmail.com",
-          to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+          to: "harshgupta.calinfo@gmail.com",
+          //to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
           //to: req.body.pro_user_email,
           subject: `Property Id: ${5000 + parseInt(insertId)} ${
             req.body.pro_user_email
@@ -359,11 +377,27 @@ export const addProperty = (req, res) => {
     });
     // });
   });
+});
 };
 
 export const quickListing = (req, res) => {
+  const removeDays = "SELECT no_days FROM auroRemoveProperty;"
+  db.query(removeDays, (err, data) => {
+    if (err) return res.status(500).json(err);
+    //return res.status(200).json(data);
+    const noDays = data[0]?.no_days || 0;
+ 
+    const currentDate = new Date(); 
+    currentDate.setDate(currentDate.getDate() +  parseInt(noDays));
+        
+    const formattedDate = currentDate.getFullYear() + '-' +
+      String(currentDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(currentDate.getDate()).padStart(2, '0') + ' ' +
+      String(currentDate.getHours()).padStart(2, '0') + ':' +
+      String(currentDate.getMinutes()).padStart(2, '0') + ':' +
+      String(currentDate.getSeconds()).padStart(2, '0');
  const q =
-    "INSERT INTO property_module (  pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_floor, pro_open_sides,  pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_facing, pro_area_size, pro_amt, pro_desc, pro_user_id,pro_area_size_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date) Values (?)";
+    "INSERT INTO property_module (  pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_floor, pro_open_sides,  pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_facing, pro_area_size, pro_amt, pro_desc, pro_user_id,pro_area_size_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date, pro_renew_date) Values (?)";
 
   const values = [
     "0",
@@ -393,6 +427,7 @@ export const quickListing = (req, res) => {
     req.body.pro_state,
     req.body.pro_sub_district,
     req.body.pro_date,
+    formattedDate
   ];
 
   let formatted_price= "";
@@ -672,6 +707,7 @@ export const quickListing = (req, res) => {
     });
      });
   });
+});
 };
 
 const sendMultipleEmails = (emailsList, body, insertId, propertyLink, formatted_price) => {
