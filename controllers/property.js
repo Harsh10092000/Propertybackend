@@ -95,7 +95,7 @@ export const addProperty = (req, res) => {
         lakh_number.toLocaleString(undefined, {
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
-        }) + " Lac"
+        }) + " Lacs"
       );
     } else {
       const crore_number = req.body.pro_amt / 10000000;
@@ -103,7 +103,7 @@ export const addProperty = (req, res) => {
           crore_number.toLocaleString(undefined, {
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
-        }) + " Crore"
+        }) + " Crores"
       );
     }
   }
@@ -441,7 +441,7 @@ export const quickListing = (req, res) => {
         lakh_number.toLocaleString(undefined, {
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
-        }) + " Lac"
+        }) + " Lacs"
       );
     } else {
       const crore_number = req.body.pro_amt / 10000000;
@@ -449,7 +449,7 @@ export const quickListing = (req, res) => {
           crore_number.toLocaleString(undefined, {
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
-        }) + " Crore"
+        }) + " Crores"
       );
     }
   }
