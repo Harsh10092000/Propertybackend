@@ -827,7 +827,7 @@ const sendMultipleEmails = (emailsList, body, insertId, propertyLink, formatted_
                                                                       style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#69686D;font-size:14px">
                                                                       <img
                                                                           class="adapt-img p_image"
-                                                                          src="https://api.propertyease.in/propertyImages/watermark/default.png"
+                                                                          src="https://api.propertyease.in/propertyImages/watermark/default.webp"
                                                                           alt=""
                                                                           style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;border-radius:20px"
                                                                           width="270"></a>
