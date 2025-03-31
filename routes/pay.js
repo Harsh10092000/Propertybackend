@@ -115,13 +115,13 @@ const paddedSlots = String(req.body.pro_plan_added_slots).padStart(2, randomPadS
    //  const paddedUserId = String(req.body.user_id).padStart(3, '8'); // 6 digits
    //  const paddedSlots = String(req.body.pro_plan_added_slots).padStart(2, '9'); // 3 digits
     const transactionId = `TXN-${paddedInsertId}${paddedUserId}${paddedSlots}`;
-
+   const plan_status = 1;
             const q1 =
-          "UPDATE login_module SET active_plan_id = ?, plan_validity_end = ?, paid_listings_remaining = ? WHERE login_id = ?";
-          const values1 = [transactionId, formattedDate, req.body.pro_plan_added_slots, req.body.user_id];
+          "UPDATE login_module SET active_plan_id = ?, plan_validity_end = ?, paid_listings_remaining = ?, plan_status = ? WHERE login_id = ?";
+          const values1 = [transactionId, formattedDate, req.body.pro_plan_added_slots, plan_status, req.body.user_id] ;
           db.query(q1, values1, (err, data) => {
             if (err) return res.status(500).json(err);
-
+            console.log("values1 : " , values1);
             const q2 =
           "UPDATE user_plans SET transaction_id = ? WHERE user_plan_id = ?";
           const values2 = [transactionId,insertId];

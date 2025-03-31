@@ -672,34 +672,90 @@ export const quickListing = (req, res) => {
            transporter.sendMail(info2, (err, data) => {
             if (err) return res.status(500).json(err);
 
-          const updateq =
-            "UPDATE list_plan_transactions SET pro_added_recently = pro_added_recently + 1 where user_id = ? order by tran_id desc limit 1";
-
-          db.query(updateq, [req.body.pro_user_id], (err, data) => {
+            if(req.body.is_lifetime_free == 1) {
+              if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
+                //console.log("inside 3rd block");
+                //   digesttransporter.sendMail(info3, (err, data) => {
+                //     if (err) return res.status(500).json(err);
+                //     return res.status(200).json(insertId);
+                // });
+  
+                // const emails_list2 = [
+                //   "harshgupta.calinfo@gmail.com",
+                //   "harshgarg1009@gmail.com",
+                // ];
+                sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
+                return res.status(200).json(insertId);
+              } else {
+                //console.log("3rd block skipped");
+                return res.status(200).json(insertId);
+              }
+            } else if (req.body.free_listings_remaining > 0) {
+              const updated_free_listings_remaining = req.body.free_listings_remaining - 1;
+              const updateq =
+            "UPDATE login_module SET free_listings_remaining = ? where login_id = ?";
+          db.query(updateq, [updated_free_listings_remaining, req.body.pro_user_id], (err, data) => {
             if (err) return res.status(500).json(err);
-            // console.log(
-            //   "process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : ",
-            //   process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME,
-            //   typeof process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME
-            // );
             if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
-              //console.log("inside 3rd block");
-              //   digesttransporter.sendMail(info3, (err, data) => {
-              //     if (err) return res.status(500).json(err);
-              //     return res.status(200).json(insertId);
-              // });
-
-              // const emails_list2 = [
-              //   "harshgupta.calinfo@gmail.com",
-              //   "harshgarg1009@gmail.com",
-              // ];
               sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
               return res.status(200).json(insertId);
             } else {
-              //console.log("3rd block skipped");
               return res.status(200).json(insertId);
             }
           });
+            } else if (req.body.paid_listings_remaining > 0) {
+              const updated_paid_listings_remaining = req.body.paid_listings_remaining - 1;
+              let updtaed_plan_status = 0;
+              if (updated_paid_listings_remaining == 0) {
+                updtaed_plan_status = 2;
+              } else {
+                updtaed_plan_status = 1;
+              }
+              const updateq =
+              "UPDATE login_module SET paid_listings_remaining = ?, plan_status = ? where login_id = ?";
+  
+            db.query(updateq, [updated_paid_listings_remaining, updtaed_plan_status, req.body.pro_user_id], (err, data) => {
+              if (err) return res.status(500).json(err);
+              if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
+                sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
+                return res.status(200).json(insertId);
+              } else {
+                return res.status(200).json(insertId);
+              }
+            });
+            }
+            
+          // const updateq =
+          //   "UPDATE login_module SET pro_added_recently = pro_added_recently + 1 where user_id = ? order by tran_id desc limit 1";
+
+
+
+
+          // db.query(updateq, [req.body.pro_user_id], (err, data) => {
+          //   if (err) return res.status(500).json(err);
+          //   // console.log(
+          //   //   "process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : ",
+          //   //   process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME,
+          //   //   typeof process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME
+          //   // );
+          //   if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
+          //     //console.log("inside 3rd block");
+          //     //   digesttransporter.sendMail(info3, (err, data) => {
+          //     //     if (err) return res.status(500).json(err);
+          //     //     return res.status(200).json(insertId);
+          //     // });
+
+          //     // const emails_list2 = [
+          //     //   "harshgupta.calinfo@gmail.com",
+          //     //   "harshgarg1009@gmail.com",
+          //     // ];
+          //     sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
+          //     return res.status(200).json(insertId);
+          //   } else {
+          //     //console.log("3rd block skipped");
+          //     return res.status(200).json(insertId);
+          //   }
+          // });
           //});
           //return res.status(200).json(insertId);
         });
