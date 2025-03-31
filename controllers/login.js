@@ -20,6 +20,7 @@ export const sendOtp = (req, res) => {
   let info = {
     from: '"Propertyease " <noreply@propertyease.in>', // sender address
     to: req.params.email, // list of receivers
+    //to: "harshgupta.calinfo@gmail.com",
     subject: `${otp} is Your Login OTP - Propertyease`, // Subject line
     html: `<div style="margin:0px;padding:0px;">
     <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -97,14 +98,17 @@ export const sendOtp = (req, res) => {
         //sendOtpOnMobile2(data[0].login_number, otp);
         //return res.status(200).json("Otp Sent");
 
+        console.log("sending sms")
         // send otp on mobile
         const smsResponse = await sendOtpOnMobile2(mobile_number, otp);
+        console.log(smsResponse)
         if (smsResponse.success) {
-          return res.status(200).json("Otp Sent");
+          return res.status(200).json("Otp Sent 11");
         } else {
+         console.log(smsResponse.message)
            return res.status(smsResponse.status || 500).json({ message: "Failed to send OTP", error: smsResponse.message });
         }
-      return res.status(200).json("Otp Sent");
+      //return res.status(200).json("Otp Sent");
       });
     } else {
       return res.status(409).json("Email doesn't Exist");
@@ -145,6 +149,7 @@ export const verifyEmail = (req, res) => {
   });
 };
 
+
 export const verifyNumber = (req, res) => {
   const q = "SELECT * from login_module WHERE login_number = ?";
   db.query(q, [req.params.loginNumber], (err, data) => {
@@ -157,6 +162,22 @@ export const verifyNumber = (req, res) => {
     }
   });
 };
+
+
+export const fetchListingAccessDetails = (req, res) => {
+   const q = "SELECT free_listings_remaining, plan_validity_end, paid_listings_remaining, is_lifetime_free from login_module WHERE login_email = ? and login_number = ?";
+   db.query(q, [req.params.loginEmail, req.params.loginNumber], (err, data) => {
+     if (err) return res.status(500).json(err);
+     if (data.length > 0) {
+       return res.status(200).json(data);
+     } else {
+       return res.status(409).json("Email doesn't Exist");
+     }
+   });
+ };
+
+
+ 
 
 export const fetchLoginData = (req, res) => {
   const q = "SELECT * from login_module";
@@ -305,9 +326,16 @@ export const addUser = (req, res) => {
 </div>`,
  };
 
+
+ const maxFreeListing = "SELECT max_free_listing_val FROM max_free_listing;"
+  db.query(maxFreeListing, (err, data) => {
+    if (err) return res.status(500).json(err);
+    //return res.status(200).json(data);
+    const maxfreelistingVal = data[0]?.max_free_listing_val || 5;
+
   const query1 =
-    "INSERT INTO login_module (login_email, login_number, login_otp) Values (?)";
-  const values = [req.body.email, req.body.phone, otp];
+    "INSERT INTO login_module (login_email, login_number, login_otp,free_listings_remaining) Values (?)";
+  const values = [req.body.email, req.body.phone, otp, maxfreelistingVal];
   console.log(values);
   db.query(query1, [values], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -319,6 +347,7 @@ export const addUser = (req, res) => {
     });
    });
   });
+});
 };
 
 export const checkAdmin = (req, res) => {
@@ -387,13 +416,15 @@ const sendOtpOnMobile2 = async (mobile_number, otp) => {
    
    try {
       const response = await axios.get(url);
+      console.log("response : " , response)
       if (response.status === 200) {
          return { success: true };
       } else {
          return { success: false, status: response.status };
       }
    } catch (error) {
-      console.error("Error sending OTP:", error); // Log the error for debugging
+      console.error("Error sending OTP:", error);
+      console.error("Error sending OTP:", error);
       return { success: false, message: error.message };
    }
 };

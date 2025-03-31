@@ -33,7 +33,7 @@ router.post("/proListingPay", async (req, res) => {
 });
 
 router.post("/paymentVerification", async (req, res) => {
-  console.log("req.body : ", req.body);
+  console.log("req.body 2222222222 : ", req.body);
   const {
     orderCreationId,
     razorpayOrderId,
@@ -57,7 +57,7 @@ router.post("/paymentVerification", async (req, res) => {
   } = req.body;
 
   const body = orderCreationId + "|" + razorpayPaymentId;
-  console.log("body : ", body);
+  console.log("body 22222222222 : ", body);
 
   const expectedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_API_SECRET)
@@ -67,29 +67,67 @@ router.post("/paymentVerification", async (req, res) => {
   const isAuthentic = expectedSignature === razorpaySignature;
 
   if (isAuthentic) {
+
+   const currentDate = new Date(); 
+    currentDate.setDate(currentDate.getDate() + parseInt(req.body.list_plan_valid_for_days));
+        
+    const formattedDate = currentDate.getFullYear() + '-' +
+      String(currentDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(currentDate.getDate()).padStart(2, '0') + ' ' +
+      String(currentDate.getHours()).padStart(2, '0') + ':' +
+      String(currentDate.getMinutes()).padStart(2, '0') + ':' +
+      String(currentDate.getSeconds()).padStart(2, '0');
     
-    const q =
-    "INSERT INTO list_plan_transactions ( list_plan_id, plan_name, tran_amt, user_id, list_plan_valid_for_days, pro_plan_added_slots, plan_status, order_id, payment_id, payment_status, payment_discount, original_price, pro_added_recently, total_no_pro_user_can_add) Values (?)";
-  const values = [
-    list_plan_id,
-    plan_name,
-    tran_amt,
-    user_id,
-    list_plan_valid_for_days,
-    pro_plan_added_slots,
-    plan_status,
-    orderCreationId,
-    razorpayPaymentId,
-    payment_status,
-    discount,
-    original_price,
-    pro_added_recently,
-    total_no_pro_user_can_add
-  ];
+      const q =
+      "INSERT INTO user_plans (user_id, plan_id, plan_name, plan_amt, transaction_amt, order_id, payment_id, expiry_date, max_listing, plan_status, payment_status, plan_dis) Values (?)";
+    const values = [
+      req.body.user_id,
+      req.body.list_plan_id,
+      req.body.plan_name,
+      req.body.original_price,
+      req.body.tran_amt,
+      req.body.razorpayOrderId,
+      req.body.razorpayPaymentId,
+      formattedDate,
+      req.body.list_plan_valid_for_days,
+      req.body.plan_status,
+      "completed",
+      req.body.discount,
+    ];
+
+
     db.query(q, [values], (err, data) => {
       const insertId = data.insertId;
       console.log(values);
       if (err) return res.status(500).json(err);
+
+      // Generate random numbers for padding
+const randomPadInsert = Math.floor(Math.random() * 10); // Random digit 0-9
+const randomPadUser = Math.floor(Math.random() * 10);   // Random digit 0-9
+const randomPadSlots = Math.floor(Math.random() * 10);  // Random digit 0-9
+
+// Apply padding with random numbers
+const paddedInsertId = String(insertId).padStart(3, randomPadInsert); // 3 digits
+const paddedUserId = String(req.body.user_id).padStart(3, randomPadUser); // 3 digits
+const paddedSlots = String(req.body.pro_plan_added_slots).padStart(2, randomPadSlots);
+      
+   //    const paddedInsertId = String(insertId).padStart(3, '5'); // 6 digits
+   //  const paddedUserId = String(req.body.user_id).padStart(3, '8'); // 6 digits
+   //  const paddedSlots = String(req.body.pro_plan_added_slots).padStart(2, '9'); // 3 digits
+    const transactionId = `TXN-${paddedInsertId}${paddedUserId}${paddedSlots}`;
+
+            const q1 =
+          "UPDATE login_module SET active_plan_id = ?, plan_validity_end = ?, paid_listings_remaining = ? WHERE login_id = ?";
+          const values1 = [transactionId, formattedDate, req.body.pro_plan_added_slots, req.body.user_id];
+          db.query(q1, values1, (err, data) => {
+            if (err) return res.status(500).json(err);
+
+            const q2 =
+          "UPDATE user_plans SET transaction_id = ? WHERE user_plan_id = ?";
+          const values2 = [transactionId,insertId];
+          db.query(q2, values2, (err, data) => {
+            if (err) return res.status(500).json(err);
+            
       //return res.status(200).json(1);
       let info = {
         from: '"Propertyease " <noreply@propertyease.in>', // sender address
@@ -239,6 +277,8 @@ router.post("/paymentVerification", async (req, res) => {
         });
         //return res.status(200).json(insertId);
       });
+   });
+   });
     });
   } else {
     res.status(400).json({

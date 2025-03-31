@@ -1544,6 +1544,30 @@ ORDER BY
   });
 };
 
+// export const fetchDeListedPropertyDataById = (req, res) => {
+//   const q = `SELECT 
+//     property_module.*, 
+//     COUNT(property_interest.interest_property_id) AS pro_responses ,
+//     COALESCE(property_module.pro_views, 0) AS pro_views1 
+// FROM 
+//     property_module
+// LEFT JOIN 
+//     property_interest 
+// ON 
+//     property_module.pro_id = property_interest.interest_property_id
+// WHERE 
+//     property_module.pro_user_id = ? and pro_listed = 0 and pro_sale_status = 0 and DATEDIFF(pro_renew_date, DATE(CONVERT_TZ(NOW(), '+00:00', '+05:30'))) > 0
+// GROUP BY 
+//     property_module.pro_id
+// ORDER BY 
+//     property_module.pro_id DESC;`;
+//   db.query(q, [req.params.userId], (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json(data);
+//   });
+// };
+
+
 export const fetchDeListedPropertyDataById = (req, res) => {
   const q = `SELECT 
     property_module.*, 
@@ -1556,16 +1580,13 @@ LEFT JOIN
 ON 
     property_module.pro_id = property_interest.interest_property_id
 WHERE 
-    property_module.pro_user_id = ? and pro_listed = 0 and pro_sale_status = 0 and DATEDIFF(pro_renew_date, DATE(CONVERT_TZ(NOW(), '+00:00', '+05:30'))) > 0
+    property_module.pro_user_id = ? and pro_listed = 0 and pro_sale_status = 0
 GROUP BY 
     property_module.pro_id
 ORDER BY 
     property_module.pro_id DESC;`;
   db.query(q, [req.params.userId], (err, data) => {
     if (err) return res.status(500).json(err);
-    // const updatedJsonData = JSON.stringify(myObject, null, 4);
-    // fs.writeFileSync("test.json", updatedJsonData, "utf8");
-    // console.log("Data has been appended to test.json");
     return res.status(200).json(data);
   });
 };

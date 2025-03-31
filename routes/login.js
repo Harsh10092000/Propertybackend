@@ -8,6 +8,7 @@ import {
   verifyNumber,
   checkAdmin,
   sendOtpOnMobile,
+  fetchListingAccessDetails
 } from "../controllers/login.js";
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.post("/checkLogin", checkLogin);
 router.get("/verifyEmail/:loginEmail", verifyEmail);
 router.get("/verifyNumber/:loginNumber", verifyNumber);
 router.post("/checkAdmin", checkAdmin);
-router.get("/send-sms/:email", sendOtpOnMobile);
+router.get("/fetchListingAccessDetails/:loginEmail/:loginNumber", fetchListingAccessDetails);
 
+fetchListingAccessDetails
 export default router;

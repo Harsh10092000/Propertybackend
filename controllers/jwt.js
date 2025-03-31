@@ -32,10 +32,14 @@ export const genrateAccessToken = async (reqbody, res) => {
           login_email: reqbody[0].login_email,
           login_otp: hashedOTP,
           login_number: reqbody[0].login_number,
+          free_listings_remaining: reqbody[0].free_listings_remaining,
+          active_plan_id: reqbody[0].active_plan_id,
+          plan_validity_end: reqbody[0].plan_validity_end,
+          paid_listings_remaining: reqbody[0].paid_listings_remaining,
+          is_lifetime_free: reqbody[0].is_lifetime_free
           //user_type: reqbody[0].user_type,
         };
 
-    
     const token = jwt.sign(payload, secretKey, {
       expiresIn: "15d",
     });
