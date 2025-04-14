@@ -19,9 +19,9 @@ export const autoRemovePropertyReminder = (req, res) => {
   
         let info = {
           from: '"Propertyease " <noreply@propertyease.in>',
-          to: "harshgupta.calinfo@gmail.com",
+          //to: "harshgupta.calinfo@gmail.com",
           //to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com",
-          //to: req.body.pro_user_email,
+          to: req.body.pro_user_email,
           subject: `Action Required: Your Property Listing Expires in 2 Days!`,
           html: `<div style="margin:0px;padding:0px;">
          <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
@@ -130,9 +130,9 @@ export const autoRemoveProperty = (req, res) => {
 
         let info = {
           from: '"Propertyease " <noreply@propertyease.in>',
-          to: "harshgupta.calinfo@gmail.com",
+          //to: "harshgupta.calinfo@gmail.com",
           //to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com",
-          //to: req.body.pro_user_email,
+          to: req.body.pro_user_email,
           subject: `Your Property Listing Has Expired`,
           html: `<div style="margin:0px;padding:0px;">
       <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
