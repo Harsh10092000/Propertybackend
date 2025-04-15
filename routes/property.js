@@ -7,6 +7,7 @@ import sizeOf from "image-size";
 import {
   addProperty,
   quickListing,
+  quickListing1,
   fetchPropertyDataById,
   fetchPropertyData,
   fetchExpiredPropertyData,
@@ -181,6 +182,7 @@ router.post("/addPropertyimages", upload.any("files"), (req, res) => {
 
 router.post("/addProperty", addProperty);
 router.post("/quickListing", quickListing);
+router.post("/quickListing1", quickListing1);
 
 router.put("/updateProperty", updateProperty);
 router.post("/addOrigin", addOrigin);

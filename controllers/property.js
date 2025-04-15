@@ -766,6 +766,395 @@ export const quickListing = (req, res) => {
 });
 };
 
+export const quickListing1 = (req, res) => {
+  const removeDays = "SELECT no_days FROM auroRemoveProperty;"
+  db.query(removeDays, (err, data) => {
+    if (err) return res.status(500).json(err);
+    //return res.status(200).json(data);
+    const noDays = data[0]?.no_days || 0;
+ 
+    const currentDate = new Date(); 
+    currentDate.setDate(currentDate.getDate() +  parseInt(noDays));
+        
+    const formattedDate = currentDate.getFullYear() + '-' +
+      String(currentDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(currentDate.getDate()).padStart(2, '0') + ' ' +
+      String(currentDate.getHours()).padStart(2, '0') + ':' +
+      String(currentDate.getMinutes()).padStart(2, '0') + ':' +
+      String(currentDate.getSeconds()).padStart(2, '0');
+ const q =
+    "INSERT INTO property_module (  pro_bedroom, pro_washrooms, pro_balcony, pro_parking, pro_floor, pro_open_sides,  pro_user_type, pro_ad_type, pro_type , pro_city, pro_locality, pro_facing, pro_area_size, pro_amt, pro_desc, pro_user_id,pro_area_size_unit,pro_amt_unit,pro_pincode, pro_negotiable,pro_state, pro_sub_district, pro_date, pro_renew_date) Values (?)";
+
+
+  const values = [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    req.body.pro_user_type,
+    req.body.pro_ad_type,
+    req.body.pro_type,
+    req.body.pro_city,
+    req.body.pro_locality,
+
+    req.body.pro_facing,
+    req.body.pro_area_size,
+
+    req.body.pro_amt,
+
+    req.body.pro_desc,
+    req.body.pro_user_id,
+    req.body.pro_area_size_unit,
+
+    req.body.pro_amt_unit,
+    "",
+    "",
+    req.body.pro_state,
+    req.body.pro_sub_district,
+    req.body.pro_date,
+    formattedDate
+  ];
+
+  console.log("values : " , values);
+  let formatted_price= "";
+
+  if (req.body.pro_amt) {
+    if (req.body.pro_amt < 100000) {
+      formatted_price = Intl.NumberFormat().format(req.body.pro_amt);
+    } else if (req.body.pro_amt > 99999 && req.body.pro_amt < 10000000) {
+      const lakh_number = req.body.pro_amt / 100000;
+      formatted_price = (
+        lakh_number.toLocaleString(undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        }) + " Lacs"
+      );
+    } else {
+      const crore_number = req.body.pro_amt / 10000000;
+      formatted_price = (
+          crore_number.toLocaleString(undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        }) + " Crores"
+      );
+    }
+  }
+
+  //const newPropety="Property is in "+req.body.pro_city+"of price"+req.body.pro_amt;
+
+  db.query(q, [values], (err, data) => {
+    if (err) return res.status(500).json(err);
+    const insertId = data.insertId;
+
+    const sanitize = (input) => input.toLowerCase().replace(/[\s.,]+/g, "-");
+
+    const areaSize = sanitize(req.body.pro_area_size);
+    const areaSizeUnit = sanitize(req.body.pro_area_size_unit);
+    const propertyType = req.body.pro_type
+      ? sanitize(req.body.pro_type.split(",")[0])
+      : "";
+    const adType = req.body.pro_ad_type === "Rent" ? "rent" : "sale";
+    const locality = sanitize(req.body.pro_locality);
+    const city = req.body.pro_city
+      ? sanitize(req.body.pro_city)
+      : sanitize(req.body.pro_state.replaceAll("(", "").replaceAll(")", ""));
+
+    const propertyLink = `${areaSize}-${areaSizeUnit}-${propertyType}-for-${adType}-in-${locality}-${city}-${insertId}`;
+
+    const url =
+      areaSize +
+      "-" +
+      areaSizeUnit +
+      "-" +
+      propertyType +
+      "-for-" +
+      adType +
+      "-in-" +
+      locality +
+      "-" +
+      city + "-" +
+      insertId;
+
+    const q = "UPDATE property_module SET pro_url = ? where pro_id = ?";
+    const updateValues = [url, insertId];
+    db.query(q, updateValues, (err, data) => {
+      console.log(updateValues);
+      if (err) return res.status(500).json(err);
+      const subData =
+        "SELECT GROUP_CONCAT( sub_email ) as emails FROM mail_subscriber";
+      let emailData = "";
+
+      db.query(subData, (err, subscriberData) => {
+        if (err) return res.status(500).json(err);
+        subscriberData.map((item) => {
+          emailData = item.emails;
+        });
+
+        // const imgData =
+        //   "SELECT * FROM property_module_images where img_cnct_id = ? limit 1;";
+
+        // db.query(imgData, [insertId], (err, imglink) => {
+        //   if (err) return res.status(500).json(err);
+
+        let emails_list = emailData.split(",");
+
+        let info = {
+          from: '"Propertyease " <noreply@propertyease.in>', // sender address
+
+          //to: "harshgupta.calinfo@gmail.com",
+          to: req.body.pro_user_email,
+          subject: `Thanks for your time and trust!`, // Subject line
+          html: `<div style="margin:0px;padding:0px;">
+     <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
+        <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
+           <tbody>
+              <tr>
+                 <td style="width:700px;display:block;clear:both">
+                    <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style=" margin-top:30px;background-clip:padding-box;border-collapse:collapse;border-radius:5px;">
+  
+                       <tr style="height:80px; text-align:center;">
+                          <td style="padding-left:22px; padding-bottom: 10px"><img src="https://property-five.vercel.app/images/logo.png">
+                          </td>
+                       </tr>
+                 </td>
+              </tr>
+              <tr>
+                 <td>
+                    <table style="width:500px;clear:both" border="0" align="center" cellpadding="0" cellspacing="0">
+  
+                       <tr>
+                          <td>
+                             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 30px 0px 0px 0px;">
+  
+                                <tr>
+                                   <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom: 10px;"> Dear User,</b>
+                                      
+                                      <p style="margin-bottom: 10px; font-size: 16px;">Thank you for listing your property on our platform. We look forward to assisting you throughout the process.</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">
+  Check out your property: 
+  <a href="https://propertyease.in/${propertyLink}">${propertyLink}</a>
+</p>
+
+                                     
+                                    
+                                    <p style="margin-bottom: 10px; font-size: 16px;">You may also contact our support at <a href="https://wa.me/918950040151">+91-89500-40151</a> anytime for any information related to this enquiry.</p>
+                                      
+                                      </td>
+                                </tr>
+                                <tr>
+                                   <td height="10px" style="font-size: 15px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom:0px;"> <b>Thanks & Regards,
+                                         </b></p>
+                                      <p style="margin-bottom:0px; font-size: 15px;">Admin Team</p>
+                                      <p style="margin-bottom: 10px; font-size: 15px;">Propertyease.in</p>
+  
+                                   </td>
+                                </tr>
+                             </table>
+                          </td>
+                       </tr>
+  
+                    </table>
+                 </td>
+              </tr>
+              <tr>
+                 <td style="font-size: 14px;text-align: center;line-height: 21px;letter-spacing: .3px; color: #155298; height: 68px;">
+  
+                    <p style="line-height:22px;margin-bottom:0px;padding: 10px;  color:#000;font-size: 12px;">
+                       &copy; Copyright ${new Date().getFullYear()} All Rights Reserved.</p>
+                 </td>
+              </tr>
+  
+           </tbody>
+        </table>
+     </div>
+  </div>`,
+        };
+        let info2 = {
+          from: '"Propertyease " <noreply@propertyease.in>', // sender address
+
+          //to: "harshgupta.calinfo@gmail.com",
+          to: "sbpb136118@gmail.com,dhamija.piyush7@gmail.com", // list of receivers
+
+          subject: `Property Id: ${5000 + parseInt(insertId)} ${
+            req.body.pro_user_email
+          } listed new Property`, // Subject line
+          html: `<div style="margin:0px;padding:0px;">
+     <div style="margin:0px;padding:0px;  margin: 30px auto; width: 700px; padding: 10px 10px;  background-color: #f6f8fc; box-shadow:rgba(13, 109, 253, 0.25) 0px 25px 50px -10px !important; ">
+        <table cellpadding="0" style="width:700px;margin:auto;display:block;font-family:\'trebuchet ms\',geneva,sans-serif;">
+           <tbody>
+              <tr>
+                 <td style="width:700px;display:block;clear:both">
+                    <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style=" margin-top:30px;background-clip:padding-box;border-collapse:collapse;border-radius:5px;">
+  
+                       <tr style="height:80px; text-align:center;">
+                          <td style="padding-left:22px; padding-bottom: 10px"><img src="https://property-five.vercel.app/images/logo.png">
+                          </td>
+                       </tr>
+                 </td>
+              </tr>
+              <tr>
+                 <td>
+                    <table style="width:500px;clear:both" border="0" align="center" cellpadding="0" cellspacing="0">
+  
+                       <tr>
+                          <td>
+                             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 30px 0px 0px 0px;">
+  
+                                <tr>
+                                   <td height="10px" style="font-size: 16px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom: 10px;"> Dear Admin,</b>
+                                      
+                                      <p style="margin-bottom: 10px; font-size: 16px;">${
+                                        req.body.pro_user_email
+                                      } has list following Property, Property Id: ${
+            5000 + parseInt(insertId)
+          } .</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">
+  Check out your property: 
+  <a href="https://propertyease.in/${propertyLink}">${propertyLink}</a>
+</p>
+                                      <p style="margin-bottom: 10px; font-size: 16px;">You can Contact him/her on <a href="https://wa.me/${
+                                        "91" + req.body.pro_login_number
+                                      }">+91-${
+            req.body.pro_login_number
+          }</a>.</p>
+                                      
+                                      </td>
+                                </tr>
+                                <tr>
+                                   <td height="10px" style="font-size: 15px;line-height: 24px;letter-spacing:.3px;">
+                                      <p style="color:#404040; margin-bottom:0px;"> <b>Thanks & Regards,
+                                         </b></p>
+                                      <p style="margin-bottom:0px; font-size: 15px;">Admin Team</p>
+                                      <p style="margin-bottom: 10px; font-size: 15px;">Propertyease.in</p>
+  
+                                   </td>
+                                </tr>
+                             </table>
+                          </td>
+                       </tr>
+  
+                    </table>
+                 </td>
+              </tr>
+              <tr>
+                 <td style="font-size: 14px;text-align: center;line-height: 21px;letter-spacing: .3px; color: #155298; height: 68px;">
+  
+                    <p style="line-height:22px;margin-bottom:0px;padding: 10px;  color:#000;font-size: 12px;">
+                       &copy; Copyright ${new Date().getFullYear()} All Rights Reserved.</p>
+                 </td>
+              </tr>
+  
+           </tbody>
+        </table>
+     </div>
+  </div>`,
+        };
+
+        transporter.sendMail(info, (err, data) => {
+          if (err) return res.status(500).json(err);
+           transporter.sendMail(info2, (err, data) => {
+            if (err) return res.status(500).json(err);
+
+            if(req.body.is_lifetime_free == 1) {
+              if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
+                //console.log("inside 3rd block");
+                //   digesttransporter.sendMail(info3, (err, data) => {
+                //     if (err) return res.status(500).json(err);
+                //     return res.status(200).json(insertId);
+                // });
+  
+                // const emails_list2 = [
+                //   "harshgupta.calinfo@gmail.com",
+                //   "harshgarg1009@gmail.com",
+                // ];
+                sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
+                return res.status(200).json(insertId);
+              } else {
+                //console.log("3rd block skipped");
+                return res.status(200).json(insertId);
+              }
+            } else if (req.body.free_listings_remaining > 0) {
+              const updated_free_listings_remaining = req.body.free_listings_remaining - 1;
+              const updateq =
+            "UPDATE login_module SET free_listings_remaining = ? where login_id = ?";
+          db.query(updateq, [updated_free_listings_remaining, req.body.pro_user_id], (err, data) => {
+            if (err) return res.status(500).json(err);
+            if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
+              sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
+              return res.status(200).json(insertId);
+            } else {
+              return res.status(200).json(insertId);
+            }
+          });
+            } else if (req.body.paid_listings_remaining > 0) {
+              const updated_paid_listings_remaining = req.body.paid_listings_remaining - 1;
+              let updtaed_plan_status = 0;
+              if (updated_paid_listings_remaining == 0) {
+                updtaed_plan_status = 2;
+              } else {
+                updtaed_plan_status = 1;
+              }
+              const updateq =
+              "UPDATE login_module SET paid_listings_remaining = ?, plan_status = ? where login_id = ?";
+  
+            db.query(updateq, [updated_paid_listings_remaining, updtaed_plan_status, req.body.pro_user_id], (err, data) => {
+              if (err) return res.status(500).json(err);
+              if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
+                sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
+                return res.status(200).json(insertId);
+              } else {
+                return res.status(200).json(insertId);
+              }
+            });
+            }
+            
+          // const updateq =
+          //   "UPDATE login_module SET pro_added_recently = pro_added_recently + 1 where user_id = ? order by tran_id desc limit 1";
+
+
+
+
+          // db.query(updateq, [req.body.pro_user_id], (err, data) => {
+          //   if (err) return res.status(500).json(err);
+          //   // console.log(
+          //   //   "process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME : ",
+          //   //   process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME,
+          //   //   typeof process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME
+          //   // );
+          //   if (process.env.SEND_NEW_LISTING_EMAIL_EVERYTIME == 1) {
+          //     //console.log("inside 3rd block");
+          //     //   digesttransporter.sendMail(info3, (err, data) => {
+          //     //     if (err) return res.status(500).json(err);
+          //     //     return res.status(200).json(insertId);
+          //     // });
+
+          //     // const emails_list2 = [
+          //     //   "harshgupta.calinfo@gmail.com",
+          //     //   "harshgarg1009@gmail.com",
+          //     // ];
+          //     sendMultipleEmails(emails_list, req.body, insertId, propertyLink, formatted_price);
+          //     return res.status(200).json(insertId);
+          //   } else {
+          //     //console.log("3rd block skipped");
+          //     return res.status(200).json(insertId);
+          //   }
+          // });
+          //});
+          //return res.status(200).json(insertId);
+        });
+      });
+    });
+     });
+  });
+});
+};
+
+
 const sendMultipleEmails = (emailsList, body, insertId, propertyLink, formatted_price) => {
   const emailsRes = {};
 
