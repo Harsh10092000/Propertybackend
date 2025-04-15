@@ -116,7 +116,7 @@ export const autoRemoveProperty = (req, res) => {
   const getMailData = `SELECT distinct login_email , DATEDIFF(pro_renew_date, DATE(CONVERT_TZ(NOW(), '+00:00', '+05:30'))) AS days_until_renewal ,pro_url
   FROM property_module left join login_module on login_module.login_id = property_module.pro_user_id 
   WHERE DATEDIFF(pro_renew_date, DATE(CONVERT_TZ(NOW(), '+00:00', '+05:30'))) = 0;`;
-  const updateData = `update property_module set pro_listed = 1 WHERE DATEDIFF(pro_renew_date, DATE(CONVERT_TZ(NOW(), '+00:00', '+05:30'))) = 0 and pro_listed = 0;`;
+  const updateData = `update property_module set pro_listed = 0 WHERE DATEDIFF(pro_renew_date, DATE(CONVERT_TZ(NOW(), '+00:00', '+05:30'))) = 0 and pro_listed = 1;`;
   db.query(getMailData, (err, mailData) => {
     if (err) return res.status(500).json(err);
 
