@@ -423,7 +423,7 @@ export const quickListing = (req, res) => {
 
     req.body.pro_amt_unit,
     "",
-    "",
+    "Yes",
     req.body.pro_state,
     req.body.pro_sub_district,
     req.body.pro_date,
